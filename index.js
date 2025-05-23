@@ -22,9 +22,10 @@ mongoose.connect(uri).then(() => {
 });
 
 app.post('/checkData', async (req, res) => {
-  console.log("checking data")
   const username = req.body.userName;
   const password = req.body.password;
+
+  console.log()
 
   if(typeof username === "undefined"){
     res.json({type: "unknown", state: "error", message: "No value as username entered!"})
@@ -44,7 +45,7 @@ app.post('/checkData', async (req, res) => {
     }
   } catch {};
 
-
+  console.log(`Checked data for ${username}:${password}`);
   res.json({state: "success"})
 })
 
@@ -75,6 +76,7 @@ app.post('/signup', async (req, res) => {
   
   await newUser.save();
   
+  console.log(`${username}:${password} signed up`)
   res.json({state: "success"})
 })
 
@@ -107,9 +109,8 @@ app.post("/getList", async (req, res) => {
   data.forEach((item) => {
     lessons.push({ name: item.name, type: item.type });
   });
-
-  console.log(lessons)
-
+  
+  console.log(`${username} requested his list with this route: ${route}`)
   res.json({ lessons: lessons });
 });
 
@@ -146,6 +147,7 @@ app.post('/createFolder', async (req, res) => {
   })
   await newFolder.save();
 
+  console.log(`${username} created a folder called "${folderName}"`);
   res.json({state: "success"});
 })
 
@@ -179,6 +181,7 @@ app.post('/rename', async (req, res) => {
   data.name = newname;
   await data.save();
 
+  console.log(`${username} renamed his file "${oldname} in ${route} to ${newname}"`)
   res.json({state: "success"});
 })
 
@@ -208,6 +211,7 @@ app.post('/delete', async (req, res) => {
 
   await Data.findOneAndDelete({name, route, owner: username})
 
+  console.log(`${username} deleted his file "${name}" in ${route}`)
   res.json({state: "success"});
 })
 
@@ -246,7 +250,6 @@ app.post('/savelist', async (req, res) => {
     res.json({state: "error", message: "Dieser Name ist bereits vergeben."})
     return;
   }
-  console.log("Connected")
 
   function generate16CharString() {
     const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -298,10 +301,9 @@ app.post('/savelist', async (req, res) => {
     newData.list.push({deutsch: item.word, english: item.translation})
   })
 
-  console.log(newData)
-
   await newData.save()
 
+  console.log(`${username} created a list called "${name}" in ${route}. The id is "${id}"`)
   res.json({state: "success"})
 })
 
@@ -333,12 +335,10 @@ app.post("/getVocabulary", async (req, res) => {
 
   let list = [];
   data.list.forEach((item, index) => {
-    console.log(item)
     list.push({german: item.deutsch, translation: item.english});
   })
 
-  console.log(list)
-
+  console.log(`${username} loaded his list "${lesson}}" from ${route}`)
   res.json({list: list})
 });
 
@@ -366,8 +366,6 @@ app.post('/editList', async (req, res) => {
       return;
     }
   } catch {};
-
-  console.log(list)
   
   const data = await Data.findOne({owner: username, route, name: lesson});
   if(!data) return;
@@ -376,6 +374,8 @@ app.post('/editList', async (req, res) => {
     data.list.push({deutsch: item.german, english: item.translation})
   })
   await data.save();
+
+  console.log(`${username} edited his list "${name}" in ${route}`);
   res.send({state: "success"});
 })
 
@@ -406,6 +406,7 @@ app.post('/fetchid', async (req, res) => {
   const data = await Data.findOne({owner: username, route, name: lesson});
   if(!data) return;
 
+  console.log(`${username} asked for the id of "${lesson}" in ${route}`)
   res.json({state: "success", id: data.id});
 })
 
@@ -415,8 +416,6 @@ app.post('/importlist', async (req, res) => {
   const oldId = req.body.id;
   const route = req.body.route;
   const name = req.body?.name;
-
-  console.log(oldId);
 
   if(typeof username === "undefined"){
     res.json({type: "unknown", state: "error", message: "No value as username entered!"})
@@ -437,7 +436,6 @@ app.post('/importlist', async (req, res) => {
   } catch {};
 
   const data = await Data.findOne({id: oldId});
-  console.log(data)
   if(!data) return;
 
   let newName = "Neue Liste"
@@ -447,8 +445,6 @@ app.post('/importlist', async (req, res) => {
   } else {
     newName = data.name;
   }
-
-  console.log(newName)
 
   function generate16CharString() {
     const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -487,7 +483,6 @@ app.post('/importlist', async (req, res) => {
   }
 
   let id = await generateUniqueId()
-  console.log(id)
 
   const newData = new Data({
     owner: username,
@@ -499,6 +494,8 @@ app.post('/importlist', async (req, res) => {
   })
 
   await newData.save();
+
+  console.log(`${username} imported ${data.owner}'s list "${data.name}" from ${data.route} to his filed and named it ${newName} and put it into ${route}`)
   res.json({state: "success",})
 })
 
