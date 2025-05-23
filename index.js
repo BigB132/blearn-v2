@@ -209,6 +209,18 @@ app.post('/delete', async (req, res) => {
     }
   } catch {};
 
+  const data = await Data.find({owner: username});
+
+  const item = await Data.findOne({owner: username, route, name})
+
+  if(item.type === 1){
+    for (const dataItem of data){
+      if(dataItem.route.startsWith(`${route}/${name}`)){
+        await Data.deleteOne({_id: dataItem._id});
+      };
+    };
+  };
+
   await Data.findOneAndDelete({name, route, owner: username})
 
   console.log(`${username} deleted his file "${name}" in ${route}`)
@@ -338,7 +350,7 @@ app.post("/getVocabulary", async (req, res) => {
     list.push({german: item.deutsch, translation: item.english});
   })
 
-  console.log(`${username} loaded his list "${lesson}}" from ${route}`)
+  console.log(`${username} loaded his list "${lesson}" from ${route}`)
   res.json({list: list})
 });
 
