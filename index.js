@@ -217,7 +217,7 @@ app.post('/savelist', async (req, res) => {
   const route = req.body.route;
   const list = req.body.vocabList;
   const name = req.body.name;
-
+  
   
   if(typeof username === "undefined"){
     res.json({type: "unknown", state: "error", message: "No value as username entered!"})
@@ -246,17 +246,59 @@ app.post('/savelist', async (req, res) => {
     res.json({state: "error", message: "Dieser Name ist bereits vergeben."})
     return;
   }
+  console.log("Connected")
+
+  function generate16CharString() {
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    let result = '';
+    for (let i = 0; i < 16; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  // Function to generate unique ID with collision checking
+  async function generateUniqueId(model, fieldName = 'customId', maxRetries = 100) {
+    let attempts = 0;
+    
+    while (attempts < maxRetries) {
+      const newId = generate16CharString();
+      
+      try {
+        // Check if ID already exists
+        const existing = await Data.findOne({ id: newId });
+        
+        if (!existing) {
+          return newId; // ID is unique, return it
+        }
+        
+        attempts++;
+        console.log(`ID collision detected: ${newId}. Attempt ${attempts}/${maxRetries}`);
+        
+      } catch (error) {
+        console.error('Error checking ID uniqueness:', error);
+        throw error;
+      }
+    }
+  
+    throw new Error(`Failed to generate unique ID after ${maxRetries} attempts`);
+  }
+
+  let id = await generateUniqueId()
+
   
   const newData = new Data({
     owner: username,
     route, 
     type: 0,
-    id: 450498,
+    id,
     name,
   })
   list.forEach((item, index) => {
     newData.list.push({deutsch: item.word, english: item.translation})
   })
+
+  console.log(newData)
 
   await newData.save()
 
@@ -335,6 +377,129 @@ app.post('/editList', async (req, res) => {
   })
   await data.save();
   res.send({state: "success"});
+})
+
+app.post('/fetchid', async (req, res) => {
+  const username = req.body.userName;
+  const password = req.body.password;
+  const route = req.body.route;
+  const lesson = req.body.lesson;
+
+  if(typeof username === "undefined"){
+    res.json({type: "unknown", state: "error", message: "No value as username entered!"})
+    return;
+  }
+
+  if(typeof password === "undefined"){
+    res.json({type: "unknown", state: "error", message: "No value as password entered!"})
+    return;
+  }
+
+  try{
+    const user = await UserData.findOne({userName: username, password});
+    if(!user){
+      res.json({state: "error", message: "Nutzer existiert nicht!"})
+      return;
+    }
+  } catch {};
+
+  const data = await Data.findOne({owner: username, route, name: lesson});
+  if(!data) return;
+
+  res.json({state: "success", id: data.id});
+})
+
+app.post('/importlist', async (req, res) => {
+  const username = req.body.userName;
+  const password = req.body.password;
+  const oldId = req.body.id;
+  const route = req.body.route;
+  const name = req.body?.name;
+
+  console.log(oldId);
+
+  if(typeof username === "undefined"){
+    res.json({type: "unknown", state: "error", message: "No value as username entered!"})
+    return;
+  }
+
+  if(typeof password === "undefined"){
+    res.json({type: "unknown", state: "error", message: "No value as password entered!"})
+    return;
+  }
+
+  try{
+    const user = await UserData.findOne({userName: username, password});
+    if(!user){
+      res.json({state: "error", message: "Nutzer existiert nicht!"})
+      return;
+    }
+  } catch {};
+
+  const data = await Data.findOne({id: oldId});
+  console.log(data)
+  if(!data) return;
+
+  let newName = "Neue Liste"
+  
+  if(name){
+    newName = name;
+  } else {
+    newName = data.name;
+  }
+
+  console.log(newName)
+
+  function generate16CharString() {
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    let result = '';
+    for (let i = 0; i < 16; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  // Function to generate unique ID with collision checking
+  async function generateUniqueId(model, fieldName = 'customId', maxRetries = 100) {
+    let attempts = 0;
+    
+    while (attempts < maxRetries) {
+      const newId = generate16CharString();
+      
+      try {
+        // Check if ID already exists
+        const existing = await Data.findOne({ id: newId });
+        
+        if (!existing) {
+          return newId; // ID is unique, return it
+        }
+        
+        attempts++;
+        console.log(`ID collision detected: ${newId}. Attempt ${attempts}/${maxRetries}`);
+        
+      } catch (error) {
+        console.error('Error checking ID uniqueness:', error);
+        throw error;
+      }
+    }
+  
+    throw new Error(`Failed to generate unique ID after ${maxRetries} attempts`);
+  }
+
+  let id = await generateUniqueId()
+  console.log(id)
+
+  const newData = new Data({
+    owner: username,
+    id,
+    route,
+    type: 0,
+    name: newName,
+    list: data.list,
+  })
+
+  await newData.save();
+  res.json({state: "success",})
 })
 
 // Server starten

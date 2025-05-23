@@ -7,7 +7,7 @@ const data = new mongoose.Schema({
   },
   id: {
     required: true,
-    type: Number
+    type: String,
   },
   route: {
     required: true,
