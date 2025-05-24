@@ -744,7 +744,7 @@ app.get('/earn/:userName/:token', async (req, res) => {
         </p>
       </div>
       
-      <a id="earnBtn" href="https://blearnend.onserver.com/claim/${username}/${token}" class="w-full px-6 py-3 bg-green-600 dark:bg-green-700 text-white text-lg font-semibold rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+      <a id="earnBtn" href="https://blearnend.onrender.com/claim/${username}/${token}" class="w-full px-6 py-3 bg-green-600 dark:bg-green-700 text-white text-lg font-semibold rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
         Jetzt Freischalten!
       </a>
       
