@@ -8,6 +8,9 @@ const userData = new mongoose.Schema({
   password: {
     required: true,
     type: String,
+  },
+  earnToken: {
+    type: String,
   }
 });
 
