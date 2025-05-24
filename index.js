@@ -778,7 +778,7 @@ app.get('/claim/:userName/:token', async (req, res) => {
 
   res.send(
     `
-      <script>window.location.href = "https://blearn.netlitfy.app/dashboard"</script>
+      <script>window.location.href = "https://blearn.netlify.app/dashboard"</script>
     `
   )
 })
