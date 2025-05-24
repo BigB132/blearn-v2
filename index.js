@@ -77,7 +77,8 @@ app.post('/signup', async (req, res) => {
   const newUser = new UserData({
     userName: username,
     password,
-    earnToken: "iufdghdofiusdofgiusdhgoisudhg"
+    earnToken: "iufdghdofiusdofgiusdhgoisudhg",
+    unlockedTime: Date.now() + 1000 * 60 * 60 * 72
   });
   
   await newUser.save();
