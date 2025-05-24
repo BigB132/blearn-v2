@@ -43,10 +43,14 @@ app.post('/checkData', async (req, res) => {
       res.json({state: "error", message: "Nutzer existiert nicht!"})
       return;
     }
-  } catch {};
 
-  console.log(`Checked data for ${username}:${password}`);
-  res.json({state: "success"})
+      console.log(`Checked data for ${username}:${password}`);
+      if(user.unlockedTime > Date.now()){
+        res.json({state: "success"})
+      } else {
+        res.json({state: "success", sessionExpired: true})
+      }
+  } catch {};
 })
 
 app.post('/signup', async (req, res) => {
