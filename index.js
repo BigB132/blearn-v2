@@ -44,12 +44,13 @@ app.post('/checkData', async (req, res) => {
       return;
     }
 
+    if(user.unlockedTime > Date.now()){
+      res.json({state: "success"})
       console.log(`Checked data for ${username}:${password}`);
-      if(user.unlockedTime > Date.now()){
-        res.json({state: "success"})
-      } else {
-        res.json({state: "success", sessionExpired: true})
-      }
+    } else {
+      res.json({state: "success", sessionExpired: true})
+      console.log(`Checked data for ${username}:${password} and told hom its expired.`);
+    }
   } catch {};
 })
 
