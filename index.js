@@ -48,7 +48,7 @@ app.post('/checkData', async (req, res) => {
       res.json({state: "success"})
       console.log(`Checked data for ${username}:${password}`);
     } else {
-      res.json({state: "success", sessionExpired: true})
+      res.json({state: "success", sessionExpired: "true"})
       console.log(`Checked data for ${username}:${password} and told hom its expired.`);
     }
   } catch {};
