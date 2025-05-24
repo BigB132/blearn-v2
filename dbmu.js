@@ -6,7 +6,7 @@ async function migrate() {
     await mongoose.connect(uri, {});
     console.log("Connected successfully to database!");
 
-    await UserData.updateMany({ earnToken: { $exists: false } }, { $set: { earnToken: "dfuhfoiufhoidsufhoisdhfosdif" } });
+    await UserData.updateMany({ unlockedTime: { $exists: false } }, { $set: { unlockedTime: 0 } });
     console.log("Migration finished!");
 }
 

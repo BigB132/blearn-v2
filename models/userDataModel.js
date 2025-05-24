@@ -11,6 +11,9 @@ const userData = new mongoose.Schema({
   },
   earnToken: {
     type: String,
+  },
+  unlockedTime: {
+    type: Number,
   }
 });
 
