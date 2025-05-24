@@ -773,7 +773,7 @@ app.get('/claim/:userName/:token', async (req, res) => {
     res.json({"Error": "Can not get combination of user and token"});
     return;
   }
-  userData.unlockedTime = Data.now() + 1000 * 60 * 60 * 24
+  userData.unlockedTime = Date.now() + 1000 * 60 * 60 * 24
   userData.save();
 
   res.send(
