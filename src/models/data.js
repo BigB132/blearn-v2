@@ -28,7 +28,14 @@ const data = new mongoose.Schema({
         english: { type: String, required: true }
       }
     ],
-    default: [],
+    required: false,
+  },
+  table: {
+    type: {
+        columns: {type: [String], default: []},
+        rows: {type: [String], required: true},
+        tableData: {type: [String], required: true}
+    },
     required: false,
   }
 });

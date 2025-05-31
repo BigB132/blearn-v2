@@ -9,6 +9,14 @@ const userData = new mongoose.Schema({
     required: true,
     type: String,
   },
+  email: {
+    required: true,
+    type: String,
+  },
+  mailtoken: {
+    required: true,
+    type: Number,
+  },
   earnToken: {
     type: String,
   },
