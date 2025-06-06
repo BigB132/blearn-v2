@@ -5,7 +5,7 @@ const autologin = `
 
     if (savedUser && savedPass) {
       try {
-        const res = await fetch("https://verbose-palm-tree-g449pxr7gjg9396pr-3000.app.github.dev/api/auth/checkData", {
+        const res = await fetch("/api/auth/checkData", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userName: savedUser, password: savedPass })
@@ -30,7 +30,7 @@ const autologin2 = `
 
     if (savedUser && savedPass) {
       try {
-        const res = await fetch("https://verbose-palm-tree-g449pxr7gjg9396pr-3000.app.github.dev/api/auth/checkData", {
+        const res = await fetch("/api/auth/checkData", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userName: savedUser, password: savedPass })
@@ -49,7 +49,7 @@ const autologin2 = `
 `;
 
 const header = `
-    <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center transition-colors duration-300">
+    <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center">
     <a href="/dashboard" class="text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</a>
     
     <!-- Profile Dropdown -->
@@ -169,6 +169,75 @@ const header = `
         usernameField.innerHTML = username;
     })
 </script>
+`
+
+const notificationContainer = `
+<div id="notificationContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"></div>
+`
+
+const notificationScript = `
+function showNotification(message, type = 'success', duration = 4000) {
+    const container = document.getElementById('notificationContainer');
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    
+    // Set base classes
+    const baseClasses = 'p-4 rounded-xl shadow-lg border backdrop-blur-sm transform transition-all duration-300 ease-in-out mb-3';
+    
+    // Set type-specific classes
+    let typeClasses = '';
+    if (type === 'success') {
+        typeClasses = 'bg-green-50/90 dark:bg-green-900/80 border-green-200 dark:border-green-700 text-green-800 dark:text-green-200';
+    } else if (type === 'error') {
+        typeClasses = 'bg-red-50/90 dark:bg-red-900/80 border-red-200 dark:border-red-700 text-red-800 dark:text-red-200';
+    }
+    
+    notification.className = \`\${baseClasses} \${typeClasses} translate-y-[-20px] opacity-0\`;
+    notification.innerHTML = \`
+        <div class="flex items-center justify-between">
+            <span class="font-medium">\${message}</span>
+            <button onclick="removeNotification(this.parentElement.parentElement)" 
+                    class="ml-4 text-current opacity-60 hover:opacity-100 transition-opacity">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+    \`;
+    
+    // Add to container
+    container.appendChild(notification);
+    
+    // Trigger animation
+    setTimeout(() => {
+        notification.classList.remove('translate-y-[-20px]', 'opacity-0');
+        notification.classList.add('translate-y-0', 'opacity-100');
+    }, 10);
+    
+    // Auto remove after duration
+    if (duration > 0) {
+        setTimeout(() => {
+            removeNotification(notification);
+        }, duration);
+    }
+}
+
+// Helper function to remove notifications
+function removeNotification(notification) {
+    notification.classList.add('translate-y-[-20px]', 'opacity-0');
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 300);
+}
+`
+
+const footer = `
+<footer class="bg-white dark:bg-gray-800 text-center text-sm py-4 border-t dark:border-gray-700 mt-8 text-gray-500 dark:text-gray-400">
+    © 2025 Blearn. All rights reserved.
+</footer>
 `
 
 
@@ -378,7 +447,7 @@ const register = (req, res) => {
                     submitBtn.disabled = true;
 
                     try {
-                        const response = await fetch('https://verbose-palm-tree-g449pxr7gjg9396pr-3000.app.github.dev/api/auth/register', {
+                        const response = await fetch('/api/auth/register', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -582,7 +651,7 @@ const verify = (req, res) => {
                     submitBtn.disabled = true;
 
                     try {
-                        const response = await fetch('https://verbose-palm-tree-g449pxr7gjg9396pr-3000.app.github.dev/api/auth/verify', {
+                        const response = await fetch('/api/auth/verify', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -630,7 +699,7 @@ const verify = (req, res) => {
                     }
 
                     try {
-                        const response = await fetch('https://verbose-palm-tree-g449pxr7gjg9396pr-3000.app.github.dev/api/auth/resend-code', {
+                        const response = await fetch('/api/auth/resend-code', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -770,7 +839,7 @@ const login = (req, res) => {
             loginBtn.textContent = "Logging in...";
 
             try {
-                const res = await fetch("https://verbose-palm-tree-g449pxr7gjg9396pr-3000.app.github.dev/api/auth/checkData", {
+                const res = await fetch("/api/auth/checkData", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userName, password })
@@ -889,7 +958,7 @@ const forgotpassword = (req, res) => {
             resetBtn.textContent = "Sending email...";
 
             try {
-                const res = await fetch("https://verbose-palm-tree-g449pxr7gjg9396pr-3000.app.github.dev/api/auth/resetpassword", {
+                const res = await fetch("/api/auth/resetpassword", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email })
@@ -955,10 +1024,7 @@ const dashboard = (req, res) => {
             </div>
         </main>
 
-        <!-- Footer -->
-        <footer class="bg-white dark:bg-gray-800 text-center text-sm py-4 border-t dark:border-gray-700 mt-8 text-gray-500 dark:text-gray-400 transition-colors duration-300">
-            © 2025 Lernplattform. Alle Rechte vorbehalten.
-        </footer>
+        ${footer}
 
         <script>
             // Dark mode functionality with localStorage - same as welcome page
@@ -1000,7 +1066,7 @@ const dashboard = (req, res) => {
             // Initialize theme manager
             new ThemeManager();
 
-            const userName = localStorage.getItem("userName");
+            const userName = localStorage.getItem("username");
             const password = localStorage.getItem("password");
             
             if (!userName || !password) {
@@ -1009,7 +1075,7 @@ const dashboard = (req, res) => {
             }
 
             try {
-                const res = await fetch("https://blearnend.onrender.com/checkData", {
+                const res = await fetch("/api/auth/checkData", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userName, password })
@@ -1022,7 +1088,7 @@ const dashboard = (req, res) => {
                 localStorage.removeItem("password");
                 window.location.href = "/login";
                 } else if (data.state === "success" && data.sessionExpired === "true") {
-                window.location.href = "https://blearn.netlify.app/ad";
+                window.location.href = "/ad";
                 } else {
                 console.log("Successful login");
                 }
@@ -1152,10 +1218,7 @@ ${header}
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white dark:bg-gray-800 text-center text-sm py-4 border-t dark:border-gray-700 mt-8 text-gray-500 dark:text-gray-400 transition-colors duration-300">
-        © 2025 Lernplattform. Alle Rechte vorbehalten.
-    </footer>
+    ${footer}
 
     <script>
         // Simple theme management
@@ -1251,7 +1314,7 @@ ${header}
             
             
             try {
-                const res = await fetch("https://verbose-palm-tree-g449pxr7gjg9396pr-3000.app.github.dev/api/auth/changePass", {
+                const res = await fetch("/api/auth/changePass", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ userName, password, newpass })
@@ -1285,11 +1348,28 @@ const learn = (req, res) => {
             darkMode: 'class'
             }
         </script>
+
+        <script>
+            (function() {
+                const savedTheme = localStorage.getItem('theme') || 'system';
+                const html = document.documentElement;
+                
+                if (savedTheme === 'system') {
+                    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (systemDark) html.classList.add('dark');
+                } else if (savedTheme === 'dark') {
+                    html.classList.add('dark');
+                }
+            })();
+        </script>
+
         </head>
+        ${notificationContainer}
+
         <body class="bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 min-h-screen flex flex-col transition-colors duration-300">
 
         ${header}
-        
+
         <div id="folderModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
             <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg w-80 transition-colors duration-300">
             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">📁 Create Folder</h3>
@@ -1403,7 +1483,7 @@ const learn = (req, res) => {
                         <span class="mr-3 text-lg">📥</span>
                         <div>
                         <div class="font-medium">Import</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Import a vocablist</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Import a vocablist or table</div>
                         </div>
                     </button>
                     </div>
@@ -1427,20 +1507,18 @@ const learn = (req, res) => {
             <ul id="lessonList" class="space-y-4 hidden"></ul>
         </main>
 
-        <!-- Footer -->
-        <footer class="bg-white dark:bg-gray-800 text-center text-sm py-4 border-t dark:border-gray-700 text-gray-500 dark:text-gray-400 transition-colors duration-300">
-            © 2025 Blearn
-        </footer>
+        ${footer}
 
         <script>
+
+        ${notificationScript}
+
         let route;
-        const API_BASE_URL = 'https://verbose-palm-tree-g449pxr7gjg9396pr-3000.app.github.dev/';
 
         // Dark mode functionality - same as dashboard
         class ThemeManager {
             constructor() {
             this.init();
-            this.setupEventListeners();
             }
 
             init() {
@@ -1480,7 +1558,7 @@ const learn = (req, res) => {
             }
 
             try {
-            const res = await fetch(\`\${API_BASE_URL}/api/auth/checkData\`, {
+            const res = await fetch('/api/auth/checkData', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userName, password })
@@ -1489,16 +1567,29 @@ const learn = (req, res) => {
             const data = await res.json();
 
             if (data.state === "error") {
+                try{
                 localStorage.removeItem("username");
                 localStorage.removeItem("password");
+                } catch {}
                 window.location.href = "/login";
             } else if (data.state === "success" && data.sessionExpired === "true") {
-                window.location.href = "https://blearn.netlify.app/ad";
+                window.location.href = "/ad";
             } else {
                 console.log("Successful login");
             }
             } catch (err) {
             console.error("Error while checking data:", err);
+            try {
+                showNotification("Error details: " + JSON.stringify({
+                    message: err.message,
+                    name: err.name,
+                    stack: err.stack
+                }), 'error')
+            } catch (alertErr) {
+                showNotification('Error occurred but cannot display details', 'error')
+                console.error("Original error:", err);
+                console.error("Alert error:", alertErr);
+            }
             window.location.href = "/login";
             }
 
@@ -1509,7 +1600,7 @@ const learn = (req, res) => {
             renderBreadcrumb(route);
 
             try {
-                const res = await fetch(\`\${API_BASE_URL}/api/data/getlist\`, {
+                const res = await fetch('/api/data/getlist', {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ username: userName, password, route }),
@@ -1559,11 +1650,11 @@ const learn = (req, res) => {
                     // Event-Handler mit Fehlerbehandlung
                     item.onclick = (e) => {
                     try {
-                        if (lesson.type === 1) { // Wenn es ein Ordner ist
+                        if (lesson.type === 9) { // Wenn es ein Ordner ist
                         window.location.href = \`/learn?route=\${route}/\${encodeURIComponent(lesson.name)}\`;
-                        } else if (lesson.type === 2) {
+                        } else if (lesson.type === 1) {
                         window.location.href = \`/table?route=\${route}&lesson=\${encodeURIComponent(lesson.name)}\`;
-                        } else { // Wenn es eine Vokabelliste ist
+                        } else if (lesson.type === 0) { // Wenn es eine Vokabelliste ist
                         window.location.href = \`/list?route=\${encodeURIComponent(route)}&lesson=\${encodeURIComponent(lesson.name)}\`;
                         }
                     } catch (error) {
@@ -1574,7 +1665,7 @@ const learn = (req, res) => {
                     
                     let icon = "📁"
                     if(lesson.type === 0) icon = "📗"
-                    if(lesson.type === 2) icon = "📑"
+                    if(lesson.type === 1) icon = "📑"
                     item.innerHTML = \`
                     <div class="flex justify-between items-center">
                         <span class="text-gray-800 dark:text-gray-200">\${icon} \${lesson.name}</span>
@@ -1681,7 +1772,7 @@ const learn = (req, res) => {
         async function submitFolder() {
             const folderName = document.getElementById("folderNameInput").value.trim();
             if (!folderName) {
-            alert("Please enter a folder name.");
+            showNotification('Please enter a folder name.', 'error')
             return;
             }
 
@@ -1689,10 +1780,10 @@ const learn = (req, res) => {
             const password = localStorage.getItem("password");
 
             try {
-            const res = await fetch(\`\${API_BASE_URL}/api/data/createFolder\`, {
+            const res = await fetch('/api/data/createFolder', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userName, password, route, folderName }),
+                body: JSON.stringify({ username: userName, password, route, folderName }),
                 signal: AbortSignal.timeout(10000)
             });
 
@@ -1703,15 +1794,16 @@ const learn = (req, res) => {
             const data = await res.json();
 
             if (data.state === "success") {
-                alert("Folder created!");
+                showNotification('Folder created!', 'success')
                 closeFolderModal();
                 location.reload();
             } else {
-                alert(\`Error while creating folder: \${data.message || 'Unbekannter Fehler'}\`);
+                showNotification(\`Error while creating folder: \${data.message || 'Unknown error'}\`, 'error')
+                
             }
             } catch (err) {
             console.error("Error:", err);
-            alert(\`An error is occured: \${err.message || 'Verbindungsproblem'}\`);
+            showNotification(\`An error is occured: \${err.message || 'Connection issue'}\`, 'error')
             }
         }
             
@@ -1770,15 +1862,15 @@ const learn = (req, res) => {
             const password = localStorage.getItem("password");
 
             try {
-            const res = await fetch(\`\${API_BASE_URL}/api/data/rename\`, {
+            const res = await fetch('/api/data/rename', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
-                userName, 
+                username: userName, 
                 password, 
                 route,
-                oldName: selectedItem.name, 
-                newName
+                oldname: selectedItem.name, 
+                newname: newName
                 }),
                 signal: AbortSignal.timeout(10000)
             });
@@ -1792,11 +1884,11 @@ const learn = (req, res) => {
                 closeRenameModal();
                 location.reload();
             } else {
-                alert(\`Error while renaming: \${data.message || 'Unbekannter Fehler'}\`);
-            }
+                showNotification(\`Error while renaming: \${data.message || 'Unknown error'}\`, 'error')
+                }
             } catch (err) {
             console.error(err);
-            alert(\`An error is occured: \${err.message || 'Verbindungsproblem'}\`);
+            showNotification(\`An error is occured: \${err.message || 'Connection issue'}\`, 'error')
             }
         }
 
@@ -1805,19 +1897,21 @@ const learn = (req, res) => {
             // Nur für Listen, nicht für Ordner
             if (selectedItem.type === 0) {
             window.location.href = \`/editList?route=\${encodeURIComponent(route)}&lesson=\${encodeURIComponent(selectedItem.name)}\`;
+            } else if (selectedItem.type === 1) {
+            window.location.href = \`/editTable?route=\${encodeURIComponent(route)}&lesson=\${encodeURIComponent(selectedItem.name)}\`;
             } else {
-            alert("Only vacob lists can be edited.");
+            showNotification('Only lists and tables can be edited', 'error')
             }
         }
 
         // NEU: Share-Funktionen
         function shareItem() {
             // Nur für Listen, nicht für Ordner
-            if (selectedItem.type === 0) {
+            if (selectedItem.type === 0 || selectedItem.type === 1) {
             document.getElementById("shareModal").classList.remove("hidden");
             fetchShareId();
             } else {
-            alert("Only vobablists can be shared!");
+            showNotification('Only lists and tables can be shared', 'error')
             }
         }
 
@@ -1834,11 +1928,11 @@ const learn = (req, res) => {
             const password = localStorage.getItem("password");
 
             try {
-            const res = await fetch(\`\${API_BASE_URL}/api/data/fetchid\`, {
+            const res = await fetch('/api/data/fetchid', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
-                userName, 
+                username: userName, 
                 password, 
                 route, 
                 lesson: selectedItem.name 
@@ -1895,7 +1989,7 @@ const learn = (req, res) => {
             }, 2000);
             } catch (err) {
             console.error('Copying failed:', err);
-            alert('Copying failed. Please copy it manually.');
+            showNotification('Copying failed. Please copy it manually.', 'error')
             }
         }
 
@@ -1907,11 +2001,11 @@ const learn = (req, res) => {
             const password = localStorage.getItem("password");
 
             try {
-            const res = await fetch(\`\${API_BASE_URL}/api/data/delete\`, {
+            const res = await fetch('/api/data/delete', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
-                userName, 
+                username: userName, 
                 password, 
                 route, 
                 name: selectedItem.name 
@@ -1927,11 +2021,11 @@ const learn = (req, res) => {
             if (data.state === "success") {
                 location.reload();
             } else {
-                alert(\`Error while deleting: \${data.message || 'Unknown error'}\`);
+                showNotification(\`Error while deleting: \${data.message || 'Unknown error'}\`, 'error')
             }
             } catch (err) {
             console.error(err);
-            alert(\`An error is occured: \${err.message || 'Connection issues'}\`);
+            showNotification(\`An error is occured: \${err.message || 'Connection issues'}\`, 'error')
             }
         }
 
@@ -1979,4 +2073,2366 @@ const learn = (req, res) => {
     `)
 }
 
-module.exports = { landing, register, verify, login, dashboard, logout, settings, forgotpassword, learn }
+const createlist = (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Create Vocablist – Blearn</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+            darkMode: 'class'
+            }
+        </script>
+        </head>
+        <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+
+        ${notificationContainer}
+
+        ${header}
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">Vocablist creation</h2>
+            
+            <!-- Listenname -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-6 border dark:border-gray-700 transition-all duration-300">
+            <input id="listNameInput" type="text" placeholder="Name of the Vocablist" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+            </div>
+
+            <!-- Eingabe -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-6 border dark:border-gray-700 transition-all duration-300">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input id="wordInput" type="text" placeholder="Word" class="border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+                <input id="translationInput" type="text" placeholder="Translation" class="border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+            </div>
+            <button id="addBtn" class="mt-4 px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 transition-all duration-300">Add</button>
+            </div>
+
+            <!-- Liste -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/20 border dark:border-gray-700 transition-all duration-300">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                <tr>
+                    <th class="pb-2 text-gray-900 dark:text-white transition-colors duration-300">Word</th>
+                    <th class="pb-2 text-gray-900 dark:text-white transition-colors duration-300">Translation</th>
+                    <th class="pb-2 text-gray-900 dark:text-white transition-colors duration-300">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="vocabList"></tbody>
+            </table>
+            <button id="saveBtn" class="mt-6 px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300">Save list</button>
+            </div>
+        </main>
+
+        ${footer}
+
+        <!-- Script -->
+        <script>
+
+        ${notificationScript}
+
+            // Dark mode functionality with localStorage
+            class ThemeManager {
+                constructor() {
+                    this.init();
+                }
+
+            init() {
+                // Get theme from localStorage or default to 'system'
+                const savedTheme = localStorage.getItem('theme') || 'system';
+                this.applyTheme(savedTheme);
+            }
+
+            applyTheme(theme) {
+                const html = document.documentElement;
+                
+                if (theme === 'system') {
+                // Use system preference
+                    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    html.classList.toggle('dark', systemDark);
+                } else if (theme === 'dark') {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('theme', theme);
+            }
+        }
+
+            document.addEventListener("DOMContentLoaded", async () => {
+            // Initialize theme manager
+            new ThemeManager();
+
+            const params = new URLSearchParams(window.location.search);
+            const route = params.get("route");
+
+            const wordInput = document.getElementById("wordInput");
+            const translationInput = document.getElementById("translationInput");
+            const addBtn = document.getElementById("addBtn");
+            const saveBtn = document.getElementById("saveBtn");
+            const vocabList = document.getElementById("vocabList");
+            const logoutBtn = document.getElementById("logoutBtn");
+
+            let entries = [];
+
+            function renderList() {
+                vocabList.innerHTML = "";
+                entries.forEach((entry, index) => {
+                vocabList.innerHTML += \`
+                    <tr class="border-t dark:border-gray-600">
+                    <td><input type="text" class="w-full p-1 border dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300" value="\${entry.word}" onchange="updateWord(\${index}, this.value)" /></td>
+                    <td><input type="text" class="w-full p-1 border dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300" value="\${entry.translation}" onchange="updateTranslation(\${index}, this.value)" /></td>
+                    <td>
+                        <button onclick="deleteEntry(\${index})" class="text-red-500 dark:text-red-400 hover:underline transition-colors duration-300">Delete</button>
+                    </td>
+                    </tr>
+                \`;
+                });
+            }
+
+            addBtn.addEventListener("click", () => {
+                const word = wordInput.value.trim();
+                const translation = translationInput.value.trim();
+
+                if (word && translation) {
+                entries.push({ word, translation });
+                wordInput.value = "";
+                translationInput.value = "";
+                renderList();
+                }
+            });
+
+            saveBtn.addEventListener("click", async () => {
+                const userName = localStorage.getItem("username");
+                const password = localStorage.getItem("password");
+                const listNameInput = document.getElementById("listNameInput");
+                const listName = listNameInput.value.trim();
+
+                try {
+                const res = await fetch("/api/data/savelist", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username: userName, password, list: entries, route, name: listName })
+                });
+
+                const data = await res.json();
+                if (data.state === "success") {
+                    showNotification('Successfully saved list!', 'success')
+                    window.location.href = \`/learn?route=\${route}\`;
+                } else {
+                    showNotification(data.message || 'Error while saving', 'error')
+                }
+                } catch (err) {
+                console.error("Error while saving:", err);
+                showNotification('Connection to server failed', 'error')
+                }
+            });
+
+            function deleteEntry(index) {
+                entries.splice(index, 1);
+                renderList();
+            }
+
+            window.deleteEntry = deleteEntry;
+
+            function updateWord(index, value) {
+                entries[index].word = value;
+            }
+
+            window.updateWord = updateWord;
+
+            function updateTranslation(index, value) {
+                entries[index].translation = value;
+            }
+
+            window.updateTranslation = updateTranslation;
+
+            // Authentifizierung prüfen
+            const verifyUserName = localStorage.getItem("username");
+            const password = localStorage.getItem("password");
+            
+
+            if (!userName || !password) {
+                window.location.href = "/login";
+                return;
+            }
+
+            const res = await fetch("/api/auth/checkData", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userName: verifyUserName, password })
+            });
+
+            const data = await res.json();
+            if (data.state === "error") {
+                localStorage.clear();
+                window.location.href = "/login";
+            } else if (data.state === "success" && data.sessionExpired === "true") {
+                window.location.href = "/ad";
+            }
+            });
+        </script>
+        </body>
+        </html>
+    `)
+}
+
+const list = (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Vocab List</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        ${notificationContainer}
+
+        <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center py-8">
+        <div class="w-full max-w-4xl px-4">
+            <!-- Header -->
+            <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold mb-2" id="lessonTitle">Vocab list</h1>
+            <a href="/learn" class="text-blue-400 hover:underline">Back to your files</a>
+            <br><br>
+            <input type="checkbox" id="shuffeling"> Disable shuffeling <br>
+            <input type="checkbox" id="swapSides"> Swap sides
+            </header
+
+            <!-- Quiz Table -->
+            <div class="overflow-x-auto mb-8">
+            <table class="w-full rounded-lg overflow-hidden">
+                <thead class="bg-gray-700">
+                <tr>
+                    <th class="py-3 px-4 text-left">Word</th>
+                    <th class="py-3 px-4 text-left">Translation</th>
+                </tr>
+                </thead>
+                <tbody id="vocabularyTable" class="bg-gray-800 divide-y divide-gray-700">
+                <!-- Vocabulary rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+            </div>
+
+            <!-- Check Answers Button -->
+            <div class="text-center">
+            <button onclick="checkAnswers()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
+                Check answers
+            </button>
+            </div>
+        </div>
+
+        <script>
+
+        ${notificationScript}
+            const checkbox = document.getElementById('shuffeling');            
+            const lse = localStorage.getItem("lse") || "false";
+
+            const checkbox2 = document.getElementById('swapSides')
+            const ss = localStorage.getItem('ss') || "false";
+
+            if(lse === "true"){
+                checkbox.checked = true;
+            } else {
+                checkbox.checked = false;
+            }
+
+            if(ss === "true"){
+                checkbox2.checked = true;
+            } else {
+                checkbox2.checked = false;
+            }
+
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                    localStorage.setItem("lse", "true");
+                    location.reload();
+                } else {
+                    localStorage.setItem("lse", "false");
+                    location.reload();
+                }
+            });
+               
+            checkbox2.addEventListener('change', () => {
+                if (checkbox2.checked) {
+                    localStorage.setItem("ss", "true");
+                    location.reload();
+                } else {
+                    localStorage.setItem("ss", "false");
+                    location.reload();
+                }
+            });
+
+            // Get route and lesson from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const route = urlParams.get('route') || '/';
+            const lesson = urlParams.get('lesson');
+            
+            // Correct answers object
+            let correctAnswers = {};
+
+            document.addEventListener('DOMContentLoaded', async () => {
+            // Set lesson title
+            
+            const userName = localStorage.getItem("username");
+            const password = localStorage.getItem("password");
+            
+            if (!userName || !password) {
+                window.location.href = "/login";
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/auth/checkData", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userName, password })
+                });
+                
+                const data = await res.json();
+                
+                if (data.state === "error") {
+                localStorage.removeItem("username");
+                localStorage.removeItem("password");
+                window.location.href = "/login";
+                } else if (data.state === "success" && data.sessionExpired === "true") {
+                window.location.href = "/ad";
+                } else {
+                console.log("Successful login");
+                }
+            } catch (err) {
+                console.error("Error while checking data:", err);
+                window.location.href = "/login";
+            }
+            
+            if (lesson) {
+                document.getElementById('lessonTitle').textContent = lesson;
+            }
+
+            // Get vocabulary from server
+            try {
+                const userName = localStorage.getItem('username');
+                const password = localStorage.getItem('password');
+
+                if (!userName || !password) {
+                window.location.href = '/login';
+                return;
+                }
+
+                const res = await fetch("/api/data/getvoclist", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username: userName, password, route, lesson })
+                });
+
+                if (!res.ok) {
+                throw new Error('Server responded with error');
+                }
+
+                const data = await res.json();
+                
+                if (!data || !data.list) {
+                throw new Error('Invalid data format received');
+                }
+
+                // Populate correctAnswers and create table rows
+                const tableBody = document.getElementById('vocabularyTable');
+                tableBody.innerHTML = '';
+
+                if(ss === "false"){
+                data.list.forEach((item, index) => {
+                if (!item.german || !item.translation) return;
+
+                const id = \`vocab-\${index}\`;
+                correctAnswers[id] = item.translation.toLowerCase();
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-700';
+                row.innerHTML = \`
+                    <td class="py-3 px-4">\${item.german}</td>
+                    <td class="py-3 px-4">
+                    <input type="text" id="\${id}" 
+                        class="w-full bg-gray-600 border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <span id="\${id}-solution" class="hidden text-red-400 text-sm mt-1 block"></span>
+                    </td>
+                \`;
+                tableBody.appendChild(row);
+                });
+                } else {
+                data.list.forEach((item, index) => {
+                if (!item.german || !item.translation) return;
+
+                const id = \`vocab-\${index}\`;
+                correctAnswers[id] = item.german.toLowerCase();
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-700';
+                row.innerHTML = \`
+                    <td class="py-3 px-4">\${item.translation}</td>
+                    <td class="py-3 px-4">
+                    <input type="text" id="\${id}" 
+                        class="w-full bg-gray-600 border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <span id="\${id}-solution" class="hidden text-red-400 text-sm mt-1 block"></span>
+                    </td>
+                \`;
+                tableBody.appendChild(row);
+                });
+                }
+
+                // Shuffle rows
+                shuffleRows();
+
+            } catch (error) {
+                showNotification(error, 'error')
+                console.error('Error loading vocabulary:', error);
+                document.getElementById('vocabularyTable').innerHTML = \`
+                <tr>
+                    <td colspan="2" class="py-4 text-center text-red-400">
+                    Error while loading list. Please try again.
+                    </td>
+                </tr>
+                \`;
+            }
+            });
+
+            function shuffleRows() {
+            const tableBody = document.getElementById('vocabularyTable');
+            const rows = Array.from(tableBody.children);
+            
+            if(lse === "true"){
+                rows.forEach(row => tableBody.appendChild(row));
+            } else {
+                const shuffled = Array.from(rows).sort(() => Math.random() - 0.5);
+                shuffled.forEach(row => tableBody.appendChild(row));
+            }
+            }
+
+            function checkAnswers() {
+            for (const id in correctAnswers) {
+                const inputField = document.getElementById(id);
+                const solutionSpan = document.getElementById(\`\${id}-solution\`);
+                const userAnswer = inputField.value.trim().toLowerCase();
+                const correctAnswer = correctAnswers[id].toLowerCase();
+
+                // Remove previous styling
+                inputField.classList.remove('bg-green-700', 'bg-red-700', 'border-green-500', 'border-red-500');
+                
+                if (userAnswer === correctAnswer) {
+                // Correct answer
+                inputField.classList.add('bg-green-700', 'border-green-500');
+                if (solutionSpan) solutionSpan.classList.add('hidden');
+                } else {
+                // Incorrect answer
+                inputField.classList.add('bg-red-700', 'border-red-500');
+                if (solutionSpan) {
+                    solutionSpan.textContent = \`Right answer: \${correctAnswers[id]}\`;
+                    solutionSpan.classList.remove('hidden');
+                }
+                }
+            }
+            }
+        </script>
+        </body>
+        </html>
+    `)
+}
+
+const editlist = (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Edit Vocablist - Blearn</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+            darkMode: 'class'
+            }
+        </script>
+        </head>
+        <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+
+        ${notificationContainer}
+
+        ${header}
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="flex justify-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 dark:border-blue-400 border-opacity-50"></div>
+            </div>
+
+            <div id="mainContent" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Edit Vocablist</h2>
+                <span id="listPath" class="text-blue-600 dark:text-blue-400 text-sm"></span>
+            </div>
+            
+            <!-- Listenname -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 transition-colors duration-300">
+                <label for="listNameInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name der Liste</label>
+                <input id="listNameInput" type="text" placeholder="Name of the list" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400" disabled />
+            </div>
+
+            <!-- Eingabe -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 transition-colors duration-300">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input id="wordInput" type="text" placeholder="Word" class="border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent" />
+                <input id="translationInput" type="text" placeholder="Translation" class="border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent" />
+                </div>
+                <button id="addBtn" class="mt-4 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition">Add</button>
+            </div>
+
+            <!-- Liste -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md transition-colors duration-300">
+                <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">You can edit the vocab in the list.</div>
+                <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr class="bg-gray-50 dark:bg-gray-700">
+                        <th class="px-4 py-2 border-b dark:border-gray-600 text-gray-900 dark:text-white">Word</th>
+                        <th class="px-4 py-2 border-b dark:border-gray-600 text-gray-900 dark:text-white">Translation</th>
+                        <th class="px-4 py-2 border-b dark:border-gray-600 text-gray-900 dark:text-white">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="vocabList"></tbody>
+                </table>
+                </div>
+                <div class="mt-6 flex justify-between">
+                <button id="cancelBtn" class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition">Cancel</button>
+                <button id="saveBtn" class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-600 transition">Save changes</button>
+                </div>
+            </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-400 text-red-700 dark:text-red-300 p-4 rounded shadow-md">
+            <p class="font-bold">Fehler</p>
+            <p id="errorText"></p>
+            <button onclick="window.location.reload()" class="mt-2 px-4 py-1 bg-red-600 dark:bg-red-500 text-white rounded-md hover:bg-red-700 dark:hover:bg-red-600 transition">
+                Reload
+            </button>
+            </div>
+        </main>
+
+        ${footer}
+
+        <!-- Script -->
+        <script>
+
+        ${notificationScript}
+            // Dark mode functionality
+            class ThemeManager {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                // Get theme from localStorage or default to 'system'
+                const savedTheme = localStorage.getItem('theme') || 'system';
+                this.applyTheme(savedTheme);
+            }
+
+            applyTheme(theme) {
+                const html = document.documentElement;
+                
+                if (theme === 'system') {
+                // Use system preference
+                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.classList.toggle('dark', systemDark);
+                } else if (theme === 'dark') {
+                html.classList.add('dark');
+                } else {
+                html.classList.remove('dark');
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('theme', theme);
+            }
+        }
+
+            document.addEventListener("DOMContentLoaded", async () => {
+            // Initialize theme manager
+            new ThemeManager();
+            
+            const userName = localStorage.getItem("username");
+            const password = localStorage.getItem("password");
+            
+            if (!userName || !password) {
+                window.location.href = "/login";
+                return;
+            }
+
+            // Single authentication check
+            try {
+                const res = await fetch('/api/auth/checkData', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userName, password })
+                });
+                
+                const data = await res.json();
+                
+                if (data.state === "error") {
+                localStorage.removeItem("username");
+                localStorage.removeItem("password");
+                window.location.href = "/login";
+                return;
+                } else if (data.state === "success" && data.sessionExpired === "true") {
+                window.location.href = "/ad";
+                return;
+                } else {
+                console.log("Successful login");
+                }
+            } catch (err) {
+                console.error("Error while checking data:", err);
+                window.location.href = "/login";
+                return;
+            }
+                
+            // Query parameters
+            const params = new URLSearchParams(window.location.search);
+            const route = params.get("route") || "/";
+            const lesson = params.get("lesson");
+            
+            if (!lesson) {
+                showError("No vocab list given!");
+                return;
+            }
+            
+            // Update breadcrumb/path info
+            document.getElementById("listPath").textContent = \`\${route}/\${lesson}\`;
+            document.getElementById("listNameInput").value = lesson;
+
+            // DOM Elements
+            const wordInput = document.getElementById("wordInput");
+            const translationInput = document.getElementById("translationInput");
+            const addBtn = document.getElementById("addBtn");
+            const saveBtn = document.getElementById("saveBtn");
+            const vocabList = document.getElementById("vocabList");
+            const logoutBtn = document.getElementById("logoutBtn");
+            const cancelBtn = document.getElementById("cancelBtn");
+
+            let entries = [];
+
+            // Function to render the vocabulary list
+            function renderList() {
+                vocabList.innerHTML = "";
+                entries.forEach((entry, index) => {
+                vocabList.innerHTML += \`
+                    <tr class="border-b dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                    <td class="px-4 py-2">
+                        <input type="text" class="w-full p-1 border dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent" value="\${escapeHTML(entry.german)}" onchange="updateWord(\${index}, this.value)" />
+                    </td>
+                    <td class="px-4 py-2">
+                        <input type="text" class="w-full p-1 border dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent" value="\${escapeHTML(entry.translation)}" onchange="updateTranslation(\${index}, this.value)" />
+                    </td>
+                    <td class="px-4 py-2">
+                        <button onclick="deleteEntry(\${index})" class="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        </button>
+                    </td>
+                    </tr>
+                \`;
+                });
+            }
+
+
+            
+            // Escape HTML to prevent XSS
+            function escapeHTML(str) {
+                return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+                }
+                
+            // Add new vocabulary entry
+            addBtn.addEventListener("click", () => {
+                const word = wordInput.value.trim();
+                const translation = translationInput.value.trim();
+
+                if (word && translation) {
+                entries.push({ german: word, translation });
+                wordInput.value = "";
+                translationInput.value = "";
+                renderList();
+                wordInput.focus();
+                } else {
+                showNotification('Please enter the word and the translation', 'error') 
+                }
+            });
+
+            // Listen for Enter key in the input fields
+            wordInput.addEventListener("keyup", (event) => {
+                if (event.key === "Enter") {
+                translationInput.focus();
+                }
+            });
+
+            translationInput.addEventListener("keyup", (event) => {
+                if (event.key === "Enter") {
+                addBtn.click();
+                }
+            });
+
+
+            // Save changes
+            saveBtn.addEventListener("click", async () => {
+                if (entries.length === 0) {
+                showNotification('The list don't contains a single word. Please add at least one word!', 'error')
+                return;
+                }
+
+                try {
+                saveBtn.disabled = true;
+                saveBtn.textContent = "Wird gespeichert...";
+                
+                const res = await fetch('/api/data/editList', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                    username: userName, 
+                    password, 
+                    list: entries, 
+                    route, 
+                    lesson 
+                    }),
+                    signal: AbortSignal.timeout(10000) // 10 seconds timeout
+                });
+
+                const data = await res.json();
+                if (data.state === "success") {
+                    showNotification('List successfully saved!', 'success')
+                    window.location.href = \`/learn?route=\${encodeURIComponent(route)}\`;
+                } else {
+                    showNotification(\`Error while saving: \${data.message || 'Unknown error'}\`, 'error')
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = "Save changes";
+                }
+                } catch (err) {
+                console.error("Saving failed:", err);
+                showNotification(\`Error while connecting to server: \${err.message || 'Network problem'}\`, 'error')
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Save changes";
+                }
+            });
+
+            cancelBtn.addEventListener("click", () => {
+                if (hasChanges()) {
+                if (confirm("Are you sure that you want to lose your changes?")) {
+                    goBack();
+                }
+                } else {
+                goBack();
+                }
+            });
+
+            function goBack() {
+                window.location.href = \`/learn?route=\${encodeURIComponent(route)}\`;
+            }
+
+            // Check if there are unsaved changes
+            let originalEntries = [];
+            function hasChanges() {
+                if (entries.length !== originalEntries.length) return true;
+                
+                for (let i = 0; i < entries.length; i++) {
+                if (entries[i].german !== originalEntries[i].german || 
+                    entries[i].translation !== originalEntries[i].translation) {
+                    return true;
+                }
+                }
+                return false;
+            }
+
+
+            // Delete entry
+            function deleteEntry(index) {
+                if (confirm("Are you sure that you want to delete this word?")) {
+                entries.splice(index, 1);
+                renderList();
+                }
+            }
+            window.deleteEntry = deleteEntry;
+
+            // Update entry
+            function updateWord(index, value) {
+                entries[index].german = value;
+            }
+            window.updateWord = updateWord;
+
+            function updateTranslation(index, value) {
+                entries[index].translation = value;
+            }
+            window.updateTranslation = updateTranslation;
+
+            // Show error message
+            function showError(message) {
+                document.getElementById("loadingIndicator").style.display = "none";
+                document.getElementById("mainContent").style.display = "none";
+                document.getElementById("errorMessage").style.display = "block";
+                document.getElementById("errorText").textContent = message;
+            }
+
+            // Load vocabulary data
+            try {
+                const res = await fetch('/api/data/getvoclist', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username: userName, password, route, lesson }),
+                });
+
+                if (!res.ok) {
+                throw new Error(\`Server responded with status: \${res.status}\`);
+                }
+
+                const data = await res.json();
+                
+                if (data.state === "error") {
+                showError(data.message || "Error while loading list");
+                return;
+                }
+
+                if (!data.list || !Array.isArray(data.list)) {
+                showError("Unable to load list (invalid format)");
+                return;
+                }
+
+                // Load vocabulary into entries array
+                entries = data.list;
+                originalEntries = JSON.parse(JSON.stringify(entries)); // Deep copy for change tracking
+                renderList();
+
+                // Hide loading indicator and show content
+                document.getElementById("loadingIndicator").style.display = "none";
+                document.getElementById("mainContent").style.display = "block";
+
+            } catch (err) {
+                console.error("Error while loading list:", err);
+                showError(err.message || "Connection to server failed");
+            }
+            });
+        </script>
+        </body>
+        </html>
+    `)
+}
+
+const createTable = (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Create Table - Blearn</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+            darkMode: 'class'
+            }
+        </script>
+        </head>
+        <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+
+        ${notificationContainer}
+
+        ${header}
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">Create Table</h2>
+            
+            <!-- Tabellenname -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-6 border dark:border-gray-700 transition-all duration-300">
+            <input id="tableNameInput" type="text" placeholder="Name of the table" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+            </div>
+
+            <!-- Table Setup Controls -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-6 border dark:border-gray-700 transition-all duration-300">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Tablestructure</h3>
+            
+            <!-- Column Management -->
+            <div class="mb-4">
+                <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Manage Columns</h4>
+                <div class="flex gap-2 mb-2">
+                <input id="columnInput" type="text" placeholder="Column Name" class="flex-1 border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+                <button id="addColumnBtn" class="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 transition-all duration-300">Add Column</button>
+                </div>
+                <div id="columnsList" class="flex flex-wrap gap-2"></div>
+            </div>
+            
+            <!-- Row Management -->
+            <div class="mb-4">
+                <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Row Management</h4>
+                <div class="flex gap-2 mb-2">
+                <input id="rowInput" type="text" placeholder="Name of the row" class="flex-1 border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+                <button id="addRowBtn" class="px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300">Add row</button>
+                </div>
+                <div id="rowsList" class="flex flex-wrap gap-2"></div>
+            </div>
+            </div>
+
+            <!-- Dynamic Table -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-6 border dark:border-gray-700 transition-all duration-300">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Your table</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse" id="dynamicTable">
+                <thead>
+                    <tr>
+                    <th class="p-3 border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                </table>
+            </div>
+            <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                Add rows and columns to create the table. Click on the cells, to enter a value.
+            </div>
+            <button id="saveBtn" class="mt-6 px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300">Save table</button>
+            </div>
+        </main>
+
+        ${footer}
+
+        <!-- Script -->
+        <script>
+        ${notificationScript}
+            // Dark mode functionality
+            class ThemeManager {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                const savedTheme = this.getSavedTheme() || 'system';
+                this.applyTheme(savedTheme);
+            }
+
+            getSavedTheme() {
+                try {
+                return window.theme || 'system';
+                } catch (e) {
+                return 'system';
+                }
+            }
+
+            saveTheme(theme) {
+                try {
+                window.theme = theme;
+                } catch (e) {
+                // Silent fail if unable to save
+                }
+            }
+
+            applyTheme(theme) {
+                const html = document.documentElement;
+                
+                if (theme === 'system') {
+                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.classList.toggle('dark', systemDark);
+                } else if (theme === 'dark') {
+                html.classList.add('dark');
+                } else {
+                html.classList.remove('dark');
+                }
+                
+                this.saveTheme(theme);
+            }
+            }
+
+            document.addEventListener("DOMContentLoaded", async () => {
+            // Initialize theme manager
+            new ThemeManager();
+
+            const params = new URLSearchParams(window.location.search);
+            const route = params.get("route");
+
+            const columnInput = document.getElementById("columnInput");
+            const addColumnBtn = document.getElementById("addColumnBtn");
+            const rowInput = document.getElementById("rowInput");
+            const addRowBtn = document.getElementById("addRowBtn");
+            const saveBtn = document.getElementById("saveBtn");
+            const dynamicTable = document.getElementById("dynamicTable");
+            const columnsList = document.getElementById("columnsList");
+            const rowsList = document.getElementById("rowsList");
+
+            let columns = [];
+            let rows = [];
+            let tableData = []; // Changed from object to array
+
+            // Helper function to get array index from row and column indices
+            function getTableIndex(rowIndex, columnIndex) {
+                return rowIndex * columns.length + columnIndex;
+            }
+
+            // Helper function to get value from tableData array
+            function getTableValue(rowIndex, columnIndex) {
+                const index = getTableIndex(rowIndex, columnIndex);
+                return tableData[index] || '';
+            }
+
+            // Helper function to set value in tableData array
+            function setTableValue(rowIndex, columnIndex, value) {
+                const index = getTableIndex(rowIndex, columnIndex);
+                // Ensure array is large enough
+                while (tableData.length <= index) {
+                tableData.push('');
+                }
+                tableData[index] = value;
+            }
+
+            function updateColumnsList() {
+                columnsList.innerHTML = '';
+                columns.forEach((column, index) => {
+                const tag = document.createElement('span');
+                tag.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200';
+                tag.innerHTML = \`
+                    \${column}
+                    <button onclick="removeColumn(\${index})" class="ml-2 text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100">×</button>
+                \`;
+                columnsList.appendChild(tag);
+                });
+            }
+
+            function updateRowsList() {
+                rowsList.innerHTML = '';
+                rows.forEach((row, index) => {
+                const tag = document.createElement('span');
+                tag.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200';
+                tag.innerHTML = \`
+                    \${row}
+                    <button onclick="removeRow(\${index})" class="ml-2 text-green-600 dark:text-green-300 hover:text-green-800 dark:hover:text-green-100">×</button>
+                \`;
+                rowsList.appendChild(tag);
+                });
+            }
+
+            function renderTable() {
+                const thead = dynamicTable.querySelector('thead tr');
+                const tbody = dynamicTable.querySelector('tbody');
+                
+                // Clear existing content
+                thead.innerHTML = '<th class="p-3 border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300"></th>';
+                tbody.innerHTML = '';
+                
+                // Add column headers
+                columns.forEach(column => {
+                const th = document.createElement('th');
+                th.className = 'p-3 border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300';
+                th.textContent = column;
+                thead.appendChild(th);
+                });
+
+                // Add rows
+                rows.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                
+                // Row header
+                const th = document.createElement('th');
+                th.className = 'p-3 border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300';
+                th.textContent = row;
+                tr.appendChild(th);
+                
+                // Data cells
+                columns.forEach((column, columnIndex) => {
+                    const td = document.createElement('td');
+                    td.className = 'p-3 border dark:border-gray-600';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'w-full p-2 border-0 bg-transparent text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded';
+                    input.placeholder = 'Value...';
+                    
+                    input.value = getTableValue(rowIndex, columnIndex);
+                    
+                    input.addEventListener('input', (e) => {
+                    setTableValue(rowIndex, columnIndex, e.target.value);
+                    });
+                    
+                    td.appendChild(input);
+                    tr.appendChild(td);
+                });
+                
+                tbody.appendChild(tr);
+                });
+            }
+
+            // Add column
+            addColumnBtn.addEventListener("click", () => {
+                const column = columnInput.value.trim();
+                if (column && !columns.includes(column)) {
+                columns.push(column);
+                columnInput.value = "";
+                updateColumnsList();
+                renderTable();
+                }
+            });
+
+            // Add row
+            addRowBtn.addEventListener("click", () => {
+                const row = rowInput.value.trim();
+                if (row && !rows.includes(row)) {
+                rows.push(row);
+                rowInput.value = "";
+                updateRowsList();
+                renderTable();
+                }
+            });
+
+            // Allow Enter key
+            columnInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") addColumnBtn.click();
+            });
+
+            rowInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") addRowBtn.click();
+            });
+
+            // Global functions for removing columns and rows
+            window.removeColumn = function(columnIndex) {
+                // Create new tableData array without the removed column
+                const newTableData = [];
+                for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+                for (let colIndex = 0; colIndex < columns.length; colIndex++) {
+                    if (colIndex !== columnIndex) {
+                    const oldIndex = getTableIndex(rowIndex, colIndex);
+                    newTableData.push(tableData[oldIndex] || '');
+                    }
+                }
+                }
+                
+                columns.splice(columnIndex, 1);
+                tableData = newTableData;
+                
+                updateColumnsList();
+                renderTable();
+            };
+
+            window.removeRow = function(rowIndex) {
+                // Create new tableData array without the removed row
+                const newTableData = [];
+                for (let rIndex = 0; rIndex < rows.length; rIndex++) {
+                if (rIndex !== rowIndex) {
+                    for (let colIndex = 0; colIndex < columns.length; colIndex++) {
+                    const oldIndex = getTableIndex(rIndex, colIndex);
+                    newTableData.push(tableData[oldIndex] || '');
+                    }
+                }
+                }
+                
+                rows.splice(rowIndex, 1);
+                tableData = newTableData;
+                
+                updateRowsList();
+                renderTable();
+            };
+
+            saveBtn.addEventListener("click", async () => {
+                
+                const userName = localStorage.getItem("username");
+                const password = localStorage.getItem("password");
+                
+                const tableNameInput = document.getElementById("tableNameInput");
+                const tableName = tableNameInput.value.trim();
+
+                if (!tableName) {
+                showNotification('Please enter a name for the table', 'error')
+                
+                return;
+                }
+
+                if (columns.length === 0 || rows.length === 0) {
+                showNotification('Please add atleast one row and one column', 'error')
+                return;
+                }
+
+                // Format data for saving - tableData is now an array of strings
+                const saveData = {
+                columns: columns,
+                rows: rows,
+                tableData: tableData // This is now an array of strings
+                };
+
+                console.log("Saving table data:", saveData);
+
+                try {
+                const res = await fetch("/api/data/savetable", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                    username: userName, 
+                    password, 
+                    table: saveData, 
+                    route, 
+                    name: tableName 
+                    })
+                });
+
+                const data = await res.json();
+                if (data.state === "success") {
+                    showNotification('Successfully saved!', 'success')
+                    window.location.href = \`/learn?route=\${route}\`;
+                } else {
+                    showNotification(data.message || 'Error while saving', 'error')
+                }
+                } catch (err) {
+                console.error("Error while Saving:", err);
+                showNotification('Error while connecting to server', 'error')
+                }
+            });
+
+            // Simple authentication check (adapted for artifact environment)
+            const userName = window.userName || '';
+            const password = window.password || '';
+            
+            if (!userName || !password) {
+                console.log("Authentication would be checked here");
+            }
+
+            try {
+                console.log("Authentication check would happen here");
+            } catch (err) {
+                console.error("Fehler beim Prüfen der Daten:", err);
+            }
+            });
+        </script>
+        </body>
+        </html>
+    `)
+}
+
+const table = (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tabellenquiz</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        ${notificationContainer}
+        <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center py-8">
+        <div class="w-full max-w-6xl px-4">
+            <!-- Header -->
+            <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold mb-2" id="lessonTitle">Table</h1>
+            <a href="/learn" class="text-blue-400 hover:underline">Back to your files</a>
+            </header>
+
+            <!-- Quiz Table -->
+            <div class="overflow-x-auto mb-8">
+            <table class="w-full rounded-lg overflow-hidden">
+                <thead class="bg-gray-700" id="tableHeader">
+                <!-- Table headers will be inserted here by JavaScript -->
+                </thead>
+                <tbody id="tableBody" class="bg-gray-800 divide-y divide-gray-700">
+                <!-- Table rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+            </div>
+
+            <!-- Check Answers Button -->
+            <div class="text-center">
+            <button onclick="checkAnswers()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
+                Check answers
+            </button>
+            </div>
+        </div>
+
+        <script>
+            ${notificationScript}
+            // Get route and lesson from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const route = urlParams.get('route') || '/';
+            const lesson = urlParams.get('lesson');
+            
+            // Correct answers object
+            let correctAnswers = {};
+            let tableStructure = {};
+
+            document.addEventListener('DOMContentLoaded', async () => {
+            // Set lesson title
+            
+            const userName = localStorage.getItem("username");
+            const password = localStorage.getItem("password");
+            
+            if (!userName || !password) {
+                window.location.href = "/login";
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/auth/checkData", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userName, password })
+                });
+                
+                const data = await res.json();
+                
+                if (data.state === "error") {
+                localStorage.removeItem("username");
+                localStorage.removeItem("password");
+                window.location.href = "/login";
+                } else if (data.state === "success" && data.sessionExpired === "true") {
+                window.location.href = "/ad";
+                } else {
+                console.log("Successful login");
+                }
+            } catch (err) {
+                console.error("Fehler beim Prüfen der Daten:", err);
+                window.location.href = "/login";
+            }
+            
+            if (lesson) {
+                document.getElementById('lessonTitle').textContent = lesson;
+            }
+
+            // Get table data from server
+            try {
+                const userName = localStorage.getItem('username');
+                const password = localStorage.getItem('password');
+
+                if (!userName || !password) {
+                window.location.href = '/login';
+                return;
+                }
+
+                const res = await fetch("/api/data/gettable", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username: userName, password, route, lesson })
+                });
+
+                if (!res.ok) {
+                throw new Error('Server responded with error');
+                }
+
+                const data = await res.json();
+                
+                if (!data || !data.table) {
+                throw new Error('Invalid data format received');
+                }
+
+                const table = data.table;
+                tableStructure = table;
+
+                // Create table structure
+                buildTable(table);
+
+            } catch (error) {
+                showNotification(error, 'error')
+                console.error('Error loading table:', error);
+                document.getElementById('tableBody').innerHTML = \`
+                <tr>
+                    <td colspan="100%" class="py-4 text-center text-red-400">
+                    Error while loading table. Try again later.
+                    </td>
+                </tr>
+                \`;
+            }
+            });
+
+            function buildTable(table) {
+            const { columns, rows, tableData } = table;
+            const tableHeader = document.getElementById('tableHeader');
+            const tableBody = document.getElementById('tableBody');
+            
+            // Clear existing content
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+
+            // Create header row
+            const headerRow = document.createElement('tr');
+            
+            // Empty cell for row headers
+            const emptyHeaderCell = document.createElement('th');
+            emptyHeaderCell.className = 'py-3 px-4 text-left bg-gray-600';
+            headerRow.appendChild(emptyHeaderCell);
+            
+            // Column headers
+            columns.forEach(column => {
+                const th = document.createElement('th');
+                th.className = 'py-3 px-4 text-left';
+                th.textContent = column;
+                headerRow.appendChild(th);
+            });
+            
+            tableHeader.appendChild(headerRow);
+
+            // Create data rows
+            rows.forEach((rowHeader, rowIndex) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-700';
+                
+                // Row header
+                const rowHeaderCell = document.createElement('td');
+                rowHeaderCell.className = 'py-3 px-4 font-semibold bg-gray-700';
+                rowHeaderCell.textContent = rowHeader;
+                row.appendChild(rowHeaderCell);
+                
+                // Data cells
+                columns.forEach((column, colIndex) => {
+                const cell = document.createElement('td');
+                cell.className = 'py-3 px-4';
+                
+                const dataIndex = rowIndex * columns.length + colIndex;
+                const cellId = \`cell-\${rowIndex}-\${colIndex}\`;
+                const correctValue = tableData[dataIndex] || '';
+                
+                // Store correct answer
+                correctAnswers[cellId] = correctValue.toLowerCase();
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = cellId;
+                input.className = 'w-full bg-gray-600 border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500';
+                input.placeholder = 'Enter answer';
+                
+                const solutionSpan = document.createElement('span');
+                solutionSpan.id = \`\${cellId}-solution\`;
+                solutionSpan.className = 'hidden text-red-400 text-sm mt-1 block';
+                
+                cell.appendChild(input);
+                cell.appendChild(solutionSpan);
+                row.appendChild(cell);
+                });
+                
+                tableBody.appendChild(row);
+            });
+
+            // Table is now ready with correct answers in their proper positions
+            }
+
+
+
+            function checkAnswers() {
+            for (const id in correctAnswers) {
+                const inputField = document.getElementById(id);
+                const solutionSpan = document.getElementById(\`\${id}-solution\`);
+                
+                if (!inputField) continue;
+                
+                const userAnswer = inputField.value.trim().toLowerCase();
+                const correctAnswer = correctAnswers[id].toLowerCase();
+
+                // Remove previous styling
+                inputField.classList.remove('bg-green-700', 'bg-red-700', 'border-green-500', 'border-red-500');
+                
+                if (userAnswer === correctAnswer) {
+                // Correct answer
+                inputField.classList.add('bg-green-700', 'border-green-500');
+                if (solutionSpan) solutionSpan.classList.add('hidden');
+                } else {
+                // Incorrect answer
+                inputField.classList.add('bg-red-700', 'border-red-500');
+                if (solutionSpan) {
+                    solutionSpan.textContent = \`Right answer: \${correctAnswers[id]}\`;
+                    solutionSpan.classList.remove('hidden');
+                }
+                }
+            }
+            }
+        </script>
+        </body>
+        </html>
+    `)
+}
+
+const editTable = (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Edit Table - Blearn</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+            darkMode: 'class'
+            }
+        </script>
+        </head>
+        <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+
+        ${notificationContainer}
+
+        ${header}
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="flex justify-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 dark:border-blue-400 border-opacity-50"></div>
+            </div>
+
+            <div id="mainContent" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Edit Table</h2>
+                <span id="tablePath" class="text-blue-600 dark:text-blue-400 text-sm"></span>
+            </div>
+            
+            <!-- Tabellenname -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 transition-colors duration-300">
+                <label for="tableNameInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name of the table</label>
+                <input id="tableNameInput" type="text" placeholder="Name of the table" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400" disabled />
+            </div>
+
+            <!-- Table Setup Controls -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 transition-colors duration-300">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Table structure</h3>
+            
+            <!-- Column Management -->
+            <div class="mb-4">
+                <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Manage Columns</h4>
+                <div class="flex gap-2 mb-2">
+                <input id="columnInput" type="text" placeholder="Column Name" class="flex-1 border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent" />
+                <button id="addColumnBtn" class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition">Add Column</button>
+                </div>
+                <div id="columnsList" class="flex flex-wrap gap-2"></div>
+            </div>
+            
+            <!-- Row Management -->
+            <div class="mb-4">
+                <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Row Management</h4>
+                <div class="flex gap-2 mb-2">
+                <input id="rowInput" type="text" placeholder="Name of the row" class="flex-1 border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent" />
+                <button id="addRowBtn" class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-600 transition">Add row</button>
+                </div>
+                <div id="rowsList" class="flex flex-wrap gap-2"></div>
+            </div>
+            </div>
+
+            <!-- Dynamic Table -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 transition-colors duration-300">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Your table</h3>
+            <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">You can edit the table data. Click on the cells to enter a value.</div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse" id="dynamicTable">
+                <thead>
+                    <tr>
+                    <th class="p-3 border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                </table>
+            </div>
+            <div class="mt-6 flex justify-between">
+                <button id="cancelBtn" class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition">Cancel</button>
+                <button id="saveBtn" class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-600 transition">Save changes</button>
+            </div>
+            </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-400 text-red-700 dark:text-red-300 p-4 rounded shadow-md">
+            <p class="font-bold">Error</p>
+            <p id="errorText"></p>
+            <button onclick="window.location.reload()" class="mt-2 px-4 py-1 bg-red-600 dark:bg-red-500 text-white rounded-md hover:bg-red-700 dark:hover:bg-red-600 transition">
+                Reload
+            </button>
+            </div>
+        </main>
+
+        ${footer}
+
+        <!-- Script -->
+        <script>
+        ${notificationScript}
+            // Dark mode functionality
+            class ThemeManager {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                const savedTheme = this.getSavedTheme() || 'system';
+                this.applyTheme(savedTheme);
+            }
+
+            getSavedTheme() {
+                try {
+                return window.theme || 'system';
+                } catch (e) {
+                return 'system';
+                }
+            }
+
+            saveTheme(theme) {
+                try {
+                window.theme = theme;
+                } catch (e) {
+                // Silent fail if unable to save
+                }
+            }
+
+            applyTheme(theme) {
+                const html = document.documentElement;
+                
+                if (theme === 'system') {
+                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.classList.toggle('dark', systemDark);
+                } else if (theme === 'dark') {
+                html.classList.add('dark');
+                } else {
+                html.classList.remove('dark');
+                }
+                
+                this.saveTheme(theme);
+            }
+            }
+
+            document.addEventListener("DOMContentLoaded", async () => {
+            // Initialize theme manager
+            new ThemeManager();
+            
+            const userName = localStorage.getItem("username")
+            const password = localStorage.getItem("password")
+            
+            // Query parameters
+            const params = new URLSearchParams(window.location.search);
+            const route = params.get("route") || "/";
+            const tableName = params.get("lesson");
+            
+            if (!tableName) {
+                showError("No table specified!");
+                return;
+            }
+            
+            // Update breadcrumb/path info
+            document.getElementById("tablePath").textContent = \`\${route}/\${tableName}\`;
+            document.getElementById("tableNameInput").value = tableName;
+
+            // DOM Elements
+            const columnInput = document.getElementById("columnInput");
+            const addColumnBtn = document.getElementById("addColumnBtn");
+            const rowInput = document.getElementById("rowInput");
+            const addRowBtn = document.getElementById("addRowBtn");
+            const saveBtn = document.getElementById("saveBtn");
+            const dynamicTable = document.getElementById("dynamicTable");
+            const columnsList = document.getElementById("columnsList");
+            const rowsList = document.getElementById("rowsList");
+            const cancelBtn = document.getElementById("cancelBtn");
+
+            let columns = [];
+            let rows = [];
+            let tableData = [];
+            let originalData = null; // For change tracking
+
+            // Helper function to get array index from row and column indices
+            function getTableIndex(rowIndex, columnIndex) {
+                return rowIndex * columns.length + columnIndex;
+            }
+
+            // Helper function to get value from tableData array
+            function getTableValue(rowIndex, columnIndex) {
+                const index = getTableIndex(rowIndex, columnIndex);
+                return tableData[index] || '';
+            }
+
+            // Helper function to set value in tableData array
+            function setTableValue(rowIndex, columnIndex, value) {
+                const index = getTableIndex(rowIndex, columnIndex);
+                // Ensure array is large enough
+                while (tableData.length <= index) {
+                tableData.push('');
+                }
+                tableData[index] = value;
+            }
+
+            function updateColumnsList() {
+                columnsList.innerHTML = '';
+                columns.forEach((column, index) => {
+                const tag = document.createElement('span');
+                tag.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200';
+                tag.innerHTML = \`
+                    \${escapeHTML(column)}
+                    <button onclick="removeColumn(\${index})" class="ml-2 text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100">×</button>
+                \`;
+                columnsList.appendChild(tag);
+                });
+            }
+
+            function updateRowsList() {
+                rowsList.innerHTML = '';
+                rows.forEach((row, index) => {
+                const tag = document.createElement('span');
+                tag.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200';
+                tag.innerHTML = \`
+                    \${escapeHTML(row)}
+                    <button onclick="removeRow(\${index})" class="ml-2 text-green-600 dark:text-green-300 hover:text-green-800 dark:hover:text-green-100">×</button>
+                \`;
+                rowsList.appendChild(tag);
+                });
+            }
+
+            function renderTable() {
+                const thead = dynamicTable.querySelector('thead tr');
+                const tbody = dynamicTable.querySelector('tbody');
+                
+                // Clear existing content
+                thead.innerHTML = '<th class="p-3 border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300"></th>';
+                tbody.innerHTML = '';
+                
+                // Add column headers
+                columns.forEach(column => {
+                const th = document.createElement('th');
+                th.className = 'p-3 border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300';
+                th.textContent = column;
+                thead.appendChild(th);
+                });
+
+                // Add rows
+                rows.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200';
+                
+                // Row header
+                const th = document.createElement('th');
+                th.className = 'p-3 border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300';
+                th.textContent = row;
+                tr.appendChild(th);
+                
+                // Data cells
+                columns.forEach((column, columnIndex) => {
+                    const td = document.createElement('td');
+                    td.className = 'p-3 border dark:border-gray-600';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'w-full p-2 border-0 bg-transparent text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent rounded';
+                    input.placeholder = 'Value...';
+                    
+                    input.value = getTableValue(rowIndex, columnIndex);
+                    
+                    input.addEventListener('input', (e) => {
+                    setTableValue(rowIndex, columnIndex, e.target.value);
+                    });
+                    
+                    td.appendChild(input);
+                    tr.appendChild(td);
+                });
+                
+                tbody.appendChild(tr);
+                });
+            }
+
+            // Escape HTML to prevent XSS
+            function escapeHTML(str) {
+                return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+            }
+
+            // Add column
+            addColumnBtn.addEventListener("click", () => {
+                const column = columnInput.value.trim();
+                if (column && !columns.includes(column)) {
+                // When adding a new column, we need to expand the tableData array
+                const newTableData = [];
+                for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+                    for (let colIndex = 0; colIndex < columns.length; colIndex++) {
+                    const oldIndex = getTableIndex(rowIndex, colIndex);
+                    newTableData.push(tableData[oldIndex] || '');
+                    }
+                    // Add empty value for the new column
+                    newTableData.push('');
+                }
+                
+                columns.push(column);
+                tableData = newTableData;
+                columnInput.value = "";
+                updateColumnsList();
+                renderTable();
+                columnInput.focus();
+                }
+            });
+
+            // Add row
+            addRowBtn.addEventListener("click", () => {
+                const row = rowInput.value.trim();
+                if (row && !rows.includes(row)) {
+                // When adding a new row, add empty values for all columns
+                for (let i = 0; i < columns.length; i++) {
+                    tableData.push('');
+                }
+                
+                rows.push(row);
+                rowInput.value = "";
+                updateRowsList();
+                renderTable();
+                rowInput.focus();
+                }
+            });
+
+            // Allow Enter key
+            columnInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") addColumnBtn.click();
+            });
+
+            rowInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") addRowBtn.click();
+            });
+
+            // Global functions for removing columns and rows
+            window.removeColumn = function(columnIndex) {
+                if (!confirm("Are you sure you want to delete this column? All data in this column will be lost.")) {
+                return;
+                }
+                
+                // Create new tableData array without the removed column
+                const newTableData = [];
+                for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+                for (let colIndex = 0; colIndex < columns.length; colIndex++) {
+                    if (colIndex !== columnIndex) {
+                    const oldIndex = getTableIndex(rowIndex, colIndex);
+                    newTableData.push(tableData[oldIndex] || '');
+                    }
+                }
+                }
+                
+                columns.splice(columnIndex, 1);
+                tableData = newTableData;
+                
+                updateColumnsList();
+                renderTable();
+            };
+
+            window.removeRow = function(rowIndex) {
+                if (!confirm("Are you sure you want to delete this row? All data in this row will be lost.")) {
+                return;
+                }
+                
+                // Create new tableData array without the removed row
+                const newTableData = [];
+                for (let rIndex = 0; rIndex < rows.length; rIndex++) {
+                if (rIndex !== rowIndex) {
+                    for (let colIndex = 0; colIndex < columns.length; colIndex++) {
+                    const oldIndex = getTableIndex(rIndex, colIndex);
+                    newTableData.push(tableData[oldIndex] || '');
+                    }
+                }
+                }
+                
+                rows.splice(rowIndex, 1);
+                tableData = newTableData;
+                
+                updateRowsList();
+                renderTable();
+            };
+
+            // Check if there are unsaved changes
+            function hasChanges() {
+                if (!originalData) return false;
+                
+                if (columns.length !== originalData.columns.length ||
+                    rows.length !== originalData.rows.length ||
+                    tableData.length !== originalData.tableData.length) {
+                    return true;
+                }
+                
+                for (let i = 0; i < columns.length; i++) {
+                if (columns[i] !== originalData.columns[i]) return true;
+                }
+                
+                for (let i = 0; i < rows.length; i++) {
+                if (rows[i] !== originalData.rows[i]) return true;
+                }
+                
+                for (let i = 0; i < tableData.length; i++) {
+                if (tableData[i] !== originalData.tableData[i]) return true;
+                }
+                
+                return false;
+            }
+
+            // Cancel button
+            cancelBtn.addEventListener("click", () => {
+                if (hasChanges()) {
+                if (confirm("Are you sure you want to lose your changes?")) {
+                    goBack();
+                }
+                } else {
+                goBack();
+                }
+            });
+
+            function goBack() {
+                window.location.href = \`/learn?route=\${encodeURIComponent(route)}\`;
+            }
+
+            // Save changes
+            saveBtn.addEventListener("click", async () => {
+                if (columns.length === 0 || rows.length === 0) {
+                showNotification('Please add atleast one row and one column', 'error')
+                return;
+                }
+
+                // Format data for saving
+                const saveData = {
+                columns: columns,
+                rows: rows,
+                tableData: tableData
+                };
+
+                console.log("Saving table data:", saveData);
+
+                try {
+                saveBtn.disabled = true;
+                saveBtn.textContent = "Saving...";
+                
+                const res = await fetch('/api/data/edittable', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                    username: userName, 
+                    password, 
+                    table: saveData, 
+                    route, 
+                    lesson: tableName 
+                    }),
+                    signal: AbortSignal.timeout(10000) // 10 seconds timeout
+                });
+
+                const data = await res.json();
+                if (data.state === "success") {
+                    showNotification('Table successfully saved!', 'success')
+                    window.location.href = \`/learn?route=\${encodeURIComponent(route)}\`;
+                } else {
+                    showNotification(\`Error while saving: \${data.message || 'Unknown error'}\`, 'error')
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = "Save changes";
+                }
+                } catch (err) {
+                console.error("Saving failed:", err);
+                showNotification(\`Error while connecting to server: \${err.message || 'Network problem'}\`, 'error')
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Save changes";
+                }
+            });
+
+            // Show error message
+            function showError(message) {
+                document.getElementById("loadingIndicator").style.display = "none";
+                document.getElementById("mainContent").style.display = "none";
+                document.getElementById("errorMessage").style.display = "block";
+                document.getElementById("errorText").textContent = message;
+            }
+
+            // Load table data
+            try {
+                const res = await fetch('/api/data/gettable', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username: userName, password, route, lesson: tableName }),
+                });
+
+                if (!res.ok) {
+                throw new Error(\`Server responded with status: \${res.status}\`);
+                }
+
+                const data = await res.json();
+                
+                if (data.state === "error") {
+                showError(data.message || "Error while loading table");
+                return;
+                }
+
+                if (!data.table || !data.table.columns || !data.table.rows || !Array.isArray(data.table.tableData)) {
+                showError("Unable to load table (invalid format)");
+                return;
+                }
+
+                // Load table data
+                columns = [...data.table.columns];
+                rows = [...data.table.rows];
+                tableData = [...data.table.tableData];
+                
+                // Store original data for change tracking
+                originalData = {
+                columns: [...columns],
+                rows: [...rows],
+                tableData: [...tableData]
+                };
+                
+                updateColumnsList();
+                updateRowsList();
+                renderTable();
+
+                // Hide loading indicator and show content
+                document.getElementById("loadingIndicator").style.display = "none";
+                document.getElementById("mainContent").style.display = "block";
+
+            } catch (err) {
+                console.error("Error while loading table:", err);
+                showError(err.message || "Connection to server failed");
+            }
+            });
+        </script>
+        </body>
+        </html>
+    `)
+}
+
+const importlist = (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Import Vocablist - Blearn</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+            darkMode: 'class'
+            }
+        </script>
+        </head>
+        <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+
+        ${notificationContainer}
+
+        ${header}
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">📥 Import Vocablist</h2>
+            
+            <!-- Import Formular -->
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md dark:shadow-gray-900/20 max-w-2xl mx-auto border dark:border-gray-700 transition-all duration-300">
+            
+            <!-- Name Feld -->
+            <div class="mb-6">
+                <label for="listNameInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">
+                Name of vocablist
+                </label>
+                <input 
+                id="listNameInput" 
+                type="text" 
+                placeholder="Name of the imported list" 
+                class="w-full border border-gray-300 dark:border-gray-600 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:text-gray-500 dark:disabled:text-gray-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" 
+                disabled
+                />
+                
+                <!-- Keep Name Checkbox -->
+                <div class="mt-3 flex items-center">
+                <input 
+                    id="keepNameCheckbox" 
+                    type="checkbox" 
+                    checked 
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors duration-300"
+                />
+                <label for="keepNameCheckbox" class="ml-2 text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                    Keep name
+                </label>
+                </div>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                If checked the original name of the list is being used
+                </p>
+            </div>
+
+            <!-- ID Feld -->
+            <div class="mb-8">
+                <label for="idInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">
+                List-ID
+                </label>
+                <input 
+                id="idInput" 
+                type="text" 
+                placeholder="Enter the ID of the list" 
+                class="w-full border border-gray-300 dark:border-gray-600 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300"
+                required
+                />
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                The ID of the list, you want to import
+                </p>
+            </div>
+
+            <!-- Import Button -->
+            <div class="flex justify-between items-center">
+                <button 
+                onclick="goBack()" 
+                class="px-6 py-3 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors duration-300"
+                >
+                ← Back
+                </button>
+                
+                <button 
+                id="importBtn" 
+                class="px-8 py-3 bg-green-600 dark:bg-green-700 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 transform hover:scale-105 font-medium shadow-md"
+                >
+                📥 Import List
+                </button>
+            </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mt-6 max-w-2xl mx-auto border dark:border-blue-800/30 transition-all duration-300">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-blue-400 dark:text-blue-300 mt-0.5 transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+                </div>
+                <div class="ml-3">
+                <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200 transition-colors duration-300">
+                    Information to import
+                </h3>
+                <div class="mt-1 text-sm text-blue-700 dark:text-blue-300 transition-colors duration-300">
+                    <p>Make sure that you are using the right ID. The list will be saved in your current directory.</p>
+                </div>
+                </div>
+            </div>
+            </div>
+        </main>
+
+        ${footer}
+
+        <!-- Script -->
+        <script>
+        ${notificationScript}
+            // Dark mode functionality with localStorage
+            class ThemeManager {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                // Get theme from localStorage or default to 'system'
+                const savedTheme = localStorage.getItem('theme') || 'system';
+                this.applyTheme(savedTheme);
+            }
+
+            applyTheme(theme) {
+                const html = document.documentElement;
+                
+                if (theme === 'system') {
+                // Use system preference
+                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.classList.toggle('dark', systemDark);
+                } else if (theme === 'dark') {
+                html.classList.add('dark');
+                } else {
+                html.classList.remove('dark');
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('theme', theme);
+            }
+            }
+
+            document.addEventListener("DOMContentLoaded", async () => {
+            // Initialize theme manager
+            new ThemeManager();
+
+            const params = new URLSearchParams(window.location.search);
+            const route = params.get("route");
+
+            const listNameInput = document.getElementById("listNameInput");
+            const keepNameCheckbox = document.getElementById("keepNameCheckbox");
+            const idInput = document.getElementById("idInput");
+            const importBtn = document.getElementById("importBtn");
+
+            // Checkbox Event Listener
+            keepNameCheckbox.addEventListener("change", () => {
+                if (keepNameCheckbox.checked) {
+                listNameInput.disabled = true;
+                listNameInput.classList.add("disabled:bg-gray-100", "dark:disabled:bg-gray-700", "disabled:text-gray-500", "dark:disabled:text-gray-400");
+                } else {
+                listNameInput.disabled = false;
+                listNameInput.classList.remove("disabled:bg-gray-100", "dark:disabled:bg-gray-700", "disabled:text-gray-500", "dark:disabled:text-gray-400");
+                listNameInput.focus();
+                }
+            });
+
+            // Import Button Event Listener
+            importBtn.addEventListener("click", async () => {
+                const id = idInput.value.trim();
+                
+                if (!id) {
+                showNotification('Please enter a List-ID', 'error')
+                idInput.focus();
+                return;
+                }
+
+                const userName = localStorage.getItem("username");
+                const password = localStorage.getItem("password");
+                
+                if (!userName || !password) {
+                window.location.href = "/login";
+                return;
+                }
+
+                // Button während des Imports deaktivieren
+                importBtn.disabled = true;
+                importBtn.innerHTML = "⏳ Importing...";
+                importBtn.classList.add("opacity-75", "cursor-not-allowed");
+
+                try {
+                const requestData = {
+                    username: userName,
+                    password,
+                    route,
+                    oldId: id,
+                    keepname: keepNameCheckbox.checked
+                };
+
+                // Wenn keepName false ist, dann auch den Namen mitschicken
+                if (!keepNameCheckbox.checked) {
+                    const customName = listNameInput.value.trim();
+                    if (!customName) {
+                    showNotification('Please enter a name', 'error')
+                    importBtn.disabled = false;
+                    importBtn.innerHTML = "📥 Import List";
+                    importBtn.classList.remove("opacity-75", "cursor-not-allowed");
+                    listNameInput.focus();
+                    return;
+                    }
+                    requestData.name = customName;
+                }
+
+                const res = await fetch("/api/data/importlist", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await res.json();
+                
+                if (data.state === "success") {
+                    showNotification('Import done successfully!', 'success')
+                    window.location.href = \`/learn?route=\${encodeURIComponent(route)}\`;
+                } else {
+                    showNotification(\`Error while importing: \${data.message || 'Unknown error'}\`, 'error')
+                }
+                } catch (err) {
+                console.error("Import failed:", err);
+                showNotification(\`Error while connecting to server: \${err.message}\`, 'error')
+                
+                } finally {
+                // Button wieder aktivieren
+                importBtn.disabled = false;
+                importBtn.innerHTML = "📥 Import List";
+                importBtn.classList.remove("opacity-75", "cursor-not-allowed");
+                }
+            });
+
+            // Enter-Taste für ID-Input
+            idInput.addEventListener("keyup", (event) => {
+                if (event.key === "Enter") {
+                importBtn.click();
+                }
+            });
+
+            // Enter-Taste für Name-Input (falls aktiviert)
+            listNameInput.addEventListener("keyup", (event) => {
+                if (event.key === "Enter" && !listNameInput.disabled) {
+                importBtn.click();
+                }
+            });
+
+            // Authentifizierung prüfen
+            const userName = localStorage.getItem("username");
+            const password = localStorage.getItem("password");
+
+            if (!userName || !password) {
+                window.location.href = "/login";
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/auth/checkData", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userName, password })
+                });
+
+                const data = await res.json();
+                if (data.state === "error") {
+                localStorage.clear();
+                window.location.href = "/login";
+                } else if (data.state === "success" && data.sessionExpired === "true") {
+                window.location.href = "/ad";
+                }
+            } catch (err) {
+                console.error("Authentifizierung fehlgeschlagen:", err);
+                // Bei Netzwerkfehlern trotzdem weitermachen
+            }
+            });
+
+            // Zurück-Funktion
+            function goBack() {
+            const params = new URLSearchParams(window.location.search);
+            const route = params.get("route");
+            window.location.href = \`/learn?route=\${encodeURIComponent(route)}\`;
+            }
+        </script>
+        </body>
+        </html>
+    `)
+}
+
+const ad = (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <title>Blearn - Ads</title>
+        <style>
+            html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            }
+
+            iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            }
+        </style>
+        </head>
+        <body>
+        <iframe id="mainFrame" src=""></iframe>
+
+        <script>
+            const userName = localStorage.getItem('username');
+            if (userName) {
+            document.getElementById('mainFrame').src = \`/api/ads/ad/\${encodeURIComponent(userName)}\`;
+            } else {
+            // Optional: Wenn kein userName vorhanden ist, zeige einen Platzhalter oder eine Meldung
+            document.body.innerHTML = "<h1 style='text-align:center;margin-top:20%;font-family:sans-serif;'>No username found.</h1>";
+            }
+        </script>
+        </body>
+        </html>
+    `)
+}
+
+module.exports = { landing, register, verify, login, dashboard, logout, settings, forgotpassword, learn, createlist, list, editlist, createTable, table, editTable, importlist, ad }

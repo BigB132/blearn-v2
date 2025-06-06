@@ -1,10 +1,12 @@
+const Data = require('../models/data')
+
 // Function to generate unique ID with collision checking
 async function generateUniqueId(maxRetries = 100) {
     let attempts = 0;
     const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
     while (attempts < maxRetries) {
-        let newId = "0000";
+        let newId = "";
 
         for (let i = 0; i < 16; i++) {
             newId += chars.charAt(Math.floor(Math.random() * chars.length));

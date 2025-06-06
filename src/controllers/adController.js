@@ -20,11 +20,11 @@ const ad = async (req, res) => {
   res.send(
     `
     <!DOCTYPE html>
-    <html lang="de">
+    <html lang="en">
     <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Werbung – Blearn</title>
+    <title>Ad – Blearn</title>
     <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
@@ -33,7 +33,7 @@ const ad = async (req, res) => {
     <!-- Header -->
     <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center transition-colors duration-300">
         <h1 class="text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</h1>
-        <button href="https://blearn.netlify.app/logout" class="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-md hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 transition-all">
+        <button href="/logout" class="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-md hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 transition-all">
         Logout
         </button>
     </header>
@@ -41,7 +41,7 @@ const ad = async (req, res) => {
     <!-- Main Content -->
     <main class="flex-1 p-6 flex items-center justify-center">
         <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md dark:shadow-gray-900/20 border dark:border-gray-700 transition-all duration-300 text-center max-w-md w-full">
-        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">Werbung</h2>
+        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">Advertisment</h2>
         
         <div class="mb-8">
             <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-full mx-auto mb-4 flex items-center justify-center">
@@ -50,23 +50,23 @@ const ad = async (req, res) => {
             </svg>
             </div>
             <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 transition-colors duration-300">
-            Jetzt Werbung schauen und Blearn für heute freischalten!
+            Watch an ad now and unlock Blearn for the next 24 hours!
             </p>
         </div>
         
-        <a id="earnBtn" href="https://blearnend.onrender.com/earn/${username}/${token}" class="w-full px-6 py-3 bg-green-600 dark:bg-green-700 text-white text-lg font-semibold rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-            Los geht's!
+        <a id="earnBtn" href="/api/ads/earn/${username}/${token}" class="w-full px-6 py-3 bg-green-600 dark:bg-green-700 text-white text-lg font-semibold rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+            Let's go
         </a>
         
         <div class="mt-6 text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
-            <p>Klicken Sie auf "Los geht's!", um zu beginnen</p>
+            <p>Click on Let's go to start</p>
         </div>
         </div>
     </main>
 
     <!-- Footer -->
     <footer class="bg-white dark:bg-gray-800 text-center text-sm py-4 border-t dark:border-gray-700 mt-8 text-gray-500 dark:text-gray-400 transition-colors duration-300">
-        © 2025 Blearn. Alle Rechte vorbehalten.
+        © 2025 Blearn. All rights reserved.
     </footer>
     <script src="https://publisher.linkvertise.com/cdn/linkvertise.js"></script><script>linkvertise(1328821, {whitelist: [], blacklist: [""]});</script>
     </body>
@@ -91,7 +91,7 @@ const earn = async (req, res) => {
     <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Werbung – Blearn</title>
+    <title>Ad – Blearn</title>
     <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
@@ -100,7 +100,7 @@ const earn = async (req, res) => {
     <!-- Header -->
     <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center transition-colors duration-300">
         <h1 class="text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</h1>
-        <button href="https://blearn.netlify.app/logout" class="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-md hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 transition-all">
+        <button href="/logout" class="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-md hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 transition-all">
         Logout
         </button>
     </header>
@@ -108,7 +108,7 @@ const earn = async (req, res) => {
     <!-- Main Content -->
     <main class="flex-1 p-6 flex items-center justify-center">
         <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md dark:shadow-gray-900/20 border dark:border-gray-700 transition-all duration-300 text-center max-w-md w-full">
-        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">Werbung</h2>
+        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">Advertisment</h2>
         
         <div class="mb-8">
             <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-full mx-auto mb-4 flex items-center justify-center">
@@ -117,23 +117,23 @@ const earn = async (req, res) => {
             </svg>
             </div>
             <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 transition-colors duration-300">
-            Jetzt Blearn für heute freischalten!
+            Unlock Blearn now!
             </p>
         </div>
         
-        <a id="earnBtn" href="https://blearnend.onrender.com/claim/${username}/${token}" class="w-full px-6 py-3 bg-green-600 dark:bg-green-700 text-white text-lg font-semibold rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-            Jetzt Freischalten!
+        <a id="earnBtn" href="ads/claim/${username}/${token}" class="w-full px-6 py-3 bg-green-600 dark:bg-green-700 text-white text-lg font-semibold rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+            Unlock
         </a>
         
         <div class="mt-6 text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
-            <p>Klicken Sie auf "Jetzt Freischalten!", um Blearn freizuschalten.</p>
+            <p>Click on "unlock" to use Blearn for the next 24 hours.</p>
         </div>
         </div>
     </main>
 
     <!-- Footer -->
     <footer class="bg-white dark:bg-gray-800 text-center text-sm py-4 border-t dark:border-gray-700 mt-8 text-gray-500 dark:text-gray-400 transition-colors duration-300">
-        © 2025 Lernplattform. Alle Rechte vorbehalten.
+        © 2025 Blearn. All rights reserved.
     </footer>
     </body>
     </html>
@@ -154,9 +154,9 @@ const claim =  async (req, res) => {
 
   res.send(
     `
-      <script>window.location.href = "https://blearn.netlify.app/dashboard"</script>
+      <script>window.location.href = "/dashboard"</script>
     `
   )
 };
 
-module.exports = { ad, earn }
+module.exports = { ad, earn, claim }

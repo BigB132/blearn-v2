@@ -1,6 +1,7 @@
 const Data = require('../models/data');
 const UserData = require('../models/userData');
 const generateId = require('../utils/IDGenerator');
+const nameCheck = require('../utils/nameCheck');
 
 const getlist = async (req, res) => {
   const { username, password, route } = req.body;
@@ -55,6 +56,13 @@ const createFolder = async (req, res) => {
       return;
     }
   } catch {};
+
+  const nameTaken = await nameCheck(username, folderName, route)
+
+  if(nameTaken){
+    res.json({state: "error", message: "File name already taken!"})
+    return
+  }
   
   const newFolder = new Data({
     owner: username,
@@ -118,7 +126,7 @@ const del = async (req, res) => {
   try{
     const user = await UserData.findOne({userName: username, password});
     if(!user){
-      res.json({state: "error", message: "Nutzer existiert nicht!"})
+      res.json({state: "error", message: "User doesn't exist!"})
       return;
     }
   } catch {};
@@ -172,6 +180,13 @@ const savelist = async (req, res) => {
     return;
   }
 
+  const nameTaken = await nameCheck(username, name, route)
+
+  if(nameTaken){
+    res.json({state: "error", message: "File name already taken!"})
+    return
+  }
+
   const id = await generateId.generateUniqueId();
  
   const newData = new Data({
@@ -217,13 +232,20 @@ const savetable = async (req, res) => {
     return;
   }
 
+  const nameTaken = await nameCheck(username, name, route)
+
+  if(nameTaken){
+    res.json({state: "error", message: "File name already taken!"})
+    return
+  }
+
   const id = await generateId.generateUniqueId();
 
   const newData = new Data({
     owner: username,
     id,
     route,
-    type: 2,
+    type: 1,
     name,
     table: {columns: table.columns, rows: table.rows, tableData: table.tableData}
   })
@@ -235,7 +257,9 @@ const savetable = async (req, res) => {
 }
 
 const getvoclist =  async (req, res) => {
+  console.log("Appel")
   const { username, password, route, lesson } = req.body;
+
   
   if(!username){
     res.json({state: "error", message: "No value as username entered!"})
@@ -269,6 +293,11 @@ const getvoclist =  async (req, res) => {
 const gettable = async (req, res) => {
   const { username, password, route, lesson } = req.body;
 
+  console.log(username)
+  console.log(password)
+  console.log(route)
+  console.log(lesson)
+
   if(!username){
     res.json({state: "error", message: "No value as username entered!"})
     return;
@@ -296,6 +325,8 @@ const gettable = async (req, res) => {
 const editlist = async (req, res) => {
   const { username, password, route, lesson, list } = req.body;
 
+  console.log(list)
+
   if(!username){
     res.json({state: "error", message: "No value as username entered!"})
     return;
@@ -322,9 +353,44 @@ const editlist = async (req, res) => {
   })
   await data.save();
 
-  console.log(`${username} edited his list "${name}" in ${route}`);
+  console.log(`${username} edited his list "${lesson}" in ${route}`);
   res.send({state: "success"});
 };
+
+const edittable = async (req, res) => {
+  const { username, password, route, lesson, table } = req.body;
+
+  if(!username){
+    res.json({state: "error", message: "No value as username entered!"})
+    return;
+  }
+
+  if(!password){
+    res.json({state: "error", message: "No value as password entered!"})
+    return;
+  }
+
+  try{
+    const user = await UserData.findOne({userName: username, password});
+    if(!user){
+      res.json({state: "error", message: "User doesn't exist!"})
+      return;
+    }
+  } catch {};
+
+  console.log(username, route, lesson)
+  
+  const data = await Data.findOne({owner: username, route, name: lesson});
+  if(!data) return;
+  
+  data.table = table
+
+  await data.save();
+
+  console.log(`${username} edited his table "${lesson}" in ${route}`);
+  res.send({state: "success"});
+};
+
 
 const fetchid = async (req, res) => {
   const { username, password, route, lesson } = req.body;
@@ -386,6 +452,15 @@ const importlist = async (req, res) => {
     newName = data.name;
   }
 
+  const nameTaken = await nameCheck(username, newName, route)
+
+  if(nameTaken){
+    res.json({state: "error", message: "File name already taken!"})
+    return
+  }
+
+  const id = await generateId.generateUniqueId()
+
   const newData = new Data({
     owner: username,
     id,
@@ -404,4 +479,4 @@ const importlist = async (req, res) => {
 
 
 
-module.exports = { getlist, createFolder, rename, del, savelist, savetable, getvoclist, gettable, editlist, fetchid, importlist }
+module.exports = { getlist, createFolder, rename, del, savelist, savetable, getvoclist, gettable, editlist, edittable, fetchid, importlist }
