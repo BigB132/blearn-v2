@@ -7,7 +7,13 @@ const checkData = async (req, res) => {
   try {
     const user = await UserData.findOne({ userName, password });
     if (!user) {
-      return res.json({ state: "error", message: "Nutzer existiert nicht!" });
+      return res.json({ state: "error", message: "User doesn't exist!" });
+    }
+
+    if(user.mailtoken !== 0){
+      res.json({state: "success", verified: "false"})
+      console.log(`Checked data for ${userName}:${password} and told him that he isn't verified`)
+      return
     }
 
     if (user.unlockedTime > Date.now()) {
@@ -15,7 +21,7 @@ const checkData = async (req, res) => {
       console.log(`Checked data for ${userName}:${password}`);
     } else {
       res.json({ state: "success", sessionExpired: "true" });
-      console.log(`Checked data for ${userName}:${password} and told them it's expired.`);
+      console.log(`Checked data for ${userName}:${password} and told him that he is expired.`);
     }
   } catch (error) {
     console.error('Check data error:', error);
@@ -47,6 +53,23 @@ const signup = async (req, res) => {
     existingUser = await UserData.findOne({email});
     if (existingUser) {
       return res.json({ state: "error", message: "This email is already in use!" });
+    }
+
+    const TRUSTED_DOMAINS = new Set([
+        'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com',
+        'icloud.com', 'protonmail.com', 'zoho.com', 'aol.com',
+        'live.com', 'msn.com', 'yandex.com', 'mail.com'
+        // Add corporate domains you trust
+    ]);
+
+    function isTrustedEmail(email) {
+        const domain = email.split('@').pop().toLowerCase();
+        return TRUSTED_DOMAINS.has(domain);
+    }
+
+    if(!isTrustedEmail(email)){
+      res.json({state: "error", message: "Please use a trusted email provider, such as Gmail or Outlook"})
+      return
     }
 
     const mailtoken = Math.floor(100000 + Math.random() * 900000);

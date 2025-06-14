@@ -257,7 +257,6 @@ const savetable = async (req, res) => {
 }
 
 const getvoclist =  async (req, res) => {
-  console.log("Appel")
   const { username, password, route, lesson } = req.body;
 
   

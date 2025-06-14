@@ -14,11 +14,15 @@ const autologin = `
         const data = await res.json();
 
         if (data.state === "success") {
+          if(data.verified === "false"){
+            window.location.href = "/verify";
+            return
+          }
           window.location.href = "/dashboard";
           return;
         }
       } catch (err) {
-        console.warn("Autologin fehlgeschlagen:", err);
+        console.warn("Autologin failed:", err);
       }
     }
 });
@@ -39,11 +43,15 @@ const autologin2 = `
         const data = await res.json();
 
         if (data.state === "success") {
+          if(data.verified === "false"){
+            window.location.href = "/verify";
+            return
+          }
           window.location.href = "/dashboard";
           return;
         }
       } catch (err) {
-        console.warn("Autologin fehlgeschlagen:", err);
+        console.warn("Autologin failed:", err);
       }
     }
 `;
@@ -249,7 +257,7 @@ const landing = async (req, res) => {
         <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Welcome to Learnify</title>
+        <title>Welcome to Blearn</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -323,7 +331,7 @@ const register = (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Signup</title>
+            <title>Blearn - Signup</title>
             <script src="https://cdn.tailwindcss.com"></script>
             <script>
                 tailwind.config = {
@@ -371,6 +379,16 @@ const register = (req, res) => {
                         Sign Up
                     </button>
                 </form>
+
+                <br>
+
+                <a
+                    id="alreadyHaveAccount"
+                    href="/login"
+                    type="button"
+                    class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Already have an account?
+                </a>
                 
                 <div id="message" class="text-center text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300"></div>
             </div>
@@ -443,7 +461,7 @@ const register = (req, res) => {
                     // Update button
                     const submitBtn = form.querySelector('button[type="submit"]');
                     const originalText = submitBtn.textContent;
-                    submitBtn.textContent = 'Erstelle Account...';
+                    submitBtn.textContent = 'Creating account...';
                     submitBtn.disabled = true;
 
                     try {
@@ -460,7 +478,7 @@ const register = (req, res) => {
                         if(result.state === "error"){
                             showMessage(result.message);
                         } else {
-                            showMessage('Account erfolgreich erstellt!');
+                            showMessage('Account successfully created!');
 
                             localStorage.setItem('username', username.toLowerCase());
                             localStorage.setItem('email', email);
@@ -496,7 +514,7 @@ const verify = (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Email Verification</title>
+            <title>Blearn - Email Verification</title>
             <script src="https://cdn.tailwindcss.com"></script>
             <script>
                 tailwind.config = {
@@ -737,7 +755,7 @@ const login = (req, res) => {
         <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Login</title>
+        <title>Blearn - Login</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -776,6 +794,14 @@ const login = (req, res) => {
                 type="button"
                 class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                 Forgot password?
+            </a>
+            <br>
+            <a
+                id="dontHaveAcc"
+                href="/register"
+                type="button"
+                class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                Don't have an account?
             </a>
         </div>
 
@@ -883,7 +909,7 @@ const forgotpassword = (req, res) => {
         <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Login</title>
+        <title>Blearn - Reset Password</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -1000,7 +1026,7 @@ const dashboard = (req, res) => {
         <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Dashboard</title>
+        <title>Blearn - Dashboard</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -1031,14 +1057,12 @@ const dashboard = (req, res) => {
             class ThemeManager {
             constructor() {
                 this.init();
-                this.setupEventListeners();
             }
 
             init() {
                 // Get theme from localStorage or default to 'system'
                 const savedTheme = localStorage.getItem('theme') || 'system';
                 this.applyTheme(savedTheme);
-                this.updateActiveButton(savedTheme);
             }
 
             applyTheme(theme) {
@@ -1063,11 +1087,11 @@ const dashboard = (req, res) => {
             }
 
             document.addEventListener("DOMContentLoaded", async () => {
-            // Initialize theme manager
-            new ThemeManager();
-
-            const userName = localStorage.getItem("username");
-            const password = localStorage.getItem("password");
+                // Initialize theme manager
+                new ThemeManager();
+                
+                const userName = localStorage.getItem("username");
+                const password = localStorage.getItem("password");
             
             if (!userName || !password) {
                 window.location.href = "/login";
@@ -1084,26 +1108,22 @@ const dashboard = (req, res) => {
                 const data = await res.json();
                 
                 if (data.state === "error") {
-                localStorage.removeItem("userName");
+                localStorage.removeItem("username");
                 localStorage.removeItem("password");
                 window.location.href = "/login";
                 } else if (data.state === "success" && data.sessionExpired === "true") {
                 window.location.href = "/ad";
-                } else {
+                } else if (data.state === "success" && data.verified === "false"){
+                window.location.href = "/verify"}
+                else {
                 console.log("Successful login");
                 }
             } catch (err) {
-                console.error("Fehler beim Prüfen der Daten:", err);
+                console.error("Error while checking data:", err);
                 window.location.href = "/login";
             }
-
-            document.getElementById("logoutBtn").addEventListener("click", () => {
-                localStorage.removeItem("userName");
-                localStorage.removeItem("password");
-                window.location.href = "/login";
-            });
             
-            document.getElementById("header").innerHTML = "Willkommen zurück, " + userName + "!";
+            document.getElementById("header").innerHTML = "Welcome back, " + userName + "!";
             });
         </script>
         </body>
@@ -1128,7 +1148,7 @@ const settings = (req, res) => {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Settings</title>
+    <title>Blearn - Settings</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -1225,8 +1245,10 @@ ${header}
         let currentTheme = 'system';
         
         // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             loadSettings();
+
+            ${autologin2}
         });
         
         // Load saved settings
@@ -1341,7 +1363,7 @@ const learn = (req, res) => {
         <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Lernen</title>
+        <title>Blearn - Files</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -1574,7 +1596,9 @@ const learn = (req, res) => {
                 window.location.href = "/login";
             } else if (data.state === "success" && data.sessionExpired === "true") {
                 window.location.href = "/ad";
-            } else {
+            } else if (data.state === "success" && data.verified === "false"){
+                window.location.href = "/verify"}
+            else {
                 console.log("Successful login");
             }
             } catch (err) {
@@ -1647,7 +1671,6 @@ const learn = (req, res) => {
                     const item = document.createElement("li");
                     item.className = "bg-white dark:bg-gray-800 p-4 rounded-lg shadow hover:shadow-lg transition cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-700";
                 
-                    // Event-Handler mit Fehlerbehandlung
                     item.onclick = (e) => {
                     try {
                         if (lesson.type === 9) { // Wenn es ein Ordner ist
@@ -2080,7 +2103,7 @@ const createlist = (req, res) => {
         <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Create Vocablist – Blearn</title>
+        <title>Blearn - Create Vocablist</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -2177,7 +2200,6 @@ const createlist = (req, res) => {
             const addBtn = document.getElementById("addBtn");
             const saveBtn = document.getElementById("saveBtn");
             const vocabList = document.getElementById("vocabList");
-            const logoutBtn = document.getElementById("logoutBtn");
 
             let entries = [];
 
@@ -2258,7 +2280,7 @@ const createlist = (req, res) => {
             const password = localStorage.getItem("password");
             
 
-            if (!userName || !password) {
+            if (!verifyUserName || !password) {
                 window.location.href = "/login";
                 return;
             }
@@ -2275,6 +2297,8 @@ const createlist = (req, res) => {
                 window.location.href = "/login";
             } else if (data.state === "success" && data.sessionExpired === "true") {
                 window.location.href = "/ad";
+            } else if (data.state === "success" && data.verified === "false"){
+                window.location.href = "/verify"
             }
             });
         </script>
@@ -2290,7 +2314,7 @@ const list = (req, res) => {
         <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Vocab List</title>
+        <title>Blearn - List</title>
         <script src="https://cdn.tailwindcss.com"></script>
         </head>
         ${notificationContainer}
@@ -2404,6 +2428,8 @@ const list = (req, res) => {
                 window.location.href = "/login";
                 } else if (data.state === "success" && data.sessionExpired === "true") {
                 window.location.href = "/ad";
+                } else if (data.state === "success" && data.verified === "false") {
+                    window.location.href = "/verify"
                 } else {
                 console.log("Successful login");
                 }
@@ -2551,7 +2577,7 @@ const editlist = (req, res) => {
         <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Edit Vocablist - Blearn</title>
+        <title>Blearn - Edit Vocablist</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -2617,7 +2643,7 @@ const editlist = (req, res) => {
 
             <!-- Error Message -->
             <div id="errorMessage" class="hidden bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-400 text-red-700 dark:text-red-300 p-4 rounded shadow-md">
-            <p class="font-bold">Fehler</p>
+            <p class="font-bold">Error</p>
             <p id="errorText"></p>
             <button onclick="window.location.reload()" class="mt-2 px-4 py-1 bg-red-600 dark:bg-red-500 text-white rounded-md hover:bg-red-700 dark:hover:bg-red-600 transition">
                 Reload
@@ -2631,40 +2657,42 @@ const editlist = (req, res) => {
         <script>
 
         ${notificationScript}
+
+
             // Dark mode functionality
             class ThemeManager {
-            constructor() {
-                this.init();
-            }
-
-            init() {
-                // Get theme from localStorage or default to 'system'
-                const savedTheme = localStorage.getItem('theme') || 'system';
-                this.applyTheme(savedTheme);
-            }
-
-            applyTheme(theme) {
-                const html = document.documentElement;
-                
-                if (theme === 'system') {
-                // Use system preference
-                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                html.classList.toggle('dark', systemDark);
-                } else if (theme === 'dark') {
-                html.classList.add('dark');
-                } else {
-                html.classList.remove('dark');
+                constructor() {
+                    this.init();
                 }
+
+                init() {
+                    // Get theme from localStorage or default to 'system'
+                    const savedTheme = localStorage.getItem('theme') || 'system';
+                    this.applyTheme(savedTheme);
+                }
+
+                applyTheme(theme) {
+                    const html = document.documentElement;
                 
-                // Save to localStorage
-                localStorage.setItem('theme', theme);
+                    if (theme === 'system') {
+                    // Use system preference
+                    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    html.classList.toggle('dark', systemDark);
+                    } else if (theme === 'dark') {
+                    html.classList.add('dark');
+                    } else {
+                    html.classList.remove('dark');
+                    }
+                
+                    // Save to localStorage
+                    localStorage.setItem('theme', theme);
+                }
             }
-        }
 
             document.addEventListener("DOMContentLoaded", async () => {
             // Initialize theme manager
             new ThemeManager();
-            
+
             const userName = localStorage.getItem("username");
             const password = localStorage.getItem("password");
             
@@ -2691,6 +2719,8 @@ const editlist = (req, res) => {
                 } else if (data.state === "success" && data.sessionExpired === "true") {
                 window.location.href = "/ad";
                 return;
+                } else if (data.state === "success" && data.verified === "false") {
+                    window.location.href = "/verify"
                 } else {
                 console.log("Successful login");
                 }
@@ -2720,7 +2750,6 @@ const editlist = (req, res) => {
             const addBtn = document.getElementById("addBtn");
             const saveBtn = document.getElementById("saveBtn");
             const vocabList = document.getElementById("vocabList");
-            const logoutBtn = document.getElementById("logoutBtn");
             const cancelBtn = document.getElementById("cancelBtn");
 
             let entries = [];
@@ -2794,7 +2823,7 @@ const editlist = (req, res) => {
             // Save changes
             saveBtn.addEventListener("click", async () => {
                 if (entries.length === 0) {
-                showNotification('The list don't contains a single word. Please add at least one word!', 'error')
+                showNotification("The list don't contains a single word. Please add at least one word!", 'error')
                 return;
                 }
 
@@ -2940,7 +2969,7 @@ const createTable = (req, res) => {
         <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Create Table - Blearn</title>
+        <title>Blearn - Create Table</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -3299,17 +3328,41 @@ const createTable = (req, res) => {
             });
 
             // Simple authentication check (adapted for artifact environment)
-            const userName = window.userName || '';
-            const password = window.password || '';
+            const userName = localStorage.getItem("username");
+            const password = localStorage.getItem("password");
             
             if (!userName || !password) {
-                console.log("Authentication would be checked here");
+                window.location.href = "/login";
+                return;
             }
 
+            // Single authentication check
             try {
-                console.log("Authentication check would happen here");
+                const res = await fetch('/api/auth/checkData', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userName, password })
+                });
+                
+                const data = await res.json();
+                
+                if (data.state === "error") {
+                localStorage.removeItem("username");
+                localStorage.removeItem("password");
+                window.location.href = "/login";
+                return;
+                } else if (data.state === "success" && data.sessionExpired === "true") {
+                window.location.href = "/ad";
+                return;
+                } else if (data.state === "success" && data.verified === "false") {
+                    window.location.href = "/verify"
+                } else {
+                console.log("Successful login");
+                }
             } catch (err) {
-                console.error("Fehler beim Prüfen der Daten:", err);
+                console.error("Error while checking data:", err);
+                window.location.href = "/login";
+                return;
             }
             });
         </script>
@@ -3325,7 +3378,7 @@ const table = (req, res) => {
         <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Tabellenquiz</title>
+        <title>Blearn - Table</title>
         <script src="https://cdn.tailwindcss.com"></script>
         </head>
         ${notificationContainer}
@@ -3394,11 +3447,13 @@ const table = (req, res) => {
                 window.location.href = "/login";
                 } else if (data.state === "success" && data.sessionExpired === "true") {
                 window.location.href = "/ad";
-                } else {
+                } else if (data.state === "success" && data.verified === "false") {
+                window.location.href = "/verify"
+                } else{
                 console.log("Successful login");
                 }
             } catch (err) {
-                console.error("Fehler beim Prüfen der Daten:", err);
+                console.error("Error while checking data:", err);
                 window.location.href = "/login";
             }
             
@@ -3564,7 +3619,7 @@ const editTable = (req, res) => {
         <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Edit Table - Blearn</title>
+        <title>Blearn - Edit Table</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -3708,6 +3763,31 @@ const editTable = (req, res) => {
             
             const userName = localStorage.getItem("username")
             const password = localStorage.getItem("password")
+
+            try {
+                const res = await fetch("/api/auth/checkData", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userName, password })
+                });
+                
+                const data = await res.json();
+                
+                if (data.state === "error") {
+                localStorage.removeItem("username");
+                localStorage.removeItem("password");
+                window.location.href = "/login";
+                } else if (data.state === "success" && data.sessionExpired === "true") {
+                window.location.href = "/ad";
+                } else if (data.state === "success" && data.verified === "false") {
+                window.location.href = "/verify"
+                } else{
+                console.log("Successful login");
+                }
+            } catch (err) {
+                console.error("Error while checking data:", err);
+                window.location.href = "/login";
+            }
             
             // Query parameters
             const params = new URLSearchParams(window.location.search);
@@ -4104,7 +4184,7 @@ const importlist = (req, res) => {
         <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Import Vocablist - Blearn</title>
+        <title>Blearn - Import Vocablist</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -4370,17 +4450,23 @@ const importlist = (req, res) => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userName, password })
                 });
-
+                
                 const data = await res.json();
+                
                 if (data.state === "error") {
-                localStorage.clear();
+                localStorage.removeItem("username");
+                localStorage.removeItem("password");
                 window.location.href = "/login";
                 } else if (data.state === "success" && data.sessionExpired === "true") {
                 window.location.href = "/ad";
+                } else if (data.state === "success" && data.verified === "false") {
+                window.location.href = "/verify"
+                } else{
+                console.log("Successful login");
                 }
             } catch (err) {
-                console.error("Authentifizierung fehlgeschlagen:", err);
-                // Bei Netzwerkfehlern trotzdem weitermachen
+                console.error("Error while checking data:", err);
+                window.location.href = "/login";
             }
             });
 
