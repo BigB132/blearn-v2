@@ -47,7 +47,7 @@ const autologin2 = `
             window.location.href = "/verify";
             return
           }
-          window.location.href = "/dashboard";
+          //window.location.href = "/dashboard";
           return;
         }
       } catch (err) {
@@ -55,6 +55,32 @@ const autologin2 = `
       }
     }
 `;
+
+const autologin3 = `
+const savedUser = localStorage.getItem("username");
+const savedPass = localStorage.getItem("password");
+
+if (savedUser && savedPass) {
+try {
+    const res = await fetch("/api/auth/checkData", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userName: savedUser, password: savedPass })
+    });
+
+    const data = await res.json();
+
+    if (data.state === "success") {
+    if(data.verified === "false"){
+        window.location.href = "/verify";
+        return
+    }
+    }
+} catch (err) {
+    console.warn("Autologin failed:", err);
+}
+}
+`
 
 const header = `
     <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center">
@@ -248,6 +274,22 @@ const footer = `
 </footer>
 `
 
+const fastInit = `
+<script>
+    (function() {
+        const savedTheme = localStorage.getItem('theme') || 'system';
+        const html = document.documentElement;
+        
+        if (savedTheme === 'system') {
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (systemDark) html.classList.add('dark');
+        } else if (savedTheme === 'dark') {
+            html.classList.add('dark');
+        }
+    })();
+</script>
+`
+
 
 
 const landing = async (req, res) => {
@@ -264,6 +306,9 @@ const landing = async (req, res) => {
             darkMode: 'class'
             }
         </script>
+
+        ${fastInit}
+
         </head>
         <body class="bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 min-h-screen flex items-center justify-center px-4">
 
@@ -338,6 +383,8 @@ const register = (req, res) => {
                     darkMode: 'class'
                 }
             </script>
+
+            ${fastInit}
         </head>
         <body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800">
             <div class="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-gray-800 rounded-xl shadow-xl border dark:border-gray-700 transition-colors duration-300">
@@ -521,6 +568,8 @@ const verify = (req, res) => {
                     darkMode: 'class'
                 }
             </script>
+
+            ${fastInit}
         </head>
         <body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800">
             <div class="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-gray-800 rounded-xl shadow-xl border dark:border-gray-700 transition-colors duration-300">
@@ -762,6 +811,8 @@ const login = (req, res) => {
             darkMode: 'class'
             }
         </script>
+
+        ${fastInit}
         </head>
         <body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
         <div class="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-gray-800 rounded-xl shadow-xl border dark:border-gray-700 transition-colors duration-300">
@@ -868,7 +919,7 @@ const login = (req, res) => {
                 const res = await fetch("/api/auth/checkData", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userName, password })
+                body: JSON.stringify({ userName.toLowerCase(), password })
                 });
 
                 const data = await res.json();
@@ -916,6 +967,8 @@ const forgotpassword = (req, res) => {
             darkMode: 'class'
             }
         </script>
+
+        ${fastInit}
         </head>
         <body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
         <div class="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-gray-800 rounded-xl shadow-xl border dark:border-gray-700 transition-colors duration-300">
@@ -1033,6 +1086,8 @@ const dashboard = (req, res) => {
             darkMode: 'class'
             }
         </script>
+
+        ${fastInit}
         </head>
         <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
         
@@ -1155,6 +1210,8 @@ const settings = (req, res) => {
             darkMode: 'class'
         }
     </script>
+
+    ${fastInit}
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
 
@@ -1248,7 +1305,7 @@ ${header}
         document.addEventListener('DOMContentLoaded', async function() {
             loadSettings();
 
-            ${autologin2}
+            ${autologin3}
         });
         
         // Load saved settings
@@ -1371,19 +1428,7 @@ const learn = (req, res) => {
             }
         </script>
 
-        <script>
-            (function() {
-                const savedTheme = localStorage.getItem('theme') || 'system';
-                const html = document.documentElement;
-                
-                if (savedTheme === 'system') {
-                    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    if (systemDark) html.classList.add('dark');
-                } else if (savedTheme === 'dark') {
-                    html.classList.add('dark');
-                }
-            })();
-        </script>
+        ${fastInit}
 
         </head>
         ${notificationContainer}
@@ -2110,6 +2155,8 @@ const createlist = (req, res) => {
             darkMode: 'class'
             }
         </script>
+
+        ${fastInit}
         </head>
         <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
 
@@ -2316,6 +2363,8 @@ const list = (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Blearn - List</title>
         <script src="https://cdn.tailwindcss.com"></script>
+
+        ${fastInit}
         </head>
         ${notificationContainer}
 
@@ -2584,6 +2633,8 @@ const editlist = (req, res) => {
             darkMode: 'class'
             }
         </script>
+
+        ${fastInit}
         </head>
         <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
 
@@ -2976,6 +3027,8 @@ const createTable = (req, res) => {
             darkMode: 'class'
             }
         </script>
+
+        ${fastInit}
         </head>
         <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
 
@@ -3380,6 +3433,8 @@ const table = (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Blearn - Table</title>
         <script src="https://cdn.tailwindcss.com"></script>
+
+        ${fastInit}
         </head>
         ${notificationContainer}
         <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center py-8">
@@ -3626,6 +3681,8 @@ const editTable = (req, res) => {
             darkMode: 'class'
             }
         </script>
+
+        ${fastInit}
         </head>
         <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
 
@@ -4191,6 +4248,8 @@ const importlist = (req, res) => {
             darkMode: 'class'
             }
         </script>
+
+        ${fastInit}
         </head>
         <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
 

@@ -121,7 +121,7 @@ const earn = async (req, res) => {
             </p>
         </div>
         
-        <a id="earnBtn" href="ads/claim/${username}/${token}" class="w-full px-6 py-3 bg-green-600 dark:bg-green-700 text-white text-lg font-semibold rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+        <a id="earnBtn" href="https://blearn.onrender.com/api/ads/claim/${username}/${token}" class="w-full px-6 py-3 bg-green-600 dark:bg-green-700 text-white text-lg font-semibold rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
             Unlock
         </a>
         
@@ -150,7 +150,7 @@ const claim =  async (req, res) => {
     return;
   }
   userData.unlockedTime = Date.now() + 1000 * 60 * 60 * 24
-  userData.save();
+  await userData.save();
 
   res.send(
     `

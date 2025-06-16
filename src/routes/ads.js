@@ -1,9 +1,10 @@
 const express = require('express');
-const { ad, earn } = require('../controllers/adController');
+const { ad, earn, claim } = require('../controllers/adController');
 
 const router = express.Router();
 
 router.get('/ad/:userName', ad);
-router.post('/earn/:username/:token', earn)
+router.get('/earn/:username/:token', earn)
+router.get('/claim/:userName/:token', claim)
 
 module.exports = router;
