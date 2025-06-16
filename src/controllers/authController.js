@@ -58,7 +58,7 @@ const signup = async (req, res) => {
     const TRUSTED_DOMAINS = new Set([
         'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com',
         'icloud.com', 'protonmail.com', 'zoho.com', 'aol.com',
-        'live.com', 'msn.com', 'yandex.com', 'mail.com'
+        'live.com', 'msn.com', 'yandex.com', 'mail.com', 'gmx.de'
         // Add corporate domains you trust
     ]);
 
