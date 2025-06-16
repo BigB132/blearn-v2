@@ -34,6 +34,7 @@ app.use('', website)
 app.use('/api/auth', authRoutes);
 app.use('/api/data', dataRoutes);
 app.use('/api/ads', adRoutes);
+app.use(express.static('src/PublicFiles'));
 
 
 
