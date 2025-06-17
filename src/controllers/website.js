@@ -47,7 +47,7 @@ const autologin2 = `
             window.location.href = "/verify";
             return
           }
-          //window.location.href = "/dashboard";
+          window.location.href = "/dashboard";
           return;
         }
       } catch (err) {
@@ -919,7 +919,7 @@ const login = (req, res) => {
                 const res = await fetch("/api/auth/checkData", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userName.toLowerCase(), password })
+                body: JSON.stringify({ userName: userName.toLowerCase(), password })
                 });
 
                 const data = await res.json();
