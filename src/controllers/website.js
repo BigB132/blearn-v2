@@ -1265,7 +1265,7 @@ const dashboard = (req, res) => {
                     .forEach(lesson => {
                     const li = document.createElement('li');
                     li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded-md';
-                    li.innerHTML = `<strong>\${lesson.startTime} - \${lesson.endTime}</strong>: \${lesson.subjectId.name}`;
+                    li.innerHTML = \`<strong>\${lesson.startTime} - \${lesson.endTime}</strong>: \${lesson.subjectId.name}\`;
                     ul.appendChild(li);
                 });
                 todayScheduleContainer.innerHTML = '';
@@ -1284,7 +1284,7 @@ const dashboard = (req, res) => {
                     const li = document.createElement('li');
                     li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded-md';
                     const dueDate = new Date(hw.dueDate).toLocaleDateString();
-                    li.innerHTML = `<strong>\${hw.title}</strong> (\${hw.subjectId.name}) - Due: \${dueDate}`;
+                    li.innerHTML = \`<strong>\${hw.title}</strong> (\${hw.subjectId.name}) - Due: \${dueDate}\`;
                     ul.appendChild(li);
                 });
                 upcomingHomeworkContainer.innerHTML = '';
