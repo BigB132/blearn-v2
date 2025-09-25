@@ -1,8 +1,9 @@
 const express = require('express');
-const { getlist, createFolder, rename, del, savelist, savetable, getvoclist, gettable, editlist, fetchid, importlist, edittable } = require('../controllers/dataController');
+const { getlist, createFolder, rename, del, savelist, savetable, getvoclist, gettable, editlist, fetchid, importlist, edittable, getDashboardData } = require('../controllers/dataController');
 
 const router = express.Router();
 
+router.post('/dashboard', getDashboardData);
 router.post('/getlist', getlist);
 router.post('/createFolder', createFolder);
 router.post('/rename', rename);

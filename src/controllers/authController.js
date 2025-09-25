@@ -1,5 +1,33 @@
 const UserData = require('../models/userData');
 const Mailer = require('../utils/sendMail');
+const webpush = require('web-push');
+
+const publicVapidKey = "BAPk_4-g62i_5n6bZJzX-v8Z7aJ_1b-Yy_4cZ0jX9l_9vH3Z-jY_1b-Yy_4cZ0jX9l_9vH3Z-jY_1b-Yy_4cZ0jX9l_9vH";
+const privateVapidKey = "YOUR_PRIVATE_VAPID_KEY";
+
+webpush.setVapidDetails(
+  'mailto:test@example.com',
+  publicVapidKey,
+  privateVapidKey
+);
+
+const subscribe = async (req, res) => {
+    const { username, subscription } = req.body;
+    try {
+        const user = await UserData.findOneAndUpdate(
+            { userName: username },
+            { pushSubscription: subscription },
+            { new: true }
+        );
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(201).json({ message: 'Subscription saved.' });
+    } catch (error) {
+        console.error('Subscription error:', error);
+        res.status(500).json({ message: 'Server error while saving subscription' });
+    }
+};
 
 const checkData = async (req, res) => {
   const { userName, password } = req.body;
@@ -203,4 +231,4 @@ const resetPass = async (req, res) => {
 }
 
 
-module.exports = { checkData, signup, verify, resendcode, changePass, resetPass };
+module.exports = { checkData, signup, verify, resendcode, changePass, resetPass, subscribe };

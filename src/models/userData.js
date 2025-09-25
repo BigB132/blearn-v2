@@ -22,6 +22,9 @@ const userData = new mongoose.Schema({
   },
   unlockedTime: {
     type: Number,
+  },
+  pushSubscription: {
+    type: Object,
   }
 });
 

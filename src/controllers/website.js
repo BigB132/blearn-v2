@@ -301,6 +301,8 @@ const landing = async (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta name="google-site-verification" content="MOa_upgamZEsDEVLWmlDnDJybC7H1uEyHhDrgCECwWI" />
         <title>Welcome to Blearn</title>
+        <link rel="manifest" href="/manifest.json">
+        <meta name="theme-color" content="#007bff"/>
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
@@ -329,6 +331,9 @@ const landing = async (req, res) => {
                 class="px-8 py-3 bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 font-semibold rounded-lg hover:bg-blue-50 dark:hover:bg-gray-600 transition-all duration-300 shadow-md hover:shadow-lg">
                 Login
             </a>
+            <button id="installBtn" style="display: none;" class="px-8 py-3 bg-green-600 dark:bg-green-500 text-white font-semibold rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-all duration-300 shadow-md hover:shadow-lg">
+                Install App
+            </button>
             </div>
         </div>
 
@@ -362,6 +367,38 @@ const landing = async (req, res) => {
             // Initialize theme manager when DOM is loaded
             document.addEventListener('DOMContentLoaded', () => {
                 new ThemeManager();
+            });
+
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                  console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                  console.log('ServiceWorker registration failed: ', err);
+                });
+              });
+            }
+
+            let deferredPrompt;
+            const installBtn = document.getElementById('installBtn');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+              e.preventDefault();
+              deferredPrompt = e;
+              installBtn.style.display = 'block';
+            });
+
+            installBtn.addEventListener('click', (e) => {
+              installBtn.style.display = 'none';
+              deferredPrompt.prompt();
+              deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                  console.log('User accepted the install prompt');
+                } else {
+                  console.log('User dismissed the install prompt');
+                }
+                deferredPrompt = null;
+              });
             });
         </script>
         </body>
@@ -1097,12 +1134,31 @@ const dashboard = (req, res) => {
         <!-- Main Content -->
         <main class="flex-1 p-6">
             <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300" id="header">Welcome back!</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
-                <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400">Learn now!</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">Create your own cue cards.</p>
-                <a href="/learn" class="text-blue-500 dark:text-blue-400 text-sm mt-4 inline-block hover:underline transition-colors duration-300">Start now →</a>
-            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border dark:border-gray-700">
+                        <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">Today's Schedule</h3>
+                        <div id="todaySchedule"></div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border dark:border-gray-700 mb-6">
+                        <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">Quick Links</h3>
+                        <div class="flex flex-col space-y-2">
+                            <a href="/schedule" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center">Manage Schedule</a>
+                            <a href="/homework" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center">Manage Homework</a>
+                            <a href="/learn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center">Learn</a>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border dark:border-gray-700">
+                        <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">Upcoming Homework</h3>
+                        <div id="upcomingHomework"></div>
+                    </div>
+                </div>
             </div>
         </main>
 
@@ -1180,6 +1236,62 @@ const dashboard = (req, res) => {
             }
             
             document.getElementById("header").innerHTML = "Welcome back, " + userName + "!";
+
+            const todayScheduleContainer = document.getElementById('todaySchedule');
+            const upcomingHomeworkContainer = document.getElementById('upcomingHomework');
+
+            async function fetchDashboardData() {
+                const res = await fetch('/api/data/dashboard', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password: password })
+                });
+                const data = await res.json();
+
+                renderTodaySchedule(data.schedule);
+                renderUpcomingHomework(data.homework);
+            }
+
+            function renderTodaySchedule(schedule) {
+                if (!schedule || !schedule.lessons || schedule.lessons.length === 0) {
+                    todayScheduleContainer.innerHTML = '<p class="text-gray-500">No classes scheduled for today.</p>';
+                    return;
+                }
+
+                const ul = document.createElement('ul');
+                ul.className = 'space-y-2';
+                schedule.lessons
+                    .sort((a, b) => a.startTime.localeCompare(b.startTime))
+                    .forEach(lesson => {
+                    const li = document.createElement('li');
+                    li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded-md';
+                    li.innerHTML = `<strong>\${lesson.startTime} - \${lesson.endTime}</strong>: \${lesson.subjectId.name}`;
+                    ul.appendChild(li);
+                });
+                todayScheduleContainer.innerHTML = '';
+                todayScheduleContainer.appendChild(ul);
+            }
+
+            function renderUpcomingHomework(homework) {
+                if (!homework || homework.length === 0) {
+                    upcomingHomeworkContainer.innerHTML = '<p class="text-gray-500">No upcoming homework.</p>';
+                    return;
+                }
+
+                const ul = document.createElement('ul');
+                ul.className = 'space-y-2';
+                homework.forEach(hw => {
+                    const li = document.createElement('li');
+                    li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded-md';
+                    const dueDate = new Date(hw.dueDate).toLocaleDateString();
+                    li.innerHTML = `<strong>\${hw.title}</strong> (\${hw.subjectId.name}) - Due: \${dueDate}`;
+                    ul.appendChild(li);
+                });
+                upcomingHomeworkContainer.innerHTML = '';
+                upcomingHomeworkContainer.appendChild(ul);
+            }
+
+            fetchDashboardData();
             });
         </script>
         </body>
@@ -4581,4 +4693,429 @@ const ad = (req, res) => {
     `)
 }
 
-module.exports = { landing, register, verify, login, dashboard, logout, settings, forgotpassword, learn, createlist, list, editlist, createTable, table, editTable, importlist, ad }
+const schedule = (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>Blearn - Schedule</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script>
+                tailwind.config = {
+                    darkMode: 'class'
+                }
+            </script>
+            ${fastInit}
+        </head>
+        <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+            ${header}
+            <main class="flex-1 p-6">
+                <div class="max-w-7xl mx-auto">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Your Weekly Schedule</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">Manage Subjects</h3>
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+                                <div class="flex gap-2 mb-4">
+                                    <input id="subjectName" type="text" placeholder="New subject" class="flex-1 border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                    <button id="addSubjectBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Add</button>
+                                </div>
+                                <ul id="subjectList" class="space-y-2"></ul>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">Timetable</h3>
+                            <div id="scheduleContainer" class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            ${footer}
+            <script>
+                document.addEventListener('DOMContentLoaded', async () => {
+                    const userName = localStorage.getItem("username");
+                    const password = localStorage.getItem("password");
+
+                    if (!userName || !password) {
+                        window.location.href = "/login";
+                        return;
+                    }
+
+                    // Auth check
+                    try {
+                        const res = await fetch("/api/auth/checkData", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ userName, password })
+                        });
+                        const data = await res.json();
+                        if (data.state === "error") {
+                            window.location.href = "/login";
+                            return;
+                        }
+                    } catch (err) {
+                        window.location.href = "/login";
+                        return;
+                    }
+
+                    const subjectNameInput = document.getElementById('subjectName');
+                    const addSubjectBtn = document.getElementById('addSubjectBtn');
+                    const subjectList = document.getElementById('subjectList');
+                    const scheduleContainer = document.getElementById('scheduleContainer');
+
+                    let subjects = [];
+                    let schedule = [];
+
+                    // Fetch subjects
+                    async function fetchSubjects() {
+                        const res = await fetch(\`/api/schedule/subjects?username=\${userName}\`);
+                        subjects = await res.json();
+                        renderSubjects();
+                        renderSchedule();
+                    }
+
+                    // Render subjects
+                    function renderSubjects() {
+                        subjectList.innerHTML = '';
+                        subjects.forEach(subject => {
+                            const li = document.createElement('li');
+                            li.textContent = subject.name;
+                            li.className = 'bg-gray-100 dark:bg-gray-700 p-2 rounded-md';
+                            subjectList.appendChild(li);
+                        });
+                    }
+
+                    // Add a new subject
+                    addSubjectBtn.addEventListener('click', async () => {
+                        const name = subjectNameInput.value.trim();
+                        if (!name) return;
+
+                        await fetch('/api/schedule/subjects', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, username: userName }),
+                        });
+                        subjectNameInput.value = '';
+                        fetchSubjects();
+                    });
+
+                    // Fetch schedule
+                    async function fetchSchedule() {
+                        const res = await fetch(\`/api/schedule?username=\${userName}\`);
+                        schedule = await res.json();
+                        renderSchedule();
+                    }
+
+                    // Render schedule
+                    function renderSchedule() {
+                        scheduleContainer.innerHTML = '';
+                        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                        days.forEach(day => {
+                            const daySchedule = schedule.find(s => s.day === day) || { lessons: [] };
+                            const dayCard = document.createElement('div');
+                            dayCard.className = 'mb-4';
+                            dayCard.innerHTML = \`<h4 class="font-bold mb-2">\${day}</h4>\`;
+                            const dayLessons = document.createElement('ul');
+                            dayLessons.className = 'space-y-2';
+
+                            for (let i = 1; i <= 8; i++) {
+                                const lesson = daySchedule.lessons.find(l => l.startTime === \`\${i}:00\` );
+                                const li = document.createElement('li');
+                                li.className = 'flex items-center gap-2';
+                                li.innerHTML = \`
+                                    <span class="w-16">\${i}:00 - \${i+1}:00</span>
+                                    <select data-day="\${day}" data-starttime="\${i}:00" class="flex-1 border dark:border-gray-600 p-1 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                        <option value="">-- Select Subject --</option>
+                                        \${subjects.map(s => \`<option value="\${s._id}" \${lesson && lesson.subjectId._id === s._id ? 'selected' : ''}>\${s.name}</option>\`).join('')}
+                                    </select>
+                                \`;
+                                dayLessons.appendChild(li);
+                            }
+                            dayCard.appendChild(dayLessons);
+                            scheduleContainer.appendChild(dayCard);
+                        });
+
+                        // Add event listeners to select elements
+                        document.querySelectorAll('#scheduleContainer select').forEach(select => {
+                            select.addEventListener('change', async (e) => {
+                                const day = e.target.dataset.day;
+                                const startTime = e.target.dataset.starttime;
+                                const subjectId = e.target.value;
+
+                                const daySchedule = schedule.find(s => s.day === day) || { lessons: [] };
+                                const existingLessonIndex = daySchedule.lessons.findIndex(l => l.startTime === startTime);
+
+                                if (subjectId) {
+                                    const newLesson = { startTime, endTime: \`\${parseInt(startTime) + 1}:00\`, subjectId };
+                                    if (existingLessonIndex > -1) {
+                                        daySchedule.lessons[existingLessonIndex] = newLesson;
+                                    } else {
+                                        daySchedule.lessons.push(newLesson);
+                                    }
+                                } else {
+                                    if (existingLessonIndex > -1) {
+                                        daySchedule.lessons.splice(existingLessonIndex, 1);
+                                    }
+                                }
+
+                                await fetch('/api/schedule', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ username: userName, day, lessons: daySchedule.lessons }),
+                                });
+                                fetchSchedule();
+                            });
+                        });
+                    }
+
+                    // Initial fetch
+                    fetchSubjects();
+                    fetchSchedule();
+                });
+            </script>
+        </body>
+        </html>
+    `);
+};
+
+const homework = (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>Blearn - Homework</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script>
+                tailwind.config = {
+                    darkMode: 'class'
+                }
+            </script>
+            ${fastInit}
+        </head>
+        <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+            ${header}
+            <main class="flex-1 p-6">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Homework Management</h2>
+                        <button id="enableNotificationsBtn" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">Enable Notifications</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">Add Homework</h3>
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+                                <div class="space-y-4">
+                                    <input id="homeworkTitle" type="text" placeholder="Title" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                    <select id="homeworkSubject" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"></select>
+                                    <input id="homeworkDueDate" type="date" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                    <button id="addHomeworkBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Add Homework</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">Your Homework</h3>
+                            <ul id="homeworkList" class="space-y-4"></ul>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            ${footer}
+            <script>
+                document.addEventListener('DOMContentLoaded', async () => {
+                    const userName = localStorage.getItem("username");
+                    const password = localStorage.getItem("password");
+
+                    if (!userName || !password) {
+                        window.location.href = "/login";
+                        return;
+                    }
+
+                    // Auth check
+                    try {
+                        const res = await fetch("/api/auth/checkData", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ userName, password })
+                        });
+                        const data = await res.json();
+                        if (data.state === "error") {
+                            window.location.href = "/login";
+                            return;
+                        }
+                    } catch (err) {
+                        window.location.href = "/login";
+                        return;
+                    }
+
+                    const homeworkTitleInput = document.getElementById('homeworkTitle');
+                    const homeworkSubjectSelect = document.getElementById('homeworkSubject');
+                    const homeworkDueDateInput = document.getElementById('homeworkDueDate');
+                    const addHomeworkBtn = document.getElementById('addHomeworkBtn');
+                    const homeworkList = document.getElementById('homeworkList');
+
+                    let subjects = [];
+                    let homeworks = [];
+
+                    // Fetch subjects for the dropdown
+                    async function fetchSubjects() {
+                        const res = await fetch(\`/api/schedule/subjects?username=\${userName}\`);
+                        subjects = await res.json();
+                        renderSubjectOptions();
+                    }
+
+                    function renderSubjectOptions() {
+                        homeworkSubjectSelect.innerHTML = '<option value="">-- Select Subject --</option>';
+                        subjects.forEach(subject => {
+                            const option = document.createElement('option');
+                            option.value = subject._id;
+                            option.textContent = subject.name;
+                            homeworkSubjectSelect.appendChild(option);
+                        });
+                    }
+
+                    // Fetch homework
+                    async function fetchHomework() {
+                        const res = await fetch(\`/api/homework?username=\${userName}\`);
+                        homeworks = await res.json();
+                        renderHomework();
+                    }
+
+                    // Render homework
+                    function renderHomework() {
+                        homeworkList.innerHTML = '';
+                        homeworks
+                            .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+                            .forEach(hw => {
+                            const li = document.createElement('li');
+                            li.className = \`p-4 rounded-xl shadow-md \${hw.completed ? 'bg-green-100 dark:bg-green-900' : 'bg-white dark:bg-gray-800'}\`;
+
+                            const dueDate = new Date(hw.dueDate);
+                            const timeDiff = dueDate.getTime() - new Date().getTime();
+                            const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                            let timeLeftText = '';
+                            if (daysLeft > 1) {
+                                timeLeftText = \`\${daysLeft} days left\`;
+                            } else if (daysLeft === 1) {
+                                timeLeftText = 'Due tomorrow';
+                            } else if (daysLeft === 0) {
+                                timeLeftText = 'Due today';
+                            } else {
+                                timeLeftText = 'Overdue';
+                            }
+
+                            li.innerHTML = \`
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="font-bold \${hw.completed ? 'line-through' : ''}">\${hw.title}</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">\${hw.subjectId.name} - Due: \${new Date(hw.dueDate).toLocaleDateString()}</p>
+                                        <p class="text-sm \${daysLeft < 2 ? 'text-red-500' : 'text-gray-500'}">\${timeLeftText}</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button data-id="\${hw._id}" class="toggle-complete-btn px-2 py-1 text-sm \${hw.completed ? 'bg-yellow-500' : 'bg-green-500'} text-white rounded-md">\${hw.completed ? 'Un-complete' : 'Complete'}</button>
+                                        <button data-id="\${hw._id}" class="delete-btn px-2 py-1 text-sm bg-red-500 text-white rounded-md">Delete</button>
+                                    </div>
+                                </div>
+                            \`;
+                            homeworkList.appendChild(li);
+                        });
+                    }
+
+                    // Add Homework
+                    addHomeworkBtn.addEventListener('click', async () => {
+                        const title = homeworkTitleInput.value.trim();
+                        const subjectId = homeworkSubjectSelect.value;
+                        const dueDate = homeworkDueDateInput.value;
+
+                        if (!title || !subjectId || !dueDate) {
+                            alert('Please fill out all fields.');
+                            return;
+                        }
+
+                        await fetch('/api/homework', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username: userName, title, subjectId, dueDate }),
+                        });
+
+                        homeworkTitleInput.value = '';
+                        homeworkDueDateInput.value = '';
+                        homeworkSubjectSelect.value = '';
+                        fetchHomework();
+                    });
+
+                    // Event delegation for complete/delete buttons
+                    homeworkList.addEventListener('click', async (e) => {
+                        const id = e.target.dataset.id;
+                        if (!id) return;
+
+                        if (e.target.classList.contains('toggle-complete-btn')) {
+                            const homework = homeworks.find(hw => hw._id === id);
+                            await fetch(\`/api/homework/\${id}\`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ completed: !homework.completed }),
+                            });
+                            fetchHomework();
+                        }
+
+                        if (e.target.classList.contains('delete-btn')) {
+                            if (confirm('Are you sure you want to delete this homework?')) {
+                                await fetch(\`/api/homework/\${id}\`, {
+                                    method: 'DELETE',
+                                });
+                                fetchHomework();
+                            }
+                        }
+                    });
+
+                    const enableNotificationsBtn = document.getElementById('enableNotificationsBtn');
+
+                    function urlBase64ToUint8Array(base64String) {
+                        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+                        const base64 = (base64String + padding)
+                            .replace(/\-/g, '+')
+                            .replace(/_/g, '/');
+
+                        const rawData = window.atob(base64);
+                        const outputArray = new Uint8Array(rawData.length);
+
+                        for (let i = 0; i < rawData.length; ++i) {
+                            outputArray[i] = rawData.charCodeAt(i);
+                        }
+                        return outputArray;
+                    }
+
+                    enableNotificationsBtn.addEventListener('click', async () => {
+                        if ('serviceWorker' in navigator) {
+                            const registration = await navigator.serviceWorker.ready;
+                            const subscription = await registration.pushManager.subscribe({
+                                userVisibleOnly: true,
+                                applicationServerKey: urlBase64ToUint8Array("BAPk_4-g62i_5n6bZJzX-v8Z7aJ_1b-Yy_4cZ0jX9l_9vH3Z-jY_1b-Yy_4cZ0jX9l_9vH3Z-jY_1b-Yy_4cZ0jX9l_9vH"),
+                            });
+
+                            await fetch('/api/auth/subscribe', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ username: userName, subscription }),
+                            });
+                            alert('Notifications enabled!');
+                        }
+                    });
+
+                    // Initial fetch
+                    await fetchSubjects();
+                    await fetchHomework();
+                });
+            </script>
+        </body>
+        </html>
+    `);
+};
+
+module.exports = { landing, register, verify, login, dashboard, logout, settings, forgotpassword, learn, createlist, list, editlist, createTable, table, editTable, importlist, ad, schedule, homework }

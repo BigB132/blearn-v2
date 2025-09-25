@@ -2,6 +2,40 @@ const Data = require('../models/data');
 const UserData = require('../models/userData');
 const generateId = require('../utils/IDGenerator');
 const nameCheck = require('../utils/nameCheck');
+const Schedule = require('../models/schedule');
+const Homework = require('../models/homework');
+
+const getDashboardData = async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const user = await UserData.findOne({ userName: username, password: password });
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        const userId = user._id;
+
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const today = days[new Date().getDay()];
+
+        const todaySchedule = await Schedule.findOne({ userId, day: today }).populate('lessons.subjectId');
+
+        const upcomingHomework = await Homework.find({
+            userId,
+            completed: false,
+            dueDate: { $gte: new Date() }
+        }).sort({ dueDate: 'asc' }).limit(5).populate('subjectId');
+
+        res.json({
+            schedule: todaySchedule,
+            homework: upcomingHomework
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching dashboard data', error });
+    }
+};
 
 const getlist = async (req, res) => {
   const { username, password, route } = req.body;
@@ -478,4 +512,4 @@ const importlist = async (req, res) => {
 
 
 
-module.exports = { getlist, createFolder, rename, del, savelist, savetable, getvoclist, gettable, editlist, edittable, fetchid, importlist }
+module.exports = { getlist, createFolder, rename, del, savelist, savetable, getvoclist, gettable, editlist, edittable, fetchid, importlist, getDashboardData }
