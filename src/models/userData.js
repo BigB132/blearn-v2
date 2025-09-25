@@ -4,6 +4,8 @@ const userData = new mongoose.Schema({
   userName: {
     required: true,
     type: String,
+    unique: true,
+    lowercase: true,
   },
   password: {
     required: true,
@@ -12,6 +14,8 @@ const userData = new mongoose.Schema({
   email: {
     required: true,
     type: String,
+    unique: true,
+    lowercase: true,
   },
   mailtoken: {
     required: true,
@@ -22,6 +26,12 @@ const userData = new mongoose.Schema({
   },
   unlockedTime: {
     type: Number,
+  },
+  passwordResetToken: {
+    type: String,
+  },
+  passwordResetExpires: {
+    type: Date,
   }
 });
 

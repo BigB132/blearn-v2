@@ -1,6 +1,5 @@
 const express = require("express");
 const mongoose = require('mongoose')
-const bodyParser = require("body-parser");
 const cors = require("cors");
 require('dotenv').config();
 const rateLimit = require("express-rate-limit");
@@ -25,7 +24,7 @@ const limiter = rateLimit({
 });
 
 // Middleware
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(limiter);
 app.set('trust proxy', 1);
 
