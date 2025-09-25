@@ -1,14 +1,15 @@
 const autologin = `
     document.addEventListener('DOMContentLoaded', async function() {
-    const savedUser = localStorage.getItem("username");
-    const savedPass = localStorage.getItem("password");
+    const token = localStorage.getItem("token");
 
-    if (savedUser && savedPass) {
+    if (token) {
       try {
         const res = await fetch("/api/auth/checkData", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userName: savedUser, password: savedPass })
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": \`Bearer \${token}\`
+          }
         });
 
         const data = await res.json();
@@ -29,15 +30,16 @@ const autologin = `
 `
 
 const autologin2 = `
-    const savedUser = localStorage.getItem("username");
-    const savedPass = localStorage.getItem("password");
+    const token = localStorage.getItem("token");
 
-    if (savedUser && savedPass) {
+    if (token) {
       try {
         const res = await fetch("/api/auth/checkData", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userName: savedUser, password: savedPass })
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": \`Bearer \${token}\`
+          },
         });
 
         const data = await res.json();
@@ -57,15 +59,16 @@ const autologin2 = `
 `;
 
 const autologin3 = `
-const savedUser = localStorage.getItem("username");
-const savedPass = localStorage.getItem("password");
+const token = localStorage.getItem("token");
 
-if (savedUser && savedPass) {
+if (token) {
 try {
     const res = await fetch("/api/auth/checkData", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userName: savedUser, password: savedPass })
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": \`Bearer \${token}\`
+    }
     });
 
     const data = await res.json();
@@ -530,7 +533,6 @@ const register = (req, res) => {
 
                             localStorage.setItem('username', username.toLowerCase());
                             localStorage.setItem('email', email);
-                            localStorage.setItem('password', password);
                             
                             setTimeout(() => {
                                 window.location.href = '/verify'
@@ -738,6 +740,8 @@ const verify = (req, res) => {
                             showMessage(result.message || 'Verification failed.', true);
                         } else {
                             showMessage('E-Mail successully verified!');
+                            localStorage.setItem("token", result.data.token);
+                            localStorage.removeItem("password");
                             
                             // Redirect to login or dashboard
                             setTimeout(() => {
@@ -926,8 +930,8 @@ const login = (req, res) => {
                 const data = await res.json();
 
                 if (data.state === "success") {
+                localStorage.setItem("token", data.data.token);
                 localStorage.setItem("username", userName.toLowerCase());
-                localStorage.setItem("password", password);
 
                 message.textContent = "Login successful!";
                 message.className = "text-center text-green-600 dark:text-green-400 text-sm transition-colors duration-300";
@@ -1157,15 +1161,17 @@ const dashboard = (req, res) => {
             try {
                 const res = await fetch("/api/auth/checkData", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userName, password })
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                }
                 });
                 
                 const data = await res.json();
                 
                 if (data.state === "error") {
                 localStorage.removeItem("username");
-                localStorage.removeItem("password");
+                localStorage.removeItem("token");
                 window.location.href = "/login";
                 } else if (data.state === "success" && data.sessionExpired === "true") {
                 window.location.href = "/ad";
@@ -1191,7 +1197,7 @@ const logout = (req, res) => {
     res.send(`
         <script>
             localStorage.removeItem("username");
-            localStorage.removeItem("password");
+            localStorage.removeItem("token");
             window.location.href = "/";
         </script>
     `)
@@ -1672,8 +1678,11 @@ const learn = (req, res) => {
             try {
                 const res = await fetch('/api/data/getlist', {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username: userName, password, route }),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                    },
+                    body: JSON.stringify({ route }),
                 });
 
                 if (!res.ok) {
@@ -1845,14 +1854,14 @@ const learn = (req, res) => {
             return;
             }
 
-            const userName = localStorage.getItem("username");
-            const password = localStorage.getItem("password");
-
             try {
             const res = await fetch('/api/data/createFolder', {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: userName, password, route, folderName }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                },
+                body: JSON.stringify({ route, folderName }),
                 signal: AbortSignal.timeout(10000)
             });
 
@@ -1927,16 +1936,14 @@ const learn = (req, res) => {
             const newName = document.getElementById("renameInput").value.trim();
             if (!newName) return;
 
-            const userName = localStorage.getItem("username");
-            const password = localStorage.getItem("password");
-
             try {
             const res = await fetch('/api/data/rename', {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                },
                 body: JSON.stringify({ 
-                username: userName, 
-                password, 
                 route,
                 oldname: selectedItem.name, 
                 newname: newName
@@ -1993,16 +2000,14 @@ const learn = (req, res) => {
         }
 
         async function fetchShareId() {
-            const userName = localStorage.getItem("username");
-            const password = localStorage.getItem("password");
-
             try {
             const res = await fetch('/api/data/fetchid', {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                },
                 body: JSON.stringify({ 
-                username: userName, 
-                password, 
                 route, 
                 lesson: selectedItem.name 
                 }),
@@ -2066,16 +2071,14 @@ const learn = (req, res) => {
         async function confirmDelete() {
             if (!confirm(\`Are you sure that you want to delete "\${selectedItem.name}"?\`)) return;
 
-            const userName = localStorage.getItem("username");
-            const password = localStorage.getItem("password");
-
             try {
             const res = await fetch('/api/data/delete', {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                },
                 body: JSON.stringify({ 
-                username: userName, 
-                password, 
                 route, 
                 name: selectedItem.name 
                 }),
@@ -2279,16 +2282,17 @@ const createlist = (req, res) => {
             });
 
             saveBtn.addEventListener("click", async () => {
-                const userName = localStorage.getItem("username");
-                const password = localStorage.getItem("password");
                 const listNameInput = document.getElementById("listNameInput");
                 const listName = listNameInput.value.trim();
 
                 try {
                 const res = await fetch("/api/data/savelist", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username: userName, password, list: entries, route, name: listName })
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                    },
+                    body: JSON.stringify({ list: entries, route, name: listName })
                 });
 
                 const data = await res.json();
@@ -2495,17 +2499,19 @@ const list = (req, res) => {
             // Get vocabulary from server
             try {
                 const userName = localStorage.getItem('username');
-                const password = localStorage.getItem('password');
 
-                if (!userName || !password) {
+                if (!userName) {
                 window.location.href = '/login';
                 return;
                 }
 
                 const res = await fetch("/api/data/getvoclist", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: userName, password, route, lesson })
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                },
+                body: JSON.stringify({ route, lesson })
                 });
 
                 if (!res.ok) {
@@ -2885,10 +2891,11 @@ const editlist = (req, res) => {
                 
                 const res = await fetch('/api/data/editList', {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                    },
                     body: JSON.stringify({ 
-                    username: userName, 
-                    password, 
                     list: entries, 
                     route, 
                     lesson 
@@ -2974,8 +2981,11 @@ const editlist = (req, res) => {
             try {
                 const res = await fetch('/api/data/getvoclist', {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: userName, password, route, lesson }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                },
+                body: JSON.stringify({ route, lesson }),
                 });
 
                 if (!res.ok) {
@@ -3329,9 +3339,6 @@ const createTable = (req, res) => {
 
             saveBtn.addEventListener("click", async () => {
                 
-                const userName = localStorage.getItem("username");
-                const password = localStorage.getItem("password");
-                
                 const tableNameInput = document.getElementById("tableNameInput");
                 const tableName = tableNameInput.value.trim();
 
@@ -3358,10 +3365,11 @@ const createTable = (req, res) => {
                 try {
                 const res = await fetch("/api/data/savetable", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                    },
                     body: JSON.stringify({ 
-                    username: userName, 
-                    password, 
                     table: saveData, 
                     route, 
                     name: tableName 
@@ -3520,17 +3528,19 @@ const table = (req, res) => {
             // Get table data from server
             try {
                 const userName = localStorage.getItem('username');
-                const password = localStorage.getItem('password');
 
-                if (!userName || !password) {
+                if (!userName) {
                 window.location.href = '/login';
                 return;
                 }
 
                 const res = await fetch("/api/data/gettable", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: userName, password, route, lesson })
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                },
+                body: JSON.stringify({ route, lesson })
                 });
 
                 if (!res.ok) {
@@ -4144,10 +4154,11 @@ const editTable = (req, res) => {
                 
                 const res = await fetch('/api/data/edittable', {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                    },
                     body: JSON.stringify({ 
-                    username: userName, 
-                    password, 
                     table: saveData, 
                     route, 
                     lesson: tableName 
@@ -4184,8 +4195,11 @@ const editTable = (req, res) => {
             try {
                 const res = await fetch('/api/data/gettable', {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: userName, password, route, lesson: tableName }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                },
+                body: JSON.stringify({ route, lesson: tableName }),
                 });
 
                 if (!res.ok) {
@@ -4420,9 +4434,8 @@ const importlist = (req, res) => {
                 }
 
                 const userName = localStorage.getItem("username");
-                const password = localStorage.getItem("password");
                 
-                if (!userName || !password) {
+                if (!userName) {
                 window.location.href = "/login";
                 return;
                 }
@@ -4434,8 +4447,6 @@ const importlist = (req, res) => {
 
                 try {
                 const requestData = {
-                    username: userName,
-                    password,
                     route,
                     oldId: id,
                     keepname: keepNameCheckbox.checked
@@ -4457,7 +4468,10 @@ const importlist = (req, res) => {
 
                 const res = await fetch("/api/data/importlist", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": \`Bearer \${localStorage.getItem("token")}\`
+                    },
                     body: JSON.stringify(requestData)
                 });
 

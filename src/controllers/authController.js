@@ -23,9 +23,38 @@ const sendError = (res, message, status = 400) => {
 
 
 const checkData = async (req, res) => {
-  const { userName, password } = req.body;
-
   try {
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      let token;
+      try {
+        token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await UserData.findById(decoded.id);
+
+        if (!user) {
+          return sendError(res, 'User not found', 401);
+        }
+
+        if (user.mailtoken !== 0) {
+          logger.info(`User ${user.userName} attempted login but is not verified.`);
+          return sendSuccess(res, { verified: false });
+        }
+
+        if (user.unlockedTime > Date.now()) {
+          logger.info(`User ${user.userName} successfully logged in via token.`);
+          sendSuccess(res, { username: user.userName });
+        } else {
+          logger.info(`User ${user.userName} attempted login but session is expired.`);
+          sendSuccess(res, { sessionExpired: true });
+        }
+        return;
+      } catch (error) {
+        return sendError(res, 'Not authorized, token failed', 401);
+      }
+    }
+
+    const { userName, password } = req.body;
+
     const user = await UserData.findOne({ userName });
     if (!user) {
       return sendError(res, 'Invalid credentials', 401);
@@ -129,7 +158,10 @@ const verify = async (req, res) => {
     await user.save();
 
     logger.info(`User ${username} successfully verified their email.`);
-    sendSuccess(res);
+    const token = jwt.sign({ id: user._id, username: user.userName }, process.env.JWT_SECRET, {
+        expiresIn: '3d',
+    });
+    sendSuccess(res, { token });
   } catch(error) {
       logger.error({ err: error }, 'Error during email verification.');
       sendError(res, 'Server error', 500);
