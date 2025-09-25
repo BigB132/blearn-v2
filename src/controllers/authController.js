@@ -2,8 +2,8 @@ const UserData = require('../models/userData');
 const Mailer = require('../utils/sendMail');
 const webpush = require('web-push');
 
-const publicVapidKey = "BAPk_4-g62i_5n6bZJzX-v8Z7aJ_1b-Yy_4cZ0jX9l_9vH3Z-jY_1b-Yy_4cZ0jX9l_9vH3Z-jY_1b-Yy_4cZ0jX9l_9vH";
-const privateVapidKey = "YOUR_PRIVATE_VAPID_KEY";
+const publicVapidKey = "BOQ2Z4glbaN-5k2fkC1lOkcqAynfYnLTjVGThJ9AQiH1p78gFC1jIDWFBDQ8NS8svMn-DhXoNiJGdyPMMqe9BfQ";
+const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
 webpush.setVapidDetails(
   'mailto:test@example.com',
