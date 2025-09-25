@@ -2,6 +2,11 @@ const express = require("express");
 const mongoose = require('mongoose')
 const cors = require("cors");
 require('dotenv').config();
+
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = require('crypto').randomBytes(64).toString('hex');
+}
+
 const rateLimit = require("express-rate-limit");
 
 const website = require('./src/routes/website')

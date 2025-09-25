@@ -4,25 +4,8 @@ const generateId = require('../utils/IDGenerator');
 const nameCheck = require('../utils/nameCheck');
 
 const getlist = async (req, res) => {
-  const { username, password, route } = req.body;
-
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
+  const { route } = req.body;
+  const { username } = req.user;
 
   const data = await Data.find({owner: username, route});
   
@@ -37,25 +20,8 @@ const getlist = async (req, res) => {
 
 
 const createFolder = async (req, res) => {
-  const {username, password, route, folderName} = req.body;
-
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
+  const {route, folderName} = req.body;
+  const { username } = req.user;
 
   const nameTaken = await nameCheck(username, folderName, route)
 
@@ -78,25 +44,8 @@ const createFolder = async (req, res) => {
 }
 
 const rename = async (req, res) => {
-  const {username, password, route, oldname, newname} = req.body;
-
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
+  const {route, oldname, newname} = req.body;
+  const { username } = req.user;
 
   const data = await Data.findOne({name: oldname, route, owner: username});
   if(!data){
@@ -111,26 +60,9 @@ const rename = async (req, res) => {
 };
 
 const del = async (req, res) => {
-  const {username, password, route, name} = req.body;
+  const {route, name} = req.body;
+  const { username } = req.user;
   
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
-
   const data = await Data.find({owner: username});
 
   const item = await Data.findOne({owner: username, route, name})
@@ -150,25 +82,8 @@ const del = async (req, res) => {
 }
 
 const savelist = async (req, res) => {
-  const { username, password, route, list, name} = req.body;
-
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-  
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-  
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
+  const { route, list, name} = req.body;
+  const { username } = req.user;
   
   if(!name){
     res.json({state: "error", message: "Please enter a name!"})
@@ -207,25 +122,8 @@ const savelist = async (req, res) => {
 }
 
 const savetable = async (req, res) => {
-  const { username, password, route, table, name } = req.body;
-  
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-  
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-  
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
+  const { route, table, name } = req.body;
+  const { username } = req.user;
   
   if(!name){
     res.json({state: "error", message: "Please enter a name!"})
@@ -257,26 +155,8 @@ const savetable = async (req, res) => {
 }
 
 const getvoclist =  async (req, res) => {
-  const { username, password, route, lesson } = req.body;
-
-  
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
+  const { route, lesson } = req.body;
+  const { username } = req.user;
 
   const data = await Data.findOne({owner: username, route, name: lesson});
 
@@ -290,30 +170,8 @@ const getvoclist =  async (req, res) => {
 };
 
 const gettable = async (req, res) => {
-  const { username, password, route, lesson } = req.body;
-
-  console.log(username)
-  console.log(password)
-  console.log(route)
-  console.log(lesson)
-
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
+  const { route, lesson } = req.body;
+  const { username } = req.user;
 
   const data = await Data.findOne({owner: username, route, name: lesson});
   console.log(data)
@@ -322,27 +180,8 @@ const gettable = async (req, res) => {
 };
 
 const editlist = async (req, res) => {
-  const { username, password, route, lesson, list } = req.body;
-
-  console.log(list)
-
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
+  const { route, lesson, list } = req.body;
+  const { username } = req.user;
   
   const data = await Data.findOne({owner: username, route, name: lesson});
   if(!data) return;
@@ -357,25 +196,8 @@ const editlist = async (req, res) => {
 };
 
 const edittable = async (req, res) => {
-  const { username, password, route, lesson, table } = req.body;
-
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
+  const { route, lesson, table } = req.body;
+  const { username } = req.user;
 
   console.log(username, route, lesson)
   
@@ -392,25 +214,8 @@ const edittable = async (req, res) => {
 
 
 const fetchid = async (req, res) => {
-  const { username, password, route, lesson } = req.body;
-
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
+  const { route, lesson } = req.body;
+  const { username } = req.user;
 
   const data = await Data.findOne({owner: username, route, name: lesson});
   if(!data) return;
@@ -420,26 +225,9 @@ const fetchid = async (req, res) => {
 };
 
 const importlist = async (req, res) => {
-  const { username, password, oldId, route, name } = req.body;
+  const { oldId, route, name } = req.body;
+  const { username } = req.user;
   
-  if(!username){
-    res.json({state: "error", message: "No value as username entered!"})
-    return;
-  }
-
-  if(!password){
-    res.json({state: "error", message: "No value as password entered!"})
-    return;
-  }
-
-  try{
-    const user = await UserData.findOne({userName: username, password});
-    if(!user){
-      res.json({state: "error", message: "User doesn't exist!"})
-      return;
-    }
-  } catch {};
-
   const data = await Data.findOne({id: oldId});
   if(!data) return;
 

@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const pino = require('pino');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const UserData = require('../models/userData');
 const Mailer = require('../utils/sendMail');
 const TRUSTED_DOMAINS = require('../config/trustedDomains');
@@ -42,7 +43,10 @@ const checkData = async (req, res) => {
 
     if (user.unlockedTime > Date.now()) {
         logger.info(`User ${userName} successfully logged in.`);
-        sendSuccess(res);
+        const token = jwt.sign({ id: user._id, username: user.userName }, process.env.JWT_SECRET, {
+            expiresIn: '3d',
+        });
+        sendSuccess(res, { token });
     } else {
         logger.info(`User ${userName} attempted login but session is expired.`);
         sendSuccess(res, { sessionExpired: true });
