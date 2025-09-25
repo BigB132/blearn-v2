@@ -9,6 +9,8 @@ const website = require('./src/routes/website')
 const authRoutes = require('./src/routes/auth');
 const dataRoutes = require('./src/routes/data');
 const adRoutes = require('./src/routes/ads');
+const scheduleRoutes = require('./src/routes/schedule');
+const homeworkRoutes = require('./src/routes/homework');
 
 const app = express();
 
@@ -34,6 +36,8 @@ app.use('', website)
 app.use('/api/auth', authRoutes);
 app.use('/api/data', dataRoutes);
 app.use('/api/ads', adRoutes);
+app.use('/api/schedule', scheduleRoutes);
+app.use('/api/homework', homeworkRoutes);
 app.use(express.static('src/PublicFiles'));
 
 
