@@ -8,6 +8,9 @@ const rateLimit = require("express-rate-limit");
 const website = require('./src/routes/website')
 const authRoutes = require('./src/routes/auth');
 const dataRoutes = require('./src/routes/data');
+const subjectRoutes = require('./src/routes/subjects');
+const scheduleRoutes = require('./src/routes/schedule');
+const homeworkRoutes = require('./src/routes/homework');
 const adRoutes = require('./src/routes/ads');
 
 const app = express();
@@ -33,6 +36,9 @@ app.set('trust proxy', 1);
 app.use('', website)
 app.use('/api/auth', authRoutes);
 app.use('/api/data', dataRoutes);
+app.use('/api/timetable/subjects', subjectRoutes);
+app.use('/api/timetable/schedule', scheduleRoutes);
+app.use('/api/timetable/homework', homeworkRoutes);
 app.use('/api/ads', adRoutes);
 app.use(express.static('src/PublicFiles'));
 

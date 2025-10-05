@@ -81,7 +81,9 @@ const signup = async (req, res) => {
       email,
       mailtoken,
       earnToken: "iufdghdofiusdofgiusdhgoisudhg",
-      unlockedTime: Date.now() + 1000 * 60 * 60 * 72
+      unlockedTime: Date.now() + 1000 * 60 * 60 * 72,
+      schedule: Array(7).fill(null).map(() => ({})),
+      subjects: [],
     });
     
     await newUser.save();

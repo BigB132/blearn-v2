@@ -4581,4 +4581,1016 @@ const ad = (req, res) => {
     `)
 }
 
-module.exports = { landing, register, verify, login, dashboard, logout, settings, forgotpassword, learn, createlist, list, editlist, createTable, table, editTable, importlist, ad }
+const timetable = (req, res) => {
+    res.send(`
+      <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Blearn - Timetable</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+        tailwind.config = {
+        darkMode: 'class'
+        }
+        </script>
+        <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'system';
+            const html = document.documentElement;
+            
+            if (savedTheme === 'system') {
+                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (systemDark) html.classList.add('dark');
+            } else if (savedTheme === 'dark') {
+                html.classList.add('dark');
+            }
+        })();
+        </script>
+        <style>
+        .dragging {
+            opacity: 0.5;
+        }
+        .drag-over {
+            background-color: rgba(59, 130, 246, 0.2) !important;
+            border: 2px dashed #3b82f6 !important;
+        }
+        .selected-subject {
+            ring: 2px;
+            ring-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        </style>
+        </head>
+        <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+
+        <div id="notificationContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"></div>
+
+        <!-- Header -->
+        <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center">
+            <a href="/dashboard" class="text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</a>
+            <div class="flex gap-4">
+                <a href="/homework" class="px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white rounded-lg transition">📝 Homework</a>
+                <a href="/homework-view" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 text-white rounded-lg transition">📋 View Tasks</a>
+            </div>
+        </header>
+
+        <main class="flex-1 p-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">📅 School Timetable</h2>
+
+            <!-- Instructions -->
+            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-6 border dark:border-blue-800/30">
+                <p class="text-sm text-blue-800 dark:text-blue-200">
+                    <strong>How to use:</strong> Click on a subject below to select it (it will be highlighted), then click on any cell in the timetable to add it there. Click on filled cells to remove them.
+                </p>
+            </div>
+
+            <!-- Add Subject Section -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 border dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Add Subject</h3>
+                <div class="flex gap-3">
+                    <input id="subjectNameInput" type="text" placeholder="Subject name (e.g. Math)" 
+                        class="flex-1 border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                    <input id="subjectColorInput" type="color" value="#3b82f6" 
+                        class="w-16 h-10 border dark:border-gray-600 rounded-md cursor-pointer" />
+                    <button id="addSubjectBtn" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
+                        Add Subject
+                    </button>
+                </div>
+            </div>
+
+            <!-- Subjects List -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 border dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                    Your Subjects 
+                    <span id="selectedIndicator" class="hidden text-sm font-normal text-blue-600 dark:text-blue-400">(Click a cell below to place it)</span>
+                </h3>
+                <div id="subjectsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <!-- Subjects will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Timetable -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Weekly Timetable</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse min-w-[800px]">
+                        <thead>
+                            <tr class="bg-gray-100 dark:bg-gray-700">
+                                <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white">Period</th>
+                                <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white">Monday</th>
+                                <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white">Tuesday</th>
+                                <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white">Wednesday</th>
+                                <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white">Thursday</th>
+                                <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white">Friday</th>
+                            </tr>
+                        </thead>
+                        <tbody id="timetableBody">
+                            <!-- Timetable will be generated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-white dark:bg-gray-800 text-center text-sm py-4 border-t dark:border-gray-700 mt-8 text-gray-500 dark:text-gray-400">
+            © 2025 Blearn. All rights reserved.
+        </footer>
+
+        <!-- Edit Subject Modal -->
+        <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg w-80">
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Edit Subject</h3>
+                <input id="editNameInput" type="text" class="w-full border dark:border-gray-600 p-2 rounded mb-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                <input id="editColorInput" type="color" class="w-full h-10 border dark:border-gray-600 rounded mb-4 cursor-pointer" />
+                <div class="flex justify-end gap-2">
+                    <button onclick="closeEditModal()" class="px-4 py-2 text-gray-600 dark:text-gray-400">Cancel</button>
+                    <button id="saveEditBtn" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        let subjects = [];
+        let timetable = Array(5).fill(null).map(() => Array(8).fill(null));
+        let currentEditId = null;
+        let selectedSubjectId = null;
+
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            const baseClasses = 'p-4 rounded-xl shadow-lg border backdrop-blur-sm transform transition-all duration-300 ease-in-out mb-3';
+            const typeClasses = type === 'success' 
+                ? 'bg-green-50/90 dark:bg-green-900/80 border-green-200 dark:border-green-700 text-green-800 dark:text-green-200'
+                : 'bg-red-50/90 dark:bg-red-900/80 border-red-200 dark:border-red-700 text-red-800 dark:text-red-200';
+            
+            notification.className = \`\${baseClasses} \${typeClasses} translate-y-[-20px] opacity-0\`;
+            notification.innerHTML = \`
+                <div class="flex items-center justify-between">
+                    <span class="font-medium">\${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-current opacity-60 hover:opacity-100">×</button>
+                </div>
+            \`;
+            container.appendChild(notification);
+            setTimeout(() => notification.classList.remove('translate-y-[-20px]', 'opacity-0'), 10);
+            setTimeout(() => notification.remove(), 4000);
+        }
+
+        async function loadSubjects() {
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/subjects/get', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    subjects = data.subjects;
+                    renderSubjects();
+                }
+            } catch (err) {
+                console.error('Error loading subjects:', err);
+            }
+        }
+
+        async function loadTimetable() {
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/schedule/get', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    timetable = data.timetable || Array(5).fill(null).map(() => Array(8).fill(null));
+                    if(timetable.length == 0) timetable = Array(5).fill(null).map(() => Array(8).fill(null));
+                    renderTimetable();
+                }
+            } catch (err) {
+                console.error('Error loading timetable:', err);
+            }
+        }
+
+        function selectSubject(subjectId) {
+            selectedSubjectId = subjectId;
+            
+            // Remove selection from all subjects
+            document.querySelectorAll('.subject-card').forEach(card => {
+                card.classList.remove('selected-subject');
+            });
+            
+            // Add selection to clicked subject
+            const selectedCard = document.querySelector(\`[data-subject-id="\${subjectId}"]\`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected-subject');
+            }
+            
+            // Show indicator
+            document.getElementById('selectedIndicator').classList.remove('hidden');
+            showNotification('Subject selected! Click on a timetable cell to place it.');
+        }
+
+        function renderSubjects() {
+            const container = document.getElementById('subjectsList');
+            container.innerHTML = '';
+            
+            subjects.forEach(subject => {
+                const usageCount = subject.usageCount || 0;
+                const div = document.createElement('div');
+                div.className = 'subject-card p-4 border-2 rounded-lg cursor-pointer hover:shadow-md transition';
+                div.style.borderColor = subject.color;
+                div.dataset.subjectId = subject.id;
+                
+                div.innerHTML = \`
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 rounded" style="background-color: \${subject.color}"></div>
+                            <span class="font-semibold text-gray-800 dark:text-white">\${subject.name}</span>
+                        </div>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">\${usageCount}x</span>
+                    </div>
+                    <div class="mt-2 flex gap-2">
+                        <button onclick="event.stopPropagation(); openEditModal('\${subject.id}')" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Edit</button>
+                        <button onclick="event.stopPropagation(); deleteSubject('\${subject.id}')" class="text-sm text-red-600 dark:text-red-400 hover:underline">Delete</button>
+                    </div>
+                \`;
+                
+                // Click to select
+                div.addEventListener('click', () => selectSubject(subject.id));
+                
+                // Also keep drag-and-drop as backup
+                div.draggable = true;
+                div.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', subject.id);
+                    div.classList.add('dragging');
+                });
+                
+                div.addEventListener('dragend', () => {
+                    div.classList.remove('dragging');
+                });
+                
+                container.appendChild(div);
+            });
+            
+            // Restore selection if exists
+            if (selectedSubjectId) {
+                const selectedCard = document.querySelector(\`[data-subject-id="\${selectedSubjectId}"]\`);
+                if (selectedCard) {
+                    selectedCard.classList.add('selected-subject');
+                    document.getElementById('selectedIndicator').classList.remove('hidden');
+                }
+            }
+        }
+
+        function renderTimetable() {
+            const tbody = document.getElementById('timetableBody');
+            tbody.innerHTML = '';
+            
+            for (let period = 0; period < 8; period++) {
+                const row = document.createElement('tr');
+                row.innerHTML = \`<td class="border dark:border-gray-600 p-2 text-center font-semibold text-gray-800 dark:text-white">\${period + 1}</td>\`;
+                
+                for (let day = 0; day < 5; day++) {
+                    const cell = document.createElement('td');
+                    cell.className = 'border dark:border-gray-600 p-2 text-center min-h-[60px] hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer';
+                    cell.dataset.day = day;
+                    cell.dataset.period = period;
+
+                    // Fill cell if subject exists
+                    
+                    const subjectId = timetable[day][period];
+                    if (subjectId) {
+                        const subject = subjects.find(s => s.id === subjectId);
+                        if (subject) {
+                            cell.innerHTML = \`
+                                <div class="px-2 py-1 rounded text-white font-medium text-sm" style="background-color: \${subject.color}">
+                                    \${subject.name}
+                                </div>
+                            \`;
+                        }
+                    } else {
+                        cell.innerHTML = '<div class="text-gray-400 dark:text-gray-600 text-xs">Empty</div>';
+                    }
+                    
+                    // Click to add/remove
+                    cell.addEventListener('click', () => {
+                        if (subjectId) {
+                            // Clear cell if already filled
+                            clearSlot(day, period);
+                        } else if (selectedSubjectId) {
+                            // Add selected subject
+                            updateSlot(day, period, selectedSubjectId);
+                        } else {
+                            showNotification('Please select a subject first', 'error');
+                        }
+                    });
+                    
+                    // Drag and drop support
+                    cell.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        cell.classList.add('drag-over');
+                    });
+                    
+                    cell.addEventListener('dragleave', () => {
+                        cell.classList.remove('drag-over');
+                    });
+                    
+                    cell.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        cell.classList.remove('drag-over');
+                        const subjectId = e.dataTransfer.getData('text/plain');
+                        if (subjectId) {
+                            updateSlot(day, period, subjectId);
+                        }
+                    });
+                    
+                    row.appendChild(cell);
+                }
+                tbody.appendChild(row);
+            }
+        }
+
+        async function addSubject() {
+            const name = document.getElementById('subjectNameInput').value.trim();
+            const color = document.getElementById('subjectColorInput').value;
+            
+            if (!name) {
+                showNotification('Please enter a subject name', 'error');
+                return;
+            }
+            
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/subjects/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password, name, color })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    showNotification('Subject added successfully!');
+                    document.getElementById('subjectNameInput').value = '';
+                    loadSubjects();
+                } else {
+                    showNotification(data.message || 'Error adding subject', 'error');
+                }
+            } catch (err) {
+                showNotification('Error connecting to server', 'error');
+            }
+        }
+
+        async function deleteSubject(subjectId) {
+            if (!confirm('Delete this subject? It will be removed from the timetable.')) return;
+            
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/subjects/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password, subjectId })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    showNotification('Subject deleted');
+                    if (selectedSubjectId === subjectId) {
+                        selectedSubjectId = null;
+                        document.getElementById('selectedIndicator').classList.add('hidden');
+                    }
+                    loadSubjects();
+                    loadTimetable();
+                }
+            } catch (err) {
+                showNotification('Error deleting subject', 'error');
+            }
+        }
+
+        async function updateSlot(day, period, subjectId) {
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/schedule/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password, day, period, subjectId })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    timetable[day][period] = subjectId;
+                    renderTimetable();
+                    renderSubjects();
+                }
+            } catch (err) {
+                showNotification('Error updating timetable', 'error');
+            }
+        }
+
+        async function clearSlot(day, period) {
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/schedule/clear', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password, day, period })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    timetable[day][period] = null;
+                    renderTimetable();
+                    renderSubjects();
+                }
+            } catch (err) {
+                showNotification('Error clearing slot', 'error');
+            }
+        }
+
+        function openEditModal(subjectId) {
+            currentEditId = subjectId;
+            const subject = subjects.find(s => s.id === subjectId);
+            document.getElementById('editNameInput').value = subject.name;
+            document.getElementById('editColorInput').value = subject.color;
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            currentEditId = null;
+        }
+
+        async function saveEdit() {
+            const name = document.getElementById('editNameInput').value.trim();
+            const color = document.getElementById('editColorInput').value;
+            
+            if (!name) {
+                showNotification('Please enter a name', 'error');
+                return;
+            }
+            
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/subjects/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password, subjectId: currentEditId, name, color })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    showNotification('Subject updated!');
+                    closeEditModal();
+                    loadSubjects();
+                    renderTimetable();
+                }
+            } catch (err) {
+                showNotification('Error updating subject', 'error');
+            }
+        }
+
+        document.getElementById('addSubjectBtn').addEventListener('click', addSubject);
+        document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
+        document.getElementById('subjectNameInput').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') addSubject();
+        });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            if (!userName || !password) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            await loadSubjects();
+            await loadTimetable();
+        });
+        </script>
+        </body>
+        </html>
+    `)
+}
+
+const homework = (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Blearn - Homework</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+        tailwind.config = {
+        darkMode: 'class'
+        }
+        </script>
+        <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'system';
+            const html = document.documentElement;
+            
+            if (savedTheme === 'system') {
+                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (systemDark) html.classList.add('dark');
+            } else if (savedTheme === 'dark') {
+                html.classList.add('dark');
+            }
+        })();
+        </script>
+        </head>
+        <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+
+        <div id="notificationContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"></div>
+
+        <header class="bg-white dark:bg-gray-800 shadow-md py-3 px-4 sm:py-4 sm:px-6">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <a href="/dashboard" class="text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</a>
+                <div class="flex gap-2 sm:gap-4">
+                    <a href="/timetable" class="px-3 py-2 sm:px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-lg transition text-sm sm:text-base">📅 Timetable</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 p-4 sm:p-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">📝 Homework Manager</h2>
+
+                <!-- Add Homework Form -->
+                <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md border dark:border-gray-700 mb-4 sm:mb-6">
+                    <h3 class="text-base sm:text-lg font-semibold text-gray-800 dark:text-white mb-3 sm:mb-4">Add New Homework</h3>
+                    
+                    <form id="homeworkForm" class="space-y-3 sm:space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                            <!-- Subject Selection -->
+                            <div>
+                                <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                                    Subject <span class="text-red-500">*</span>
+                                </label>
+                                <select id="subjectSelect" required
+                                        class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base">
+                                    <option value="">Select subject...</option>
+                                </select>
+                            </div>
+
+                            <!-- Due Date -->
+                            <div>
+                                <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                                    Due Date <span class="text-red-500">*</span>
+                                </label>
+                                <input type="date" id="dueDateInput" required
+                                    class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" />
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                                Description <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="descriptionInput" rows="3" placeholder="What needs to be done?" required
+                                    class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 resize-none text-sm sm:text-base"></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" 
+                                class="w-full sm:w-auto px-4 sm:px-6 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white rounded-lg font-medium transition text-sm sm:text-base">
+                            Add Homework
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Homework List -->
+                <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md border dark:border-gray-700">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 sm:mb-4 gap-2">
+                        <h3 class="text-base sm:text-lg font-semibold text-gray-800 dark:text-white">Your Homework</h3>
+                        
+                        <!-- Filter Buttons -->
+                        <div class="flex gap-2 text-xs sm:text-sm">
+                            <button onclick="filterHomework('all')" id="filterAll" class="px-3 py-1 rounded-md bg-blue-600 text-white">All</button>
+                            <button onclick="filterHomework('pending')" id="filterPending" class="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">Pending</button>
+                            <button onclick="filterHomework('completed')" id="filterCompleted" class="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">Done</button>
+                        </div>
+                    </div>
+
+                    <div id="homeworkList" class="space-y-3">
+                        <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm sm:text-base">
+                            Loading homework...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-white dark:bg-gray-800 text-center text-xs sm:text-sm py-3 sm:py-4 border-t dark:border-gray-700 mt-6 sm:mt-8 text-gray-500 dark:text-gray-400">
+            © 2025 Blearn. All rights reserved.
+        </footer>
+
+        <!-- Edit Homework Modal -->
+        <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 shadow-lg w-full max-w-lg">
+                <h3 class="text-base sm:text-lg font-bold text-gray-800 dark:text-white mb-3 sm:mb-4">Edit Homework</h3>
+                
+                <div class="space-y-3 sm:space-y-4">
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">Subject</label>
+                        <select id="editSubjectSelect" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm sm:text-base">
+                            <option value="">Select subject...</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">Due Date</label>
+                        <input type="date" id="editDueDateInput" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm sm:text-base" />
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">Description</label>
+                        <textarea id="editDescriptionInput" rows="3" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm sm:text-base"></textarea>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-2 mt-4 sm:mt-6">
+                    <button onclick="closeEditModal()" class="px-3 sm:px-4 py-2 text-gray-600 dark:text-gray-400 text-sm sm:text-base">Cancel</button>
+                    <button onclick="saveEdit()" class="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded text-sm sm:text-base">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        let subjects = [];
+        let homework = [];
+        let currentFilter = 'all';
+        let editingId = null;
+
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            const baseClasses = 'p-3 sm:p-4 rounded-xl shadow-lg border backdrop-blur-sm transform transition-all duration-300 ease-in-out mb-3';
+            const typeClasses = type === 'success' 
+                ? 'bg-green-50/90 dark:bg-green-900/80 border-green-200 dark:border-green-700 text-green-800 dark:text-green-200'
+                : 'bg-red-50/90 dark:bg-red-900/80 border-red-200 dark:border-red-700 text-red-800 dark:text-red-200';
+            
+            notification.className = \`\${baseClasses} \${typeClasses} translate-y-[-20px] opacity-0\`;
+            notification.innerHTML = \`
+                <div class="flex items-center justify-between">
+                    <span class="font-medium text-sm sm:text-base">\${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-current opacity-60 hover:opacity-100 text-xl">×</button>
+                </div>
+            \`;
+            container.appendChild(notification);
+            setTimeout(() => notification.classList.remove('translate-y-[-20px]', 'opacity-0'), 10);
+            setTimeout(() => notification.remove(), 4000);
+        }
+
+        async function loadSubjects() {
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/subjects/get', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    subjects = data.subjects || [];
+                    populateSubjectSelects();
+                }
+            } catch (err) {
+                console.error('Error loading subjects:', err);
+            }
+        }
+
+        function populateSubjectSelects() {
+            const selects = [document.getElementById('subjectSelect'), document.getElementById('editSubjectSelect')];
+            
+            selects.forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">Select subject...</option>';
+                
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject.id;
+                    option.textContent = subject.name;
+                    option.style.color = subject.color;
+                    select.appendChild(option);
+                });
+                
+                if (currentValue) select.value = currentValue;
+            });
+        }
+
+        async function loadHomework() {
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/homework/get', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    homework = data.homework || [];
+                    renderHomework();
+                }
+            } catch (err) {
+                console.error('Error loading homework:', err);
+                document.getElementById('homeworkList').innerHTML = \`
+                    <div class="text-center py-8 text-red-500 dark:text-red-400 text-sm sm:text-base">
+                        Error loading homework. Please refresh.
+                    </div>
+                \`;
+            }
+        }
+
+        function filterHomework(filter) {
+            currentFilter = filter;
+            
+            document.querySelectorAll('[id^="filter"]').forEach(btn => {
+                btn.className = 'px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300';
+            });
+            document.getElementById(\`filter\${filter.charAt(0).toUpperCase() + filter.slice(1)}\`).className = 'px-3 py-1 rounded-md bg-blue-600 text-white';
+            
+            renderHomework();
+        }
+
+        function renderHomework() {
+            const container = document.getElementById('homeworkList');
+            
+            let filtered = homework;
+            if (currentFilter === 'pending') {
+                filtered = homework.filter(hw => !hw.completed);
+            } else if (currentFilter === 'completed') {
+                filtered = homework.filter(hw => hw.completed);
+            }
+            
+            filtered.sort((a, b) => {
+                if (a.completed !== b.completed) return a.completed ? 1 : -1;
+                return new Date(a.dueDate) - new Date(b.dueDate);
+            });
+            
+            if (filtered.length === 0) {
+                container.innerHTML = \`
+                    <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm sm:text-base">
+                        \${currentFilter === 'all' ? 'No homework yet. Add one above!' : \`No \${currentFilter} homework.\`}
+                    </div>
+                \`;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            filtered.forEach(hw => {
+                const subject = subjects.find(s => s.id === hw.subjectId);
+                const dueDate = new Date(hw.dueDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const dueDateOnly = new Date(dueDate);
+                dueDateOnly.setHours(0, 0, 0, 0);
+                const daysUntil = Math.ceil((dueDateOnly - today) / (1000 * 60 * 60 * 24));
+                
+                let dueDateClass = 'text-gray-600 dark:text-gray-400';
+                let dueDateText = dueDate.toLocaleDateString();
+                
+                if (!hw.completed) {
+                    if (daysUntil < 0) {
+                        dueDateClass = 'text-red-600 dark:text-red-400 font-semibold';
+                        dueDateText += ' (Overdue!)';
+                    } else if (daysUntil === 0) {
+                        dueDateClass = 'text-orange-600 dark:text-orange-400 font-semibold';
+                        dueDateText += ' (Today!)';
+                    } else if (daysUntil === 1) {
+                        dueDateClass = 'text-yellow-600 dark:text-yellow-400 font-semibold';
+                        dueDateText += ' (Tomorrow)';
+                    } else if (daysUntil <= 3) {
+                        dueDateClass = 'text-yellow-600 dark:text-yellow-400';
+                        dueDateText += \` (in \${daysUntil} days)\`;
+                    }
+                }
+                
+                const card = document.createElement('div');
+                card.className = \`p-3 sm:p-4 border-l-4 rounded-lg \${hw.completed ? 'bg-gray-50 dark:bg-gray-700/50 opacity-75' : 'bg-white dark:bg-gray-700'} transition\`;
+                card.style.borderColor = subject ? subject.color : '#6b7280';
+                
+                card.innerHTML = \`
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" \${hw.completed ? 'checked' : ''} 
+                            onchange="toggleComplete('\${hw.id}')"
+                            class="mt-1 w-4 h-4 sm:w-5 sm:h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer flex-shrink-0">
+                        
+                        <div class="flex-1 min-w-0">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 mb-2">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base \${hw.completed ? 'line-through' : ''}">
+                                        \${subject ? subject.name : 'Unknown Subject'}
+                                    </span>
+                                    \${hw.completed ? '<span class="text-xs px-2 py-0.5 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded">Done</span>' : ''}
+                                </div>
+                                <span class="text-xs sm:text-sm \${dueDateClass}">\${dueDateText}</span>
+                            </div>
+                            
+                            <p class="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-2 \${hw.completed ? 'line-through' : ''} break-words">
+                                \${hw.description}
+                            </p>
+                            
+                            <div class="flex gap-2 text-xs sm:text-sm">
+                                <button onclick="openEditModal('\${hw.id}')" class="text-blue-600 dark:text-blue-400 hover:underline">Edit</button>
+                                <button onclick="deleteHomework('\${hw.id}')" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                \`;
+                
+                container.appendChild(card);
+            });
+        }
+
+        async function addHomework(e) {
+            e.preventDefault();
+            
+            const subjectId = document.getElementById('subjectSelect').value;
+            const dueDate = document.getElementById('dueDateInput').value;
+            const description = document.getElementById('descriptionInput').value.trim();
+            
+            if (!subjectId || !dueDate || !description) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/homework/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password, subjectId, dueDate, description })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    showNotification('Homework added!');
+                    document.getElementById('homeworkForm').reset();
+                    await loadHomework();
+                } else {
+                    showNotification(data.message || 'Error adding homework', 'error');
+                }
+            } catch (err) {
+                console.error('Add homework error:', err);
+                showNotification('Error connecting to server', 'error');
+            }
+        }
+
+        async function toggleComplete(id) {
+            const hw = homework.find(h => h.id === id);
+            if (!hw) return;
+            
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/homework/complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        username: userName, 
+                        password, 
+                        homeworkId: id, 
+                        completed: !hw.completed
+                    })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    hw.completed = !hw.completed;
+                    renderHomework();
+                } else {
+                    showNotification(data.message || 'Error updating homework', 'error');
+                }
+            } catch (err) {
+                console.error('Toggle complete error:', err);
+                showNotification('Error updating homework', 'error');
+            }
+        }
+
+        function openEditModal(id) {
+            editingId = id;
+            const hw = homework.find(h => h.id === id);
+            if (!hw) return;
+            
+            document.getElementById('editSubjectSelect').value = hw.subjectId;
+            document.getElementById('editDueDateInput').value = hw.dueDate;
+            document.getElementById('editDescriptionInput').value = hw.description;
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            editingId = null;
+        }
+
+        async function saveEdit() {
+            const subjectId = document.getElementById('editSubjectSelect').value;
+            const dueDate = document.getElementById('editDueDateInput').value;
+            const description = document.getElementById('editDescriptionInput').value.trim();
+            
+            if (!subjectId || !dueDate || !description) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/homework/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        username: userName, 
+                        password, 
+                        homeworkId: editingId,
+                        subjectId,
+                        dueDate,
+                        description
+                    })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    showNotification('Homework updated!');
+                    closeEditModal();
+                    await loadHomework();
+                } else {
+                    showNotification(data.message || 'Error updating homework', 'error');
+                }
+            } catch (err) {
+                console.error('Update homework error:', err);
+                showNotification('Error updating homework', 'error');
+            }
+        }
+
+        async function deleteHomework(id) {
+            if (!confirm('Delete this homework?')) return;
+            
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            try {
+                const res = await fetch('/api/timetable/homework/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userName, password, homeworkId: id })
+                });
+                const data = await res.json();
+                if (data.state === 'success') {
+                    showNotification('Homework deleted');
+                    await loadHomework();
+                } else {
+                    showNotification(data.message || 'Error deleting homework', 'error');
+                }
+            } catch (err) {
+                console.error('Delete homework error:', err);
+                showNotification('Error deleting homework', 'error');
+            }
+        }
+
+        document.getElementById('homeworkForm').addEventListener('submit', addHomework);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userName = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+            
+            if (!userName || !password) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            document.getElementById('dueDateInput').valueAsDate = new Date();
+            
+            await loadSubjects();
+            await loadHomework();
+        });
+        </script>
+        </body>
+        </html>
+    `);
+};
+
+module.exports = { landing, register, verify, login, dashboard, logout, settings, forgotpassword, learn, createlist, list, editlist, createTable, table, editTable, importlist, ad, timetable, homework };
