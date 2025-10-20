@@ -98,7 +98,14 @@ const deleteHomework = async (req, res) => {
         return res.status(404).json({ state: "error", message: "User not found" });
     }    
 
-    const homework = user.homeworks.findIndex(hw => hw.id === homeworkId);
+    let homework = null;
+
+    user.homeworks.forEach((i, index) => {
+        if(i.id == homeworkId) {
+            homework = index;
+            return;
+        }
+    })
 
     if(!homework) {
         return res.status(404).json({ state: "error", message: "Homework not found"});
