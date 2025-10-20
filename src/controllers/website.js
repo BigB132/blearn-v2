@@ -5413,8 +5413,8 @@ const homework = (req, res) => {
                             </p>
                             
                             <div class="flex gap-2 text-xs sm:text-sm">
-                                <button onclick="openEditModal(\`\${hw.id}\`)" class="text-blue-600 dark:text-blue-400 hover:underline">Edit</button>
-                                <button onclick="deleteHomework(\`\${hw.id}\`)" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
+                                <button onclick="openEditModal('\${hw.id}')" class="text-blue-600 dark:text-blue-400 hover:underline">Edit</button>
+                                <button onclick="deleteHomework('\${hw.id}')" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
                             </div>
                         </div>
                     </div>
