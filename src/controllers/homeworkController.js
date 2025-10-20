@@ -28,7 +28,7 @@ const createHomework = async (req, res) => {
         return res.status(404).json({ state: "error", message: "User not found" });
     }
     
-    user.homeworks.push({ subjectId, dueDate, description, completed: false, createdAt: new Date(), id: subjectId + Date.now() });
+    user.homeworks.push({ subjectId, dueDate, description, completed: false, id: subjectId + Date.now() });
 
     user.markModified('homeworks');
     await user.save()
@@ -88,6 +88,7 @@ const editHomework = async (req, res) => {
 
 const deleteHomework = async (req, res) => {
     const {username, password, homeworkId} = req.body;
+    console.log(homeworkId)
     if(!username || !password || !homeworkId) {
         return res.status(404).json({ state: "error", message: "Missing required fields"});
     }
