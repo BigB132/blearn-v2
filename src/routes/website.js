@@ -1,5 +1,5 @@
 const express = require('express');
-const { dashboard, register, verify, login, landing, logout, settings, forgotpassword, learn, createlist, list, editlist, createTable, table, editTable, importlist, test, ad, timetable, homework } = require('../controllers/website');
+const { dashboard, register, verify, login, landing, logout, settings, forgotpassword, learn, createlist, list, editlist, createTable, table, editTable, importlist, test, ad, timetable, homework, privacy } = require('../controllers/website');
 
 const router = express.Router();
 
@@ -22,5 +22,6 @@ router.get('/importlist', importlist)
 router.get('/ad', ad)
 router.get('/timetable', timetable)
 router.get('/homework', homework)
+router.get('/privacy', privacy)
 
 module.exports = router;

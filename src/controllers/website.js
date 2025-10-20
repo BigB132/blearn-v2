@@ -26,7 +26,7 @@ const autologin = `
       }
     }
 });
-`
+`;
 
 const autologin2 = `
     const savedUser = localStorage.getItem("username");
@@ -80,7 +80,7 @@ try {
     console.warn("Autologin failed:", err);
 }
 }
-`
+`;
 
 const header = `
     <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center">
@@ -203,11 +203,11 @@ const header = `
         usernameField.innerHTML = username;
     })
 </script>
-`
+`;
 
 const notificationContainer = `
 <div id="notificationContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"></div>
-`
+`;
 
 const notificationScript = `
 function showNotification(message, type = 'success', duration = 4000) {
@@ -266,13 +266,13 @@ function removeNotification(notification) {
         }
     }, 300);
 }
-`
+`;
 
 const footer = `
 <footer class="bg-white dark:bg-gray-800 text-center text-sm py-4 border-t dark:border-gray-700 mt-8 text-gray-500 dark:text-gray-400">
-    © 2025 Blearn. All rights reserved.
+    © 2025 Blearn. All rights reserved. <a href="/privacy"><u>Privacy Policy</u></a>
 </footer>
-`
+`;
 
 const fastInit = `
 <script>
@@ -288,12 +288,10 @@ const fastInit = `
         }
     })();
 </script>
-`
-
-
+`;
 
 const landing = async (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -330,6 +328,7 @@ const landing = async (req, res) => {
                 Login
             </a>
             </div>
+            ${footer}
         </div>
 
         <script>
@@ -366,12 +365,12 @@ const landing = async (req, res) => {
         </script>
         </body>
         </html>    
-    `)
+    `);
 };
 
 // Express route implementation
 const register = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -439,7 +438,9 @@ const register = (req, res) => {
                 </a>
                 
                 <div id="message" class="text-center text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300"></div>
+                ${footer}
             </div>
+
 
             <script>
                 // Dark mode functionality
@@ -552,11 +553,11 @@ const register = (req, res) => {
             </script>
         </body>
         </html>
-    `)
+    `);
 };
 
 const verify = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -609,7 +610,8 @@ const verify = (req, res) => {
                 </div>
                 
                 <div id="message" class="text-center text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300"></div>
-            </div>
+                ${footer}
+                </div>
 
             <script>
                 // Dark mode functionality
@@ -795,11 +797,11 @@ const verify = (req, res) => {
             </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const login = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -855,6 +857,7 @@ const login = (req, res) => {
                 class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                 Don't have an account?
             </a>
+            ${footer}
         </div>
 
         <script>
@@ -951,11 +954,11 @@ const login = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const forgotpassword = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -1070,11 +1073,11 @@ const forgotpassword = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const dashboard = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -1109,7 +1112,6 @@ const dashboard = (req, res) => {
         ${footer}
 
         <script>
-            // Dark mode functionality with localStorage - same as welcome page
             class ThemeManager {
             constructor() {
                 this.init();
@@ -1184,21 +1186,21 @@ const dashboard = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const logout = (req, res) => {
-    res.send(`
+  res.send(`
         <script>
             localStorage.removeItem("username");
             localStorage.removeItem("password");
             window.location.href = "/";
         </script>
-    `)
-}
+    `);
+};
 
 const settings = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1411,11 +1413,11 @@ ${header}
     </script>
 </body>
 </html>
-    `)
-}
+    `);
+};
 
 const learn = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -2139,11 +2141,11 @@ const learn = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const createlist = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -2352,11 +2354,11 @@ const createlist = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const list = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -2617,11 +2619,11 @@ const list = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const editlist = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -3011,11 +3013,11 @@ const editlist = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const createTable = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -3422,11 +3424,11 @@ const createTable = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const table = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -3665,11 +3667,11 @@ const table = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const editTable = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -4232,11 +4234,11 @@ const editTable = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const importlist = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -4539,11 +4541,11 @@ const importlist = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const ad = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -4578,11 +4580,11 @@ const ad = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const timetable = (req, res) => {
-    res.send(`
+  res.send(`
       <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -5083,11 +5085,11 @@ const timetable = (req, res) => {
         </script>
         </body>
         </html>
-    `)
-}
+    `);
+};
 
 const homework = (req, res) => {
-    res.send(`
+  res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -5593,4 +5595,98 @@ const homework = (req, res) => {
     `);
 };
 
-module.exports = { landing, register, verify, login, dashboard, logout, settings, forgotpassword, learn, createlist, list, editlist, createTable, table, editTable, importlist, ad, timetable, homework };
+const privacy = (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Blearn - Privacy Policy</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script>
+        tailwind.config = {
+          darkMode: 'class'
+        }
+      </script>
+      ${fastInit}
+    </head>
+    <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+    
+      <!-- Main Content -->
+      <main class="flex-1 p-6">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">Privacy Policy</h2>
+    
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow dark:shadow-gray-900/20 border dark:border-gray-700 transition-all duration-300 space-y-4">
+          <p class="text-gray-700 dark:text-gray-300">
+            At <strong>Blearn</strong>, we value your privacy and are committed to protecting it. 
+            This Privacy Policy explains how we handle your personal information and what data is collected when you use our services.
+          </p>
+    
+          <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mt-4">1. Data Collection</h3>
+          <p class="text-gray-700 dark:text-gray-300">
+            <strong>Blearn does not collect, store, or process any personal data.</strong>  
+            We do not track users, gather analytics, or create profiles based on user behavior.  
+            Your activity on Blearn remains entirely private and local to your device.
+          </p>
+    
+          <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mt-4">2. Cookies and Tracking</h3>
+          <p class="text-gray-700 dark:text-gray-300">
+            Blearn itself does not use any cookies, trackers, or analytics tools.  
+            However, we require you to watch advertisements on third-party providers such as <strong>Linkvertise</strong>.  
+            These third parties may collect information according to their own privacy policies.  
+            We encourage you to review <a href="https://linkvertise.com/privacy" target="_blank" class="text-blue-500 dark:text-blue-400 hover:underline">Linkvertise’s Privacy Policy</a> for more details.
+          </p>
+    
+          <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mt-4">3. External Links</h3>
+          <p class="text-gray-700 dark:text-gray-300">
+            Our website may contain links to external sites that are not operated by Blearn.  
+            We are not responsible for the content or privacy practices of these websites.  
+            Please review the privacy statements of any third-party sites you visit.
+          </p>
+    
+          <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mt-4">4. Security</h3>
+          <p class="text-gray-700 dark:text-gray-300">
+            Since Blearn does not collect or store any user data, there is no risk of personal data breaches through our platform.  
+            Nevertheless, we strive to maintain a secure and trustworthy environment for all users.
+          </p>
+    
+          <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mt-4">5. Updates to This Policy</h3>
+          <p class="text-gray-700 dark:text-gray-300">
+            We may update this Privacy Policy from time to time.  
+            Any changes will be clearly posted on this page, and the "last updated" date will be revised accordingly.
+          </p>
+    
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-6">
+            <em>Last updated: October 2025</em>
+          </p>
+        </div>
+      </main>
+    
+    </body>
+    </html>    
+    `);
+};
+
+module.exports = {
+  landing,
+  register,
+  verify,
+  login,
+  dashboard,
+  logout,
+  settings,
+  forgotpassword,
+  learn,
+  createlist,
+  list,
+  editlist,
+  createTable,
+  table,
+  editTable,
+  importlist,
+  ad,
+  timetable,
+  homework,
+  privacy,
+};

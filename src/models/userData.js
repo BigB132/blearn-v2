@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const userData = new mongoose.Schema({
   userName: {
@@ -25,21 +25,21 @@ const userData = new mongoose.Schema({
   },
   subjects: {
     type: Array,
-    required: false,
+    required: true,
     default: [],
   },
   schedule: {
     type: Array,
-    required: false,
+    required: true,
     default: [],
   },
   homeworks: {
     type: Array,
-    required: false,
+    required: true,
     default: [],
-  }
+  },
 });
 
 const UserData = mongoose.model("UserData", userData);
 
-module.exports = UserData
+module.exports = UserData;
