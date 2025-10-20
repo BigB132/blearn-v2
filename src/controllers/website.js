@@ -1098,90 +1098,419 @@ const dashboard = (req, res) => {
         ${header}
 
         <!-- Main Content -->
-        <main class="flex-1 p-6">
+        <main class="flex-1 p-4 sm:p-6">
             <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300" id="header">Welcome back!</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
-                <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400">Learn now!</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">Create your own cue cards.</p>
-                <a href="/learn" class="text-blue-500 dark:text-blue-400 text-sm mt-4 inline-block hover:underline transition-colors duration-300">Start now →</a>
+            
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <a href="/learn" class="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 text-white group">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-3xl">📚</span>
+                        <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold">Learn</h3>
+                    <p class="text-sm opacity-90 mt-1">Practice with flashcards</p>
+                </a>
+
+                <a href="/timetable" class="bg-gradient-to-br from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 text-white group">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-3xl">📅</span>
+                        <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold">Timetable</h3>
+                    <p class="text-sm opacity-90 mt-1">Manage your schedule</p>
+                </a>
+
+                <a href="/homework" class="bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 text-white group">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-3xl">📝</span>
+                        <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold">Homework</h3>
+                    <p class="text-sm opacity-90 mt-1">Add and track tasks</p>
+                </a>
+
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 p-6 rounded-xl shadow transition-all duration-300 text-white">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-3xl">⚡</span>
+                    </div>
+                    <h3 class="text-lg font-semibold" id="urgentCount">0 Urgent</h3>
+                    <p class="text-sm opacity-90 mt-1">Tasks due soon</p>
+                </div>
             </div>
+
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column: Urgent Homework (2/3 width) -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white">🔥 Urgent Homework</h3>
+                            <a href="/homework" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">View All →</a>
+                        </div>
+                        <div id="urgentHomework" class="space-y-3">
+                            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                                Loading homework...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Today's Schedule (1/3 width) -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white">📆 Today</h3>
+                            <span id="todayDay" class="text-sm text-gray-600 dark:text-gray-400"></span>
+                        </div>
+                        <div id="todaySchedule" class="space-y-2">
+                            <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
+                                Loading schedule...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Week Timetable -->
+            <div class="mt-6">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white">📋 This Week's Timetable</h3>
+                        <a href="/timetable" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Edit Timetable →</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse min-w-[600px]">
+                            <thead>
+                                <tr class="bg-gray-100 dark:bg-gray-700">
+                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Period</th>
+                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Mon</th>
+                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Tue</th>
+                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Wed</th>
+                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Thu</th>
+                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Fri</th>
+                                </tr>
+                            </thead>
+                            <tbody id="weekTimetable">
+                                <tr>
+                                    <td colspan="6" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                                        Loading timetable...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </main>
 
         ${footer}
 
         <script>
+            let subjects = [];
+            let homework = [];
+            let timetable = [];
+
             class ThemeManager {
-            constructor() {
-                this.init();
-            }
-
-            init() {
-                // Get theme from localStorage or default to 'system'
-                const savedTheme = localStorage.getItem('theme') || 'system';
-                this.applyTheme(savedTheme);
-            }
-
-            applyTheme(theme) {
-                const html = document.documentElement;
-                
-                if (theme === 'system') {
-                // Use system preference
-                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                html.classList.toggle('dark', systemDark);
-                } else if (theme === 'dark') {
-                html.classList.add('dark');
-                } else {
-                html.classList.remove('dark');
+                constructor() {
+                    this.init();
                 }
-                
-                // Save to localStorage
-                localStorage.setItem('theme', theme);
+
+                init() {
+                    const savedTheme = localStorage.getItem('theme') || 'system';
+                    this.applyTheme(savedTheme);
+                }
+
+                applyTheme(theme) {
+                    const html = document.documentElement;
+                    
+                    if (theme === 'system') {
+                        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                        html.classList.toggle('dark', systemDark);
+                    } else if (theme === 'dark') {
+                        html.classList.add('dark');
+                    } else {
+                        html.classList.remove('dark');
+                    }
+                    
+                    localStorage.setItem('theme', theme);
+                }
             }
 
-            
-            
+            async function loadSubjects() {
+                const userName = localStorage.getItem('username');
+                const password = localStorage.getItem('password');
+                
+                try {
+                    const res = await fetch('/api/timetable/subjects/get', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: userName, password })
+                    });
+                    const data = await res.json();
+                    if (data.state === 'success') {
+                        subjects = data.subjects || [];
+                    }
+                } catch (err) {
+                    console.error('Error loading subjects:', err);
+                }
+            }
+
+            async function loadHomework() {
+                const userName = localStorage.getItem('username');
+                const password = localStorage.getItem('password');
+                
+                try {
+                    const res = await fetch('/api/timetable/homework/get', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: userName, password })
+                    });
+                    const data = await res.json();
+                    if (data.state === 'success') {
+                        homework = data.homework || [];
+                        renderUrgentHomework();
+                    }
+                } catch (err) {
+                    console.error('Error loading homework:', err);
+                    document.getElementById('urgentHomework').innerHTML = \`
+                        <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
+                            No homework data available
+                        </div>
+                    \`;
+                }
+            }
+
+            async function loadTimetable() {
+                const userName = localStorage.getItem('username');
+                const password = localStorage.getItem('password');
+                
+                try {
+                    const res = await fetch('/api/timetable/schedule/get', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: userName, password })
+                    });
+                    const data = await res.json();
+                    if (data.state === 'success') {
+                        timetable = data.timetable || Array(5).fill(null).map(() => Array(8).fill(null));
+                        renderTodaySchedule();
+                        renderWeekTimetable();
+                    }
+                } catch (err) {
+                    console.error('Error loading timetable:', err);
+                    document.getElementById('todaySchedule').innerHTML = \`
+                        <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
+                            No schedule available
+                        </div>
+                    \`;
+                }
+            }
+
+            function renderUrgentHomework() {
+                const container = document.getElementById('urgentHomework');
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                // Filter homework due in next 3 days and not completed
+                const urgent = homework.filter(hw => {
+                    if (hw.completed) return false;
+                    const dueDate = new Date(hw.dueDate);
+                    dueDate.setHours(0, 0, 0, 0);
+                    const daysUntil = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                    return daysUntil <= 3 && daysUntil >= -1; // Include overdue by 1 day
+                }).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+                // Update urgent count
+                document.getElementById('urgentCount').textContent = \`\${urgent.length} Urgent\`;
+
+                if (urgent.length === 0) {
+                    container.innerHTML = \`
+                        <div class="text-center py-8">
+                            <span class="text-4xl">✅</span>
+                            <p class="text-gray-500 dark:text-gray-400 mt-2">No urgent homework!</p>
+                        </div>
+                    \`;
+                    return;
+                }
+
+                container.innerHTML = '';
+                urgent.forEach(hw => {
+                    const subject = subjects.find(s => s.id === hw.subjectId);
+                    const dueDate = new Date(hw.dueDate);
+                    const daysUntil = Math.ceil((dueDate.setHours(0, 0, 0, 0) - today) / (1000 * 60 * 60 * 24));
+                    
+                    let urgencyClass = 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800';
+                    let urgencyText = \`\${daysUntil} day\${daysUntil !== 1 ? 's' : ''}\`;
+                    
+                    if (daysUntil < 0) {
+                        urgencyClass = 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800';
+                        urgencyText = 'Overdue!';
+                    } else if (daysUntil === 0) {
+                        urgencyClass = 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800';
+                        urgencyText = 'Today!';
+                    } else if (daysUntil === 1) {
+                        urgencyText = 'Tomorrow';
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = \`p-4 rounded-lg border-l-4 \${urgencyClass}\`;
+                    card.style.borderLeftColor = subject ? subject.color : '#6b7280';
+                    card.innerHTML = \`
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="font-semibold text-gray-800 dark:text-white text-sm">
+                                        \${subject ? subject.name : 'Unknown'}
+                                    </span>
+                                    <span class="text-xs px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                        \${urgencyText}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-700 dark:text-gray-300 truncate">
+                                    \${hw.description}
+                                </p>
+                            </div>
+                            <a href="/homework" class="text-blue-600 dark:text-blue-400 hover:underline text-sm whitespace-nowrap">
+                                View →
+                            </a>
+                        </div>
+                    \`;
+                    container.appendChild(card);
+                });
+            }
+
+            function renderTodaySchedule() {
+                const container = document.getElementById('todaySchedule');
+                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const today = new Date().getDay();
+                
+                document.getElementById('todayDay').textContent = days[today];
+
+                // Weekend or no timetable data
+                if (today === 0 || today === 6) {
+                    container.innerHTML = \`
+                        <div class="text-center py-8">
+                            <span class="text-4xl">🎉</span>
+                            <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm">It's the weekend!</p>
+                        </div>
+                    \`;
+                    return;
+                }
+
+                const dayIndex = today - 1; // Monday = 0, Friday = 4
+                const todayClasses = timetable[dayIndex] || [];
+                const uniqueSubjects = [...new Set(todayClasses.filter(id => id !== null))];
+
+                if (uniqueSubjects.length === 0) {
+                    container.innerHTML = \`
+                        <div class="text-center py-8">
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">No classes today</p>
+                        </div>
+                    \`;
+                    return;
+                }
+
+                container.innerHTML = '';
+                uniqueSubjects.forEach(subjectId => {
+                    const subject = subjects.find(s => s.id === subjectId);
+                    if (!subject) return;
+
+                    const periods = todayClasses.map((id, index) => id === subjectId ? index + 1 : null).filter(p => p !== null);
+                    
+                    const item = document.createElement('div');
+                    item.className = 'flex items-center gap-3 p-3 rounded-lg border dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition';
+                    item.innerHTML = \`
+                        <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: \${subject.color}"></div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-medium text-gray-800 dark:text-white text-sm">\${subject.name}</div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400">Period\${periods.length > 1 ? 's' : ''} \${periods.join(', ')}</div>
+                        </div>
+                    \`;
+                    container.appendChild(item);
+                });
+            }
+
+            function renderWeekTimetable() {
+                const tbody = document.getElementById('weekTimetable');
+                tbody.innerHTML = '';
+                
+                for (let period = 0; period < 8; period++) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = \`<td class="border dark:border-gray-600 p-2 text-center font-semibold text-gray-800 dark:text-white text-sm">\${period + 1}</td>\`;
+                    
+                    for (let day = 0; day < 5; day++) {
+                        const cell = document.createElement('td');
+                        cell.className = 'border dark:border-gray-600 p-2 text-center';
+                        
+                        const subjectId = timetable[day][period];
+                        if (subjectId) {
+                            const subject = subjects.find(s => s.id === subjectId);
+                            if (subject) {
+                                cell.innerHTML = \`
+                                    <div class="px-2 py-1 rounded text-white font-medium text-xs truncate" style="background-color: \${subject.color}" title="\${subject.name}">
+                                        \${subject.name}
+                                    </div>
+                                \`;
+                            }
+                        } else {
+                            cell.innerHTML = '<span class="text-gray-400 dark:text-gray-600 text-xs">-</span>';
+                        }
+                        
+                        row.appendChild(cell);
+                    }
+                    tbody.appendChild(row);
+                }
             }
 
             document.addEventListener("DOMContentLoaded", async () => {
-                // Initialize theme manager
                 new ThemeManager();
                 
                 const userName = localStorage.getItem("username");
                 const password = localStorage.getItem("password");
             
-            if (!userName || !password) {
-                window.location.href = "/login";
-                return;
-            }
-
-            try {
-                const res = await fetch("/api/auth/checkData", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userName, password })
-                });
-                
-                const data = await res.json();
-                
-                if (data.state === "error") {
-                localStorage.removeItem("username");
-                localStorage.removeItem("password");
-                window.location.href = "/login";
-                } else if (data.state === "success" && data.sessionExpired === "true") {
-                window.location.href = "/ad";
-                } else if (data.state === "success" && data.verified === "false"){
-                window.location.href = "/verify"}
-                else {
-                console.log("Successful login");
+                if (!userName || !password) {
+                    window.location.href = "/login";
+                    return;
                 }
-            } catch (err) {
-                console.error("Error while checking data:", err);
-                window.location.href = "/login";
-            }
-            
-            document.getElementById("header").innerHTML = "Welcome back, " + userName + "!";
+
+                try {
+                    const res = await fetch("/api/auth/checkData", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ userName, password })
+                    });
+                    
+                    const data = await res.json();
+                    
+                    if (data.state === "error") {
+                        localStorage.removeItem("username");
+                        localStorage.removeItem("password");
+                        window.location.href = "/login";
+                    } else if (data.state === "success" && data.sessionExpired === "true") {
+                        window.location.href = "/ad";
+                    } else if (data.state === "success" && data.verified === "false"){
+                        window.location.href = "/verify";
+                    } else {
+                        console.log("Successful login");
+                    }
+                } catch (err) {
+                    console.error("Error while checking data:", err);
+                    window.location.href = "/login";
+                }
+                
+                document.getElementById("header").innerHTML = "Welcome back, " + userName + "!";
+
+                // Load all dashboard data
+                await loadSubjects();
+                await loadHomework();
+                await loadTimetable();
             });
         </script>
         </body>
