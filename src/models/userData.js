@@ -31,7 +31,6 @@ const userData = new mongoose.Schema({
   schedule: {
     type: Array,
     required: true,
-    default: [],
   },
   homeworks: {
     type: Array,

@@ -1259,6 +1259,7 @@ const dashboard = (req, res) => {
                     }
                 } catch (err) {
                     console.error('Error loading subjects:', err);
+                    subjects = [];
                 }
             }
 
@@ -1276,9 +1277,12 @@ const dashboard = (req, res) => {
                     if (data.state === 'success') {
                         homework = data.homework || [];
                         renderUrgentHomework();
+                    } else {
+                        throw new Error('Failed to load homework');
                     }
                 } catch (err) {
                     console.error('Error loading homework:', err);
+                    homework = [];
                     document.getElementById('urgentHomework').innerHTML = \`
                         <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
                             No homework data available
@@ -1302,14 +1306,11 @@ const dashboard = (req, res) => {
                         timetable = data.timetable || Array(5).fill(null).map(() => Array(8).fill(null));
                         renderTodaySchedule();
                         renderWeekTimetable();
+                    } else {
+                        throw new Error('Failed to load timetable');
                     }
                 } catch (err) {
                     console.error('Error loading timetable:', err);
-                    document.getElementById('todaySchedule').innerHTML = \`
-                        <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
-                            No schedule available
-                        </div>
-                    \`;
                 }
             }
 
@@ -1393,7 +1394,7 @@ const dashboard = (req, res) => {
                 
                 document.getElementById('todayDay').textContent = days[today];
 
-                // Weekend or no timetable data
+                // Weekend
                 if (today === 0 || today === 6) {
                     container.innerHTML = \`
                         <div class="text-center py-8">
@@ -1404,8 +1405,29 @@ const dashboard = (req, res) => {
                     return;
                 }
 
+                // Check if timetable is properly loaded
+                if (!Array.isArray(timetable) || timetable.length === 0) {
+                    container.innerHTML = \`
+                        <div class="text-center py-8">
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">No timetable set up yet</p>
+                        </div>
+                    \`;
+                    return;
+                }
+
                 const dayIndex = today - 1; // Monday = 0, Friday = 4
-                const todayClasses = timetable[dayIndex] || [];
+                const todayClasses = Object.values(timetable[dayIndex]);
+                
+                // Check if today's classes exist and is an array
+                if (!todayClasses) {
+                    container.innerHTML = \`
+                        <div class="text-center py-8">
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">No classes today</p>
+                        </div>
+                    \`;
+                    return;
+                }
+
                 const uniqueSubjects = [...new Set(todayClasses.filter(id => id !== null))];
 
                 if (uniqueSubjects.length === 0) {
@@ -1439,6 +1461,19 @@ const dashboard = (req, res) => {
 
             function renderWeekTimetable() {
                 const tbody = document.getElementById('weekTimetable');
+                
+                // Check if timetable is properly loaded
+                if (!Array.isArray(timetable)) {
+                    tbody.innerHTML = \`
+                        <tr>
+                            <td colspan="6" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                                No timetable set up yet. <a href="/timetable" class="text-blue-600 dark:text-blue-400 hover:underline">Create one →</a>
+                            </td>
+                        </tr>
+                    \`;
+                    return;
+                }
+                
                 tbody.innerHTML = '';
                 
                 for (let period = 0; period < 8; period++) {
@@ -1449,7 +1484,15 @@ const dashboard = (req, res) => {
                         const cell = document.createElement('td');
                         cell.className = 'border dark:border-gray-600 p-2 text-center';
                         
-                        const subjectId = timetable[day][period];
+                        // Check if day exists and is an array
+                        const daySchedule = timetable[day];
+                        if (!daySchedule) {
+                            cell.innerHTML = '<span class="text-gray-400 dark:text-gray-600 text-xs">Empty</span>';
+                            row.appendChild(cell);
+                            continue;
+                        }
+                        
+                        const subjectId = daySchedule[period];
                         if (subjectId) {
                             const subject = subjects.find(s => s.id === subjectId);
                             if (subject) {
@@ -1458,6 +1501,8 @@ const dashboard = (req, res) => {
                                         \${subject.name}
                                     </div>
                                 \`;
+                            } else {
+                                cell.innerHTML = '<span class="text-gray-400 dark:text-gray-600 text-xs">-</span>';
                             }
                         } else {
                             cell.innerHTML = '<span class="text-gray-400 dark:text-gray-600 text-xs">-</span>';
