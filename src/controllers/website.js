@@ -83,22 +83,22 @@ try {
 `;
 
 const header = `
-    <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center">
-    <a href="/dashboard" class="text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</a>
+    <header class="bg-white dark:bg-gray-800 shadow-md py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center">
+    <a href="/dashboard" class="text-lg sm:text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</a>
     
     <!-- Profile Dropdown -->
     <div class="relative">
-      <button id="profileToggle" class="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group">
+      <button id="profileToggle" class="flex items-center gap-2 sm:gap-3 px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group">
         <!-- Profile Avatar -->
-        <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
           </svg>
         </div>
         <!-- Username -->
-        <span id="profileName" class="font-medium text-sm">Profile</span>
+        <span id="profileName" class="font-medium text-xs sm:text-sm hidden sm:inline">Profile</span>
         <!-- Dropdown Arrow -->
-        <svg class="w-4 h-4 text-white/80 transition-transform duration-200 group-hover:text-white" id="profileArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/80 transition-transform duration-200 group-hover:text-white" id="profileArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
@@ -311,20 +311,20 @@ const landing = async (req, res) => {
         </head>
         <body class="bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 min-h-screen flex items-center justify-center px-4">
 
-        <div class="max-w-3xl text-center bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-xl border dark:border-gray-700 transition-colors duration-300">
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-800 dark:text-white mb-6 transition-colors duration-300">
+        <div class="w-full max-w-md md:max-w-3xl text-center bg-white dark:bg-gray-800 p-6 md:p-10 rounded-xl shadow-xl border dark:border-gray-700 transition-all duration-300">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-800 dark:text-white mb-4 md:mb-6 transition-colors duration-300">
             Welcome to <span class="text-blue-600 dark:text-blue-400">Blearn</span>
             </h1>
-            <p class="text-gray-600 dark:text-gray-300 text-lg mb-8 transition-colors duration-300">
+            <p class="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-6 md:mb-8 transition-colors duration-300">
             Your all-in-one platform to learn vocabulary! Let's make learning a fun experinence!
             </p>
-            <div class="flex justify-center gap-4">
+            <div class="flex flex-col sm:flex-row justify-center gap-3 md:gap-4">
             <a href="/register"
-                class="px-8 py-3 bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg">
+                class="px-6 py-3 md:px-8 bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg">
                 Register
             </a>
             <a href="/login"
-                class="px-8 py-3 bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 font-semibold rounded-lg hover:bg-blue-50 dark:hover:bg-gray-600 transition-all duration-300 shadow-md hover:shadow-lg">
+                class="px-6 py-3 md:px-8 bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 font-semibold rounded-lg hover:bg-blue-50 dark:hover:bg-gray-600 transition-all duration-300 shadow-md hover:shadow-lg">
                 Login
             </a>
             </div>
@@ -395,14 +395,14 @@ const register = (req, res) => {
                         id="username" 
                         type="text" 
                         placeholder="Username" 
-                        class="w-full px-4 py-2 border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300"
+                        class="w-full px-4 py-2 border dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300"
                         required>
                     
                     <input 
                         id="email" 
                         type="email" 
                         placeholder="E-Mail Adress" 
-                        class="w-full px-4 py-2 border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300"
+                        class="w-full px-4 py-2 border dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300"
                         required>
                     
                     <div class="relative">
@@ -410,7 +410,7 @@ const register = (req, res) => {
                             id="password" 
                             type="password" 
                             placeholder="Password" 
-                            class="w-full px-4 py-2 border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300"
+                            class="w-full px-4 py-2 border dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300"
                             required>
                         <button 
                             id="togglePassword" 
@@ -422,7 +422,7 @@ const register = (req, res) => {
                     
                     <button 
                         type="submit" 
-                        class="w-full px-4 py-2 font-bold text-white bg-blue-600 dark:bg-blue-500 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="w-full px-4 py-2 font-bold text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                         Sign Up
                     </button>
                 </form>
@@ -473,6 +473,12 @@ const register = (req, res) => {
                 const toggleBtn = document.getElementById('togglePassword');
                 const passwordInput = document.getElementById('password');
                 const message = document.getElementById('message');
+
+                passwordInput.addEventListener("keyup", (event) => {
+                    if (event.key === "Enter") {
+                        form.querySelector('button[type="submit"]').click();
+                    }
+                });
 
                 // Toggle password visibility
                 toggleBtn.addEventListener('click', () => {
@@ -588,13 +594,13 @@ const verify = (req, res) => {
                         id="verificationCode" 
                         type="text" 
                         placeholder="Enter code" 
-                        class="w-full px-4 py-3 text-center text-lg font-mono border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300 tracking-widest"
+                        class="w-full px-4 py-3 text-center text-lg font-mono border dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300 tracking-widest"
                         maxlength="6"
                         required>
                     
                     <button 
                         type="submit" 
-                        class="w-full px-4 py-2 font-bold text-white bg-blue-600 dark:bg-blue-500 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="w-full px-4 py-2 font-bold text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                         Verify
                     </button>
                 </form>
@@ -664,6 +670,12 @@ const verify = (req, res) => {
                 codeInput.addEventListener('input', (e) => {
                     let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
                     e.target.value = value;
+                });
+
+                codeInput.addEventListener("keyup", (event) => {
+                    if (event.key === "Enter") {
+                        form.querySelector('button[type="submit"]').click();
+                    }
                 });
 
                 // Show message helper
@@ -823,11 +835,11 @@ const login = (req, res) => {
             
             <div class="space-y-4">
             <input id="username" type="text" placeholder="Username"
-                    class="w-full px-4 py-2 border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+                    class="w-full px-4 py-2 border dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
 
             <div class="relative">
                 <input id="password" type="password" placeholder="Password"
-                    class="w-full px-4 py-2 border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+                    class="w-full px-4 py-2 border dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
                 <button id="togglePassword" type="button"
                         class="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-300">
                 👁️
@@ -835,7 +847,7 @@ const login = (req, res) => {
             </div>
 
             <button id="loginBtn"
-                    class="w-full px-4 py-2 font-bold text-white bg-blue-600 dark:bg-blue-500 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="w-full px-4 py-2 font-bold text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                 Login
             </button>
 
@@ -903,6 +915,12 @@ const login = (req, res) => {
                 const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
                 passwordInput.setAttribute("type", type);
                 togglePassword.textContent = type === "password" ? "👁️" : "🙈";
+            });
+
+            passwordInput.addEventListener("keyup", (event) => {
+                if (event.key === "Enter") {
+                loginBtn.click();
+                }
             });
 
             // Login-Button gedrückt
@@ -980,10 +998,10 @@ const forgotpassword = (req, res) => {
             
             <div class="space-y-4">
             <input id="email" type="text" placeholder="Email"
-                    class="w-full px-4 py-2 border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+                    class="w-full px-4 py-2 border dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
 
             <button id="resetBtn"
-                    class="w-full px-4 py-2 font-bold text-white bg-blue-600 dark:bg-blue-500 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="w-full px-4 py-2 font-bold text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                 Reset
             </button>
 
@@ -1025,8 +1043,15 @@ const forgotpassword = (req, res) => {
             
             const resetBtn = document.getElementById("resetBtn");
             const message = document.getElementById("responseMessage");
+            const emailInput = document.getElementById("email");
 
             ${autologin2}
+
+            emailInput.addEventListener("keyup", (event) => {
+                if (event.key === "Enter") {
+                    resetBtn.click();
+                }
+            });
 
             resetBtn.addEventListener("click", async () => {
                 const email = document.getElementById("email").value.trim();
@@ -1099,49 +1124,49 @@ const dashboard = (req, res) => {
 
         <!-- Main Content -->
         <main class="flex-1 p-4 sm:p-6">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300" id="header">Welcome back!</h2>
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-6" id="header">Welcome back!</h2>
             
             <!-- Quick Actions -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <a href="/learn" class="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 text-white group">
+                <a href="/learn" class="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 p-5 sm:p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 text-white group">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-3xl">📚</span>
-                        <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span class="text-2xl sm:text-3xl">📚</span>
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold">Learn</h3>
-                    <p class="text-sm opacity-90 mt-1">Practice with flashcards</p>
+                    <h3 class="text-base sm:text-lg font-semibold">Learn</h3>
+                    <p class="text-xs sm:text-sm opacity-90 mt-1">Practice with flashcards</p>
                 </a>
 
-                <a href="/timetable" class="bg-gradient-to-br from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 text-white group">
+                <a href="/timetable" class="bg-gradient-to-br from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 p-5 sm:p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 text-white group">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-3xl">📅</span>
-                        <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span class="text-2xl sm:text-3xl">📅</span>
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold">Timetable</h3>
-                    <p class="text-sm opacity-90 mt-1">Manage your schedule</p>
+                    <h3 class="text-base sm:text-lg font-semibold">Timetable</h3>
+                    <p class="text-xs sm:text-sm opacity-90 mt-1">Manage your schedule</p>
                 </a>
 
-                <a href="/homework" class="bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 text-white group">
+                <a href="/homework" class="bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 p-5 sm:p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 text-white group">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-3xl">📝</span>
-                        <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span class="text-2xl sm:text-3xl">📝</span>
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold">Homework</h3>
-                    <p class="text-sm opacity-90 mt-1">Add and track tasks</p>
+                    <h3 class="text-base sm:text-lg font-semibold">Homework</h3>
+                    <p class="text-xs sm:text-sm opacity-90 mt-1">Add and track tasks</p>
                 </a>
 
-                <div class="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 p-6 rounded-xl shadow transition-all duration-300 text-white">
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 p-5 sm:p-6 rounded-xl shadow transition-all duration-300 text-white">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-3xl">⚡</span>
+                        <span class="text-2xl sm:text-3xl">⚡</span>
                     </div>
-                    <h3 class="text-lg font-semibold" id="urgentCount">0 Urgent</h3>
-                    <p class="text-sm opacity-90 mt-1">Tasks due soon</p>
+                    <h3 class="text-base sm:text-lg font-semibold" id="urgentCount">0 Urgent</h3>
+                    <p class="text-xs sm:text-sm opacity-90 mt-1">Tasks due soon</p>
                 </div>
             </div>
 
@@ -1149,10 +1174,10 @@ const dashboard = (req, res) => {
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Left Column: Urgent Homework (2/3 width) -->
                 <div class="lg:col-span-2">
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white">🔥 Urgent Homework</h3>
-                            <a href="/homework" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">View All →</a>
+                    <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                            <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">🔥 Urgent Homework</h3>
+                            <a href="/homework" class="text-sm text-blue-600 dark:text-blue-400 hover:underline mt-1 sm:mt-0">View All →</a>
                         </div>
                         <div id="urgentHomework" class="space-y-3">
                             <div class="text-center py-8 text-gray-500 dark:text-gray-400">
@@ -1164,9 +1189,9 @@ const dashboard = (req, res) => {
 
                 <!-- Right Column: Today's Schedule (1/3 width) -->
                 <div class="lg:col-span-1">
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
+                    <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white">📆 Today</h3>
+                            <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">📆 Today</h3>
                             <span id="todayDay" class="text-sm text-gray-600 dark:text-gray-400"></span>
                         </div>
                         <div id="todaySchedule" class="space-y-2">
@@ -1180,21 +1205,21 @@ const dashboard = (req, res) => {
 
             <!-- Full Week Timetable -->
             <div class="mt-6">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white">📋 This Week's Timetable</h3>
-                        <a href="/timetable" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Edit Timetable →</a>
+                <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">📋 This Week's Timetable</h3>
+                        <a href="/timetable" class="text-sm text-blue-600 dark:text-blue-400 hover:underline mt-1 sm:mt-0">Edit Timetable →</a>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full border-collapse min-w-[600px]">
+                        <table class="w-full border-collapse min-w-[500px] sm:min-w-[600px]">
                             <thead>
                                 <tr class="bg-gray-100 dark:bg-gray-700">
-                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Period</th>
-                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Mon</th>
-                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Tue</th>
-                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Wed</th>
-                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Thu</th>
-                                    <th class="border dark:border-gray-600 p-2 text-gray-800 dark:text-white text-sm">Fri</th>
+                                    <th class="border dark:border-gray-600 p-1 sm:p-2 text-gray-800 dark:text-white text-xs sm:text-sm">Period</th>
+                                    <th class="border dark:border-gray-600 p-1 sm:p-2 text-gray-800 dark:text-white text-xs sm:text-sm">Mon</th>
+                                    <th class="border dark:border-gray-600 p-1 sm:p-2 text-gray-800 dark:text-white text-xs sm:text-sm">Tue</th>
+                                    <th class="border dark:border-gray-600 p-1 sm:p-2 text-gray-800 dark:text-white text-xs sm:text-sm">Wed</th>
+                                    <th class="border dark:border-gray-600 p-1 sm:p-2 text-gray-800 dark:text-white text-xs sm:text-sm">Thu</th>
+                                    <th class="border dark:border-gray-600 p-1 sm:p-2 text-gray-800 dark:text-white text-xs sm:text-sm">Fri</th>
                                 </tr>
                             </thead>
                             <tbody id="weekTimetable">
@@ -1761,6 +1786,12 @@ ${header}
             passwordInput.setAttribute('type', type);
             this.textContent = type === 'password' ? '👁️' : '🙈';
         });
+
+        document.getElementById('password').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                document.getElementById('savePass').click();
+            }
+        });
         
         // Save profile
         document.getElementById('savePass').addEventListener('click', async function() {
@@ -1815,18 +1846,18 @@ const learn = (req, res) => {
         ${header}
 
         <div id="folderModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg w-80 transition-colors duration-300">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg w-80 transition-colors duration-300">
             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">📁 Create Folder</h3>
-            <input id="folderNameInput" type="text" placeholder="Foldername" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+            <input id="folderNameInput" type="text" placeholder="Foldername" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
             <div class="flex justify-end space-x-2">
                 <button onclick="closeFolderModal()" class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">Cancel</button>
-                <button onclick="submitFolder()" class="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-4 py-2 rounded">Create</button>
+                <button onclick="submitFolder()" class="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Create</button>
             </div>
             </div>
         </div>
         
         <!-- Kontextmenü -->
-        <div id="contextMenu" class="absolute bg-white dark:bg-gray-800 border dark:border-gray-600 rounded shadow-lg hidden z-50 transition-colors duration-300">
+        <div id="contextMenu" class="absolute bg-white dark:bg-gray-800 border dark:border-gray-600 rounded-xl shadow-lg hidden z-50 transition-colors duration-300">
             <button onclick="openRenameModal()" class="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200">Rename</button>
             <button onclick="editList()" class="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200">Edit</button>
             <button onclick="shareItem()" class="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400">Share</button>
@@ -1835,19 +1866,19 @@ const learn = (req, res) => {
 
         <!-- Umbenennen Modal -->
         <div id="renameModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-            <div class="bg-white dark:bg-gray-800 p-6 rounded shadow w-80 transition-colors duration-300">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow w-80 transition-colors duration-300">
             <h3 class="text-lg font-bold mb-4 text-gray-800 dark:text-white">✏️ Rename</h3>
-            <input id="renameInput" type="text" class="w-full border border-gray-300 dark:border-gray-600 px-3 py-2 mb-4 bg-white dark:bg-gray-700 text-gray-800 dark:text-white" />
+            <input id="renameInput" type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4 bg-white dark:bg-gray-700 text-gray-800 dark:text-white" />
             <div class="flex justify-end space-x-2">
                 <button onclick="closeRenameModal()" class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400">Cancel</button>
-                <button onclick="submitRename()" class="bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded">Rename</button>
+                <button onclick="submitRename()" class="bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded-lg">Rename</button>
             </div>
             </div>
         </div>
 
         <!-- Share Modal -->
         <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg w-96 transition-colors duration-300">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg w-96 transition-colors duration-300">
             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">🔗 Share</h3>
             
             <div id="shareLoader" class="flex justify-center items-center py-8">
@@ -1857,11 +1888,11 @@ const learn = (req, res) => {
             
             <div id="shareContent" class="hidden">
                 <p class="text-gray-600 dark:text-gray-400 mb-4">Share this exercise with others:</p>
-                <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded border dark:border-gray-600 mb-4">
+                <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-xl border dark:border-gray-600 mb-4">
                 <label class="text-sm text-gray-500 dark:text-gray-400 block mb-1">Share-ID:</label>
                 <div class="flex items-center space-x-2">
                     <input id="shareId" type="text" readonly class="flex-1 bg-transparent border-none focus:outline-none font-mono text-sm text-gray-800 dark:text-gray-200" />
-                    <button onclick="copyShareId()" class="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">
+                    <button onclick="copyShareId()" class="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm">
                     📋 Copy
                     </button>
                 </div>
@@ -1873,7 +1904,7 @@ const learn = (req, res) => {
             
             <div id="shareError" class="hidden text-center py-4">
                 <p class="text-red-500 dark:text-red-400 mb-2">Error while requesting share-ID</p>
-                <button onclick="retryFetchId()" class="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-4 py-2 rounded text-sm">
+                <button onclick="retryFetchId()" class="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
                 Try again
                 </button>
             </div>
@@ -1885,15 +1916,15 @@ const learn = (req, res) => {
         </div>
 
         <!-- Main -->
-        <main class="flex-1 p-6">
-            <div class="flex items-center justify-between mb-4">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white">📂 Your Exercises</h2>
-            <div class="space-x-2 flex items-center">
-                <button class="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-4 py-2 rounded shadow" onclick="createFolder()">📁 Create Folder</button>
+        <main class="flex-1 p-4 sm:p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">📂 Your Exercises</h2>
+            <div class="flex flex-wrap gap-2 mt-3 sm:mt-0">
+                <button class="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-3 py-2 sm:px-4 text-sm sm:text-base rounded-lg shadow" onclick="createFolder()">📁 Create Folder</button>
                 
                 <!-- Dropdown für Vokabelliste -->
                 <div class="relative">
-                <button id="vocabDropdownBtn" onclick="toggleVocabDropdown()" class="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white px-4 py-2 rounded shadow flex items-center space-x-2 transition-all duration-200">
+                <button id="vocabDropdownBtn" onclick="toggleVocabDropdown()" class="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white px-3 py-2 sm:px-4 text-sm sm:text-base rounded-lg shadow flex items-center space-x-2 transition-all duration-200">
                     <span>➕ New Exercise</span>
                     <svg id="dropdownArrow" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewbox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -1901,7 +1932,7 @@ const learn = (req, res) => {
                 </button>
                 
                 <!-- Dropdown Menu -->
-                <div id="vocabDropdownMenu" class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 hidden z-40 overflow-hidden transition-colors duration-300">
+                <div id="vocabDropdownMenu" class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600 hidden z-40 overflow-hidden transition-colors duration-300">
                     <div class="py-1">
                     <button onclick="createList()" class="flex items-center w-full px-4 py-3 text-left text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-700 dark:hover:text-green-400 transition-colors duration-150">
                         <span class="mr-3 text-lg">📝</span>
@@ -2542,21 +2573,21 @@ const createlist = (req, res) => {
         ${header}
 
         <!-- Main Content -->
-        <main class="flex-1 p-6">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">Vocablist creation</h2>
+        <main class="flex-1 p-4 sm:p-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">Vocablist creation</h2>
             
             <!-- Listenname -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-6 border dark:border-gray-700 transition-all duration-300">
-            <input id="listNameInput" type="text" placeholder="Name of the Vocablist" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-4 sm:mb-6 border dark:border-gray-700 transition-all duration-300">
+            <input id="listNameInput" type="text" placeholder="Name of the Vocablist" class="w-full border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm sm:text-base" />
             </div>
 
             <!-- Eingabe -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-6 border dark:border-gray-700 transition-all duration-300">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input id="wordInput" type="text" placeholder="Word" class="border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
-                <input id="translationInput" type="text" placeholder="Translation" class="border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-4 sm:mb-6 border dark:border-gray-700 transition-all duration-300">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <input id="wordInput" type="text" placeholder="Word" class="border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm sm:text-base" />
+                <input id="translationInput" type="text" placeholder="Translation" class="border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm sm:text-base" />
             </div>
-            <button id="addBtn" class="mt-4 px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 transition-all duration-300">Add</button>
+            <button id="addBtn" class="mt-4 px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 transition-all duration-300 text-sm sm:text-base">Add</button>
             </div>
 
             <!-- Liste -->
@@ -2571,7 +2602,7 @@ const createlist = (req, res) => {
                 </thead>
                 <tbody id="vocabList"></tbody>
             </table>
-            <button id="saveBtn" class="mt-6 px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300">Save list</button>
+            <button id="saveBtn" class="mt-6 px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300">Save list</button>
             </div>
         </main>
 
@@ -2745,24 +2776,31 @@ const list = (req, res) => {
         </head>
         ${notificationContainer}
 
-        <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center py-8">
+        <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center py-6 sm:py-8">
         <div class="w-full max-w-4xl px-4">
             <!-- Header -->
-            <header class="mb-8 text-center">
-            <h1 class="text-3xl font-bold mb-2" id="lessonTitle">Vocab list</h1>
-            <a href="/learn" class="text-blue-400 hover:underline">Back to your files</a>
-            <br><br>
-            <input type="checkbox" id="shuffeling"> Disable shuffeling <br>
-            <input type="checkbox" id="swapSides"> Swap sides
-            </header
+            <header class="mb-6 sm:mb-8 text-center">
+            <h1 class="text-2xl sm:text-3xl font-bold mb-2" id="lessonTitle">Vocab list</h1>
+            <a href="/learn" class="text-sm sm:text-base text-blue-400 hover:underline">Back to your files</a>
+            <div class="mt-4 space-y-2 text-sm sm:text-base">
+                <div>
+                    <input type="checkbox" id="shuffeling" class="mr-2 h-4 w-4 rounded text-blue-500 focus:ring-blue-500">
+                    <label for="shuffeling">Disable shuffeling</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="swapSides" class="mr-2 h-4 w-4 rounded text-blue-500 focus:ring-blue-500">
+                    <label for="swapSides">Swap sides</label>
+                </div>
+            </div>
+            </header>
 
             <!-- Quiz Table -->
-            <div class="overflow-x-auto mb-8">
+            <div class="overflow-x-auto mb-6 sm:mb-8">
             <table class="w-full rounded-lg overflow-hidden">
                 <thead class="bg-gray-700">
                 <tr>
-                    <th class="py-3 px-4 text-left">Word</th>
-                    <th class="py-3 px-4 text-left">Translation</th>
+                    <th class="py-2 px-3 sm:py-3 sm:px-4 text-left text-xs sm:text-sm">Word</th>
+                    <th class="py-2 px-3 sm:py-3 sm:px-4 text-left text-xs sm:text-sm">Translation</th>
                 </tr>
                 </thead>
                 <tbody id="vocabularyTable" class="bg-gray-800 divide-y divide-gray-700">
@@ -2911,7 +2949,7 @@ const list = (req, res) => {
                     <td class="py-3 px-4">\${item.german}</td>
                     <td class="py-3 px-4">
                     <input type="text" id="\${id}" 
-                        class="w-full bg-gray-600 border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <span id="\${id}-solution" class="hidden text-red-400 text-sm mt-1 block"></span>
                     </td>
                 \`;
@@ -3020,31 +3058,31 @@ const editlist = (req, res) => {
         ${header}
 
         <!-- Main Content -->
-        <main class="flex-1 p-6">
+        <main class="flex-1 p-4 sm:p-6">
             <!-- Loading Indicator -->
             <div id="loadingIndicator" class="flex justify-center py-12">
             <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 dark:border-blue-400 border-opacity-50"></div>
             </div>
 
             <div id="mainContent" class="hidden">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Edit Vocablist</h2>
-                <span id="listPath" class="text-blue-600 dark:text-blue-400 text-sm"></span>
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">Edit Vocablist</h2>
+                <span id="listPath" class="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mt-1 sm:mt-0"></span>
             </div>
             
             <!-- Listenname -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 transition-colors duration-300">
+            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md mb-4 sm:mb-6 transition-colors duration-300">
                 <label for="listNameInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name der Liste</label>
-                <input id="listNameInput" type="text" placeholder="Name of the list" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400" disabled />
+                <input id="listNameInput" type="text" placeholder="Name of the list" class="w-full border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400" disabled />
             </div>
 
             <!-- Eingabe -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 transition-colors duration-300">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input id="wordInput" type="text" placeholder="Word" class="border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent" />
-                <input id="translationInput" type="text" placeholder="Translation" class="border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent" />
+            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md mb-4 sm:mb-6 transition-colors duration-300">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <input id="wordInput" type="text" placeholder="Word" class="border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-sm sm:text-base" />
+                <input id="translationInput" type="text" placeholder="Translation" class="border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-sm sm:text-base" />
                 </div>
-                <button id="addBtn" class="mt-4 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition">Add</button>
+                <button id="addBtn" class="mt-4 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition text-sm sm:text-base">Add</button>
             </div>
 
             <!-- Liste -->
@@ -3063,17 +3101,17 @@ const editlist = (req, res) => {
                 </table>
                 </div>
                 <div class="mt-6 flex justify-between">
-                <button id="cancelBtn" class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition">Cancel</button>
-                <button id="saveBtn" class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-600 transition">Save changes</button>
+                <button id="cancelBtn" class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition">Cancel</button>
+                <button id="saveBtn" class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition">Save changes</button>
                 </div>
             </div>
             </div>
 
             <!-- Error Message -->
-            <div id="errorMessage" class="hidden bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-400 text-red-700 dark:text-red-300 p-4 rounded shadow-md">
+            <div id="errorMessage" class="hidden bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-400 text-red-700 dark:text-red-300 p-4 rounded-lg shadow-md">
             <p class="font-bold">Error</p>
             <p id="errorText"></p>
-            <button onclick="window.location.reload()" class="mt-2 px-4 py-1 bg-red-600 dark:bg-red-500 text-white rounded-md hover:bg-red-700 dark:hover:bg-red-600 transition">
+            <button onclick="window.location.reload()" class="mt-2 px-4 py-1 bg-red-600 dark:bg-red-500 text-white rounded-lg hover:bg-red-700 dark:hover:bg-red-600 transition">
                 Reload
             </button>
             </div>
@@ -3414,24 +3452,24 @@ const createTable = (req, res) => {
         ${header}
 
         <!-- Main Content -->
-        <main class="flex-1 p-6">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">Create Table</h2>
+        <main class="flex-1 p-4 sm:p-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">Create Table</h2>
             
             <!-- Tabellenname -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-6 border dark:border-gray-700 transition-all duration-300">
-            <input id="tableNameInput" type="text" placeholder="Name of the table" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
+            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-4 sm:mb-6 border dark:border-gray-700 transition-all duration-300">
+            <input id="tableNameInput" type="text" placeholder="Name of the table" class="w-full border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm sm:text-base" />
             </div>
 
             <!-- Table Setup Controls -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-6 border dark:border-gray-700 transition-all duration-300">
+            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md dark:shadow-gray-900/20 mb-4 sm:mb-6 border dark:border-gray-700 transition-all duration-300">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Tablestructure</h3>
             
             <!-- Column Management -->
             <div class="mb-4">
                 <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Manage Columns</h4>
-                <div class="flex gap-2 mb-2">
-                <input id="columnInput" type="text" placeholder="Column Name" class="flex-1 border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
-                <button id="addColumnBtn" class="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 transition-all duration-300">Add Column</button>
+                <div class="flex flex-col sm:flex-row gap-2 mb-2">
+                <input id="columnInput" type="text" placeholder="Column Name" class="flex-1 border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm sm:text-base" />
+                <button id="addColumnBtn" class="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 transition-all duration-300 text-sm sm:text-base">Add Column</button>
                 </div>
                 <div id="columnsList" class="flex flex-wrap gap-2"></div>
             </div>
@@ -3439,9 +3477,9 @@ const createTable = (req, res) => {
             <!-- Row Management -->
             <div class="mb-4">
                 <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Row Management</h4>
-                <div class="flex gap-2 mb-2">
-                <input id="rowInput" type="text" placeholder="Name of the row" class="flex-1 border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" />
-                <button id="addRowBtn" class="px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300">Add row</button>
+                <div class="flex flex-col sm:flex-row gap-2 mb-2">
+                <input id="rowInput" type="text" placeholder="Name of the row" class="flex-1 border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm sm:text-base" />
+                <button id="addRowBtn" class="px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 text-sm sm:text-base">Add row</button>
                 </div>
                 <div id="rowsList" class="flex flex-wrap gap-2"></div>
             </div>
@@ -3814,17 +3852,17 @@ const table = (req, res) => {
         ${fastInit}
         </head>
         ${notificationContainer}
-        <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center py-8">
+        <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center py-6 sm:py-8">
         <div class="w-full max-w-6xl px-4">
             <!-- Header -->
-            <header class="mb-8 text-center">
-            <h1 class="text-3xl font-bold mb-2" id="lessonTitle">Table</h1>
-            <a href="/learn" class="text-blue-400 hover:underline">Back to your files</a>
+            <header class="mb-6 sm:mb-8 text-center">
+            <h1 class="text-2xl sm:text-3xl font-bold mb-2" id="lessonTitle">Table</h1>
+            <a href="/learn" class="text-sm sm:text-base text-blue-400 hover:underline">Back to your files</a>
             </header>
 
             <!-- Quiz Table -->
-            <div class="overflow-x-auto mb-8">
-            <table class="w-full rounded-lg overflow-hidden">
+            <div class="overflow-x-auto mb-6 sm:mb-8">
+            <table class="w-full rounded-lg overflow-hidden min-w-[500px]">
                 <thead class="bg-gray-700" id="tableHeader">
                 <!-- Table headers will be inserted here by JavaScript -->
                 </thead>
@@ -3991,7 +4029,7 @@ const table = (req, res) => {
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.id = cellId;
-                input.className = 'w-full bg-gray-600 border border-gray-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500';
+                input.className = 'w-full bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500';
                 input.placeholder = 'Enter answer';
                 
                 const solutionSpan = document.createElement('span');
@@ -4068,34 +4106,34 @@ const editTable = (req, res) => {
         ${header}
 
         <!-- Main Content -->
-        <main class="flex-1 p-6">
+        <main class="flex-1 p-4 sm:p-6">
             <!-- Loading Indicator -->
             <div id="loadingIndicator" class="flex justify-center py-12">
             <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 dark:border-blue-400 border-opacity-50"></div>
             </div>
 
             <div id="mainContent" class="hidden">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Edit Table</h2>
-                <span id="tablePath" class="text-blue-600 dark:text-blue-400 text-sm"></span>
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">Edit Table</h2>
+                <span id="tablePath" class="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mt-1 sm:mt-0"></span>
             </div>
             
             <!-- Tabellenname -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 transition-colors duration-300">
+            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md mb-4 sm:mb-6 transition-colors duration-300">
                 <label for="tableNameInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name of the table</label>
-                <input id="tableNameInput" type="text" placeholder="Name of the table" class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400" disabled />
+                <input id="tableNameInput" type="text" placeholder="Name of the table" class="w-full border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400" disabled />
             </div>
 
             <!-- Table Setup Controls -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 transition-colors duration-300">
+            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md mb-4 sm:mb-6 transition-colors duration-300">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Table structure</h3>
             
             <!-- Column Management -->
             <div class="mb-4">
                 <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Manage Columns</h4>
-                <div class="flex gap-2 mb-2">
-                <input id="columnInput" type="text" placeholder="Column Name" class="flex-1 border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent" />
-                <button id="addColumnBtn" class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition">Add Column</button>
+                <div class="flex flex-col sm:flex-row gap-2 mb-2">
+                <input id="columnInput" type="text" placeholder="Column Name" class="flex-1 border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-sm sm:text-base" />
+                <button id="addColumnBtn" class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition text-sm sm:text-base">Add Column</button>
                 </div>
                 <div id="columnsList" class="flex flex-wrap gap-2"></div>
             </div>
@@ -4103,9 +4141,9 @@ const editTable = (req, res) => {
             <!-- Row Management -->
             <div class="mb-4">
                 <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Row Management</h4>
-                <div class="flex gap-2 mb-2">
-                <input id="rowInput" type="text" placeholder="Name of the row" class="flex-1 border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent" />
-                <button id="addRowBtn" class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-600 transition">Add row</button>
+                <div class="flex flex-col sm:flex-row gap-2 mb-2">
+                <input id="rowInput" type="text" placeholder="Name of the row" class="flex-1 border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-sm sm:text-base" />
+                <button id="addRowBtn" class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition text-sm sm:text-base">Add row</button>
                 </div>
                 <div id="rowsList" class="flex flex-wrap gap-2"></div>
             </div>
@@ -4635,11 +4673,11 @@ const importlist = (req, res) => {
         ${header}
 
         <!-- Main Content -->
-        <main class="flex-1 p-6">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">📥 Import Vocablist</h2>
+        <main class="flex-1 p-4 sm:p-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">📥 Import Vocablist</h2>
             
             <!-- Import Formular -->
-            <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md dark:shadow-gray-900/20 max-w-2xl mx-auto border dark:border-gray-700 transition-all duration-300">
+            <div class="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl shadow-md dark:shadow-gray-900/20 max-w-2xl mx-auto border dark:border-gray-700 transition-all duration-300">
             
             <!-- Name Feld -->
             <div class="mb-6">
@@ -4650,7 +4688,7 @@ const importlist = (req, res) => {
                 id="listNameInput" 
                 type="text" 
                 placeholder="Name of the imported list" 
-                class="w-full border border-gray-300 dark:border-gray-600 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:text-gray-500 dark:disabled:text-gray-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300" 
+                class="w-full border border-gray-300 dark:border-gray-600 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:text-gray-500 dark:disabled:text-gray-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300 text-sm sm:text-base"
                 disabled
                 />
                 
@@ -4660,7 +4698,7 @@ const importlist = (req, res) => {
                     id="keepNameCheckbox" 
                     type="checkbox" 
                     checked 
-                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors duration-300"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 transition-colors duration-300"
                 />
                 <label for="keepNameCheckbox" class="ml-2 text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">
                     Keep name
@@ -4680,7 +4718,7 @@ const importlist = (req, res) => {
                 id="idInput" 
                 type="text" 
                 placeholder="Enter the ID of the list" 
-                class="w-full border border-gray-300 dark:border-gray-600 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300"
+                class="w-full border border-gray-300 dark:border-gray-600 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300"
                 required
                 />
                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
@@ -4699,7 +4737,7 @@ const importlist = (req, res) => {
                 
                 <button 
                 id="importBtn" 
-                class="px-8 py-3 bg-green-600 dark:bg-green-700 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 transform hover:scale-105 font-medium shadow-md"
+                class="px-8 py-3 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-800 transition-all duration-300 transform hover:scale-105 font-medium shadow-md"
                 >
                 📥 Import List
                 </button>
@@ -4707,7 +4745,7 @@ const importlist = (req, res) => {
             </div>
 
             <!-- Info Box -->
-            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mt-6 max-w-2xl mx-auto border dark:border-blue-800/30 transition-all duration-300">
+            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl mt-6 max-w-2xl mx-auto border dark:border-blue-800/30 transition-all duration-300">
             <div class="flex items-start">
                 <div class="flex-shrink-0">
                 <svg class="h-5 w-5 text-blue-400 dark:text-blue-300 mt-0.5 transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20">
@@ -5004,35 +5042,37 @@ const timetable = (req, res) => {
         <div id="notificationContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"></div>
 
         <!-- Header -->
-        <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center">
-            <a href="/dashboard" class="text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</a>
-            <div class="flex gap-4">
-                <a href="/homework" class="px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white rounded-lg transition">📝 Homework</a>
-                <a href="/homework-view" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 text-white rounded-lg transition">📋 View Tasks</a>
+        <header class="bg-white dark:bg-gray-800 shadow-md py-3 px-4 sm:py-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <a href="/dashboard" class="text-lg sm:text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</a>
+            <div class="flex gap-2 sm:gap-4">
+                <a href="/homework" class="px-3 py-2 sm:px-4 text-xs sm:text-base bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white rounded-lg transition">📝 Homework</a>
+                <a href="/homework-view" class="px-3 py-2 sm:px-4 text-xs sm:text-base bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 text-white rounded-lg transition">📋 View Tasks</a>
             </div>
         </header>
 
-        <main class="flex-1 p-6">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">📅 School Timetable</h2>
+        <main class="flex-1 p-4 sm:p-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">📅 School Timetable</h2>
 
             <!-- Instructions -->
-            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-6 border dark:border-blue-800/30">
-                <p class="text-sm text-blue-800 dark:text-blue-200">
+            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl mb-4 sm:mb-6 border dark:border-blue-800/30">
+                <p class="text-xs sm:text-sm text-blue-800 dark:text-blue-200">
                     <strong>How to use:</strong> Click on a subject below to select it (it will be highlighted), then click on any cell in the timetable to add it there. Click on filled cells to remove them.
                 </p>
             </div>
 
             <!-- Add Subject Section -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6 border dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md mb-4 sm:mb-6 border dark:border-gray-700">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Add Subject</h3>
-                <div class="flex gap-3">
+                <div class="flex flex-col sm:flex-row gap-3">
                     <input id="subjectNameInput" type="text" placeholder="Subject name (e.g. Math)" 
-                        class="flex-1 border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
-                    <input id="subjectColorInput" type="color" value="#3b82f6" 
-                        class="w-16 h-10 border dark:border-gray-600 rounded-md cursor-pointer" />
-                    <button id="addSubjectBtn" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
-                        Add Subject
-                    </button>
+                        class="flex-1 border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm sm:text-base" />
+                    <div class="flex gap-3">
+                        <input id="subjectColorInput" type="color" value="#3b82f6"
+                            class="w-16 h-10 border dark:border-gray-600 rounded-lg cursor-pointer" />
+                        <button id="addSubjectBtn" class="flex-1 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition text-sm sm:text-base">
+                            Add Subject
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -5519,7 +5559,7 @@ const homework = (req, res) => {
                                     Subject <span class="text-red-500">*</span>
                                 </label>
                                 <select id="subjectSelect" required
-                                        class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base">
+                                        class="w-full border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base">
                                     <option value="">Select subject...</option>
                                 </select>
                             </div>
@@ -5530,7 +5570,7 @@ const homework = (req, res) => {
                                     Due Date <span class="text-red-500">*</span>
                                 </label>
                                 <input type="date" id="dueDateInput" required
-                                    class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" />
+                                    class="w-full border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" />
                             </div>
                         </div>
 
@@ -5540,7 +5580,7 @@ const homework = (req, res) => {
                                 Description <span class="text-red-500">*</span>
                             </label>
                             <textarea id="descriptionInput" rows="3" placeholder="What needs to be done?" required
-                                    class="w-full border dark:border-gray-600 p-2 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 resize-none text-sm sm:text-base"></textarea>
+                                    class="w-full border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 resize-none text-sm sm:text-base"></textarea>
                         </div>
 
                         <!-- Submit Button -->
@@ -5558,9 +5598,9 @@ const homework = (req, res) => {
                         
                         <!-- Filter Buttons -->
                         <div class="flex gap-2 text-xs sm:text-sm">
-                            <button onclick="filterHomework('all')" id="filterAll" class="px-3 py-1 rounded-md bg-blue-600 text-white">All</button>
-                            <button onclick="filterHomework('pending')" id="filterPending" class="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">Pending</button>
-                            <button onclick="filterHomework('completed')" id="filterCompleted" class="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">Done</button>
+                            <button onclick="filterHomework('all')" id="filterAll" class="px-3 py-1 rounded-lg bg-blue-600 text-white">All</button>
+                            <button onclick="filterHomework('pending')" id="filterPending" class="px-3 py-1 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">Pending</button>
+                            <button onclick="filterHomework('completed')" id="filterCompleted" class="px-3 py-1 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">Done</button>
                         </div>
                     </div>
 
@@ -5988,11 +6028,11 @@ const privacy = (req, res) => {
     <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
     
       <!-- Main Content -->
-      <main class="flex-1 p-6">
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors duration-300">Privacy Policy</h2>
+      <main class="flex-1 p-4 sm:p-6">
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">Privacy Policy</h2>
     
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow dark:shadow-gray-900/20 border dark:border-gray-700 transition-all duration-300 space-y-4">
-          <p class="text-gray-700 dark:text-gray-300">
+        <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-xl dark:shadow-gray-900/20 border dark:border-gray-700 transition-all duration-300 space-y-4">
+          <p class="text-gray-700 dark:text-gray-300 text-sm sm:text-base">
             At <strong>Blearn</strong>, we value your privacy and are committed to protecting it. 
             This Privacy Policy explains how we handle your personal information and what data is collected when you use our services.
           </p>
