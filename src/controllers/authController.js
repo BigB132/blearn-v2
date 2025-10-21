@@ -3,10 +3,11 @@ const Mailer = require('../utils/sendMail');
 
 const checkData = async (req, res) => {
   const { userName, password } = req.body;
-
+  console.log(`[AUTH] Checking data for user: ${userName}`);
   try {
     const user = await UserData.findOne({ userName, password });
     if (!user) {
+      console.log(`[AUTH] User not found: ${userName}`);
       return res.json({ state: "error", message: "User doesn't exist!" });
     }
 
