@@ -32,11 +32,19 @@ const userData = new mongoose.Schema({
     type: Array,
     required: true,
   },
-  homeworks: {
-    type: Array,
-    required: true,
-    default: [],
-  },
+  homeworks: [
+    {
+      id: String,
+      subjectId: String,
+      dueDate: String,
+      description: String,
+      completed: Boolean,
+      notified: {
+        type: Boolean,
+        default: false,
+      },
+    },
+  ],
 });
 
 const UserData = mongoose.model("UserData", userData);
