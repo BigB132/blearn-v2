@@ -1671,6 +1671,21 @@ ${header}
             
             <!-- Appearance Section -->
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700 mb-6">
+                <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">Notifications</h3>
+
+                <div class="space-y-4">
+                    <!-- Enable Notifications -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Enable Notifications</label>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="enableNotifications" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <span id="notificationStatus" class="ml-2 text-sm text-gray-500 dark:text-gray-400"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700 mb-6">
                 <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">Appearance</h3>
                 
                 <div class="space-y-4">
@@ -1815,6 +1830,105 @@ ${header}
             } catch {};
             
         });
+
+        const enableNotifications = document.getElementById('enableNotifications');
+        const notificationStatus = document.getElementById('notificationStatus');
+
+        function updateNotificationStatus(status) {
+            notificationStatus.textContent = status;
+        }
+
+        async function subscribeUser() {
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                try {
+                    const response = await fetch('/api/notifications/vapid-public-key');
+                    const { publicKey } = await response.json();
+
+                    const registration = await navigator.serviceWorker.register('/sw.js');
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(publicKey),
+                    });
+
+                    await fetch('/api/notifications/subscribe', {
+                        method: 'POST',
+                        body: JSON.stringify({ subscription }),
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    localStorage.setItem('notificationsEnabled', 'true');
+                    updateNotificationStatus('Enabled');
+                } catch (error) {
+                    console.error('Failed to subscribe the user: ', error);
+                    enableNotifications.checked = false;
+                    updateNotificationStatus('Failed to enable');
+                }
+            } else {
+                console.warn('Push messaging is not supported');
+                updateNotificationStatus('Not supported');
+            }
+        }
+
+        async function unsubscribeUser() {
+            try {
+                const registration = await navigator.serviceWorker.getRegistration();
+                if (registration) {
+                    const subscription = await registration.pushManager.getSubscription();
+                    if (subscription) {
+                        await subscription.unsubscribe();
+
+                        await fetch('/api/notifications/unsubscribe', {
+                            method: 'DELETE',
+                            body: JSON.stringify({ endpoint: subscription.endpoint }),
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        });
+                    }
+                }
+                localStorage.setItem('notificationsEnabled', 'false');
+                updateNotificationStatus('Disabled');
+            } catch (error) {
+                console.error('Error unsubscribing', error);
+                updateNotificationStatus('Error disabling');
+            }
+        }
+
+        enableNotifications.addEventListener('change', () => {
+            if (enableNotifications.checked) {
+                Notification.requestPermission().then((permission) => {
+                    if (permission === 'granted') {
+                        subscribeUser();
+                    } else {
+                        enableNotifications.checked = false;
+                        updateNotificationStatus('Permission denied');
+                    }
+                });
+            } else {
+                unsubscribeUser();
+            }
+        });
+
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        // Initialize notification state
+        if (localStorage.getItem('notificationsEnabled') === 'true') {
+            enableNotifications.checked = true;
+            updateNotificationStatus('Enabled');
+        } else {
+            enableNotifications.checked = false;
+            updateNotificationStatus('Disabled');
+        }
     </script>
 </body>
 </html>
