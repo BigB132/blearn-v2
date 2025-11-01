@@ -12,6 +12,6 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
-    clients.openWindow('/') // Or a more specific URL
+    clients.openWindow('/homework') // Or a more specific URL
   );
 });

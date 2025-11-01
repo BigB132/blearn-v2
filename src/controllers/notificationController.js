@@ -3,7 +3,7 @@ const User = require('../models/userData');
 const webpush = require('web-push');
 
 webpush.setVapidDetails(
-    'mailto:your-email@example.com',
+    'mailto:blearn-noreply@gmail.com',
     process.env.VAPID_PUBLIC_KEY,
     process.env.VAPID_PRIVATE_KEY
 );
