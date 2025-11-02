@@ -21,6 +21,7 @@ async function sendPushToUser(userId, payload) {
 async function checkHomework() {
     const now = Date.now();
     const in24h = now + 24 * 60 * 60 * 1000;
+    console.log('Homework reminder cron job started');
 
     try {
         const users = await UserData.find();
@@ -64,4 +65,3 @@ async function checkHomework() {
 
 // jede Minute ausführen
 cron.schedule('* * * * *', checkHomework);
-console.log('Homework reminder cron job started');
