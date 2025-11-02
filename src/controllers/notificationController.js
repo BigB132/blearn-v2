@@ -25,7 +25,7 @@ exports.subscribe = async (req, res) => {
                 p256dh: subscription.keys.p256dh,
                 auth: subscription.keys.auth,
             },
-            user: username,
+            user: user._id,
         });
 
         await newSubscription.save();
@@ -50,7 +50,7 @@ exports.unsubscribe = async (req, res) => {
     }
 
     try {
-        const result = await Subscription.findOneAndDelete({ endpoint: endpoint, user: username });
+        const result = await Subscription.findOneAndDelete({ endpoint: endpoint, user: user._id });
         if (!result) {
             return res.status(404).json({ message: 'Subscription not found.' });
         }
