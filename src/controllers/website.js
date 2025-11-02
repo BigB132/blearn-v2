@@ -82,127 +82,99 @@ try {
 }
 `;
 
-const header = `
-    <header class="bg-white dark:bg-gray-800 shadow-md py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center">
-    <a href="/dashboard" class="text-lg sm:text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</a>
-    
-    <!-- Profile Dropdown -->
-    <div class="relative">
+const createHeader = (page) => {
+  let buttons = '';
+  if (page === 'timetable') {
+    buttons = `<a href="/homework" class="px-6 py-3 md:px-8 bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg">Homework</a>`;
+  } else if (page === 'homework') {
+    buttons = `<a href="/timetable" class="px-6 py-3 md:px-8 bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg">Timetable</a>
+               <a href="/timetable" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition text-sm sm:text-base">Add Subjects</a>`;
+  }
+
+  const profileDropdown = `
+  <div class="relative">
       <button id="profileToggle" class="flex items-center gap-2 sm:gap-3 px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group">
-        <!-- Profile Avatar -->
         <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center">
           <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
           </svg>
         </div>
-        <!-- Username -->
         <span id="profileName" class="font-medium text-xs sm:text-sm hidden sm:inline">Profile</span>
-        <!-- Dropdown Arrow -->
         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/80 transition-transform duration-200 group-hover:text-white" id="profileArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
-      
-      <!-- Dropdown Menu -->
       <div id="profileDropdown" class="absolute top-12 right-0 bg-white dark:bg-gray-800 shadow-xl rounded-lg py-2 min-w-[180px] border dark:border-gray-700 opacity-0 invisible transform scale-95 transition-all duration-200 z-50">
-        
-        <!-- Menu Items -->
         <button id="profileSettingsBtn" class="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 flex items-center gap-3 transition-colors duration-200">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-          </svg>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           <span class="text-sm">Profile Settings</span>
         </button>
-        
         <div class="border-t dark:border-gray-700 my-1"></div>
-        
         <button id="logoutBtn" class="w-full px-4 py-3 text-left hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 flex items-center gap-3 transition-colors duration-200">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-          </svg>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
           <span class="text-sm font-medium">Logout</span>
         </button>
       </div>
     </div>
-  </header>
+  `;
+
+  const rightSideContent = (page === 'timetable' || page === 'homework')
+    ? `<div class="flex gap-2 sm:gap-4">${buttons}</div>`
+    : profileDropdown;
+
+  const script = `
   <script>
     class ProfileManager {
-      constructor() {
-        this.setupEventListeners();
-      }
-
+      constructor() { this.setupEventListeners(); }
       setupEventListeners() {
         const profileToggle = document.getElementById('profileToggle');
+        if (!profileToggle) return;
         const profileDropdown = document.getElementById('profileDropdown');
-        const profileArrow = document.getElementById('profileArrow');
         const profileSettingsBtn = document.getElementById('profileSettingsBtn');
         const logoutBtn = document.getElementById('logoutBtn');
-
-        profileSettingsBtn.addEventListener('click', (e) => {
-            window.location.href = '/settings'
-        });
-
-        logoutBtn.addEventListener('click', (e) => {
-            window.location.href = '/logout'
-        });
-
-
-        profileToggle.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const isVisible = !profileDropdown.classList.contains('opacity-0');
-          
-          if (isVisible) {
-            this.closeDropdown();
-          } else {
-            this.openDropdown();
-          }
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-          if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
-            this.closeDropdown();
-          }
-        });
-
-        // Profile Settings button
-        document.getElementById('profileSettingsBtn').addEventListener('click', () => {
-          this.closeDropdown();
-          // Add your profile settings navigation logic here
-          console.log('Navigate to profile settings');
-          // Example: window.location.href = '/profile-settings';
+        profileSettingsBtn.addEventListener('click', () => window.location.href = '/settings');
+        logoutBtn.addEventListener('click', () => window.location.href = '/logout');
+        profileToggle.addEventListener('click', e => { e.stopPropagation(); this.toggleDropdown(); });
+        document.addEventListener('click', e => {
+          if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) { this.closeDropdown(); }
         });
       }
-
+      toggleDropdown() {
+        const profileDropdown = document.getElementById('profileDropdown');
+        profileDropdown.classList.contains('opacity-0') ? this.openDropdown() : this.closeDropdown();
+      }
       openDropdown() {
         const dropdown = document.getElementById('profileDropdown');
         const arrow = document.getElementById('profileArrow');
-        
         dropdown.classList.remove('opacity-0', 'invisible', 'scale-95');
         dropdown.classList.add('opacity-100', 'visible', 'scale-100');
         arrow.style.transform = 'rotate(180deg)';
       }
-
       closeDropdown() {
         const dropdown = document.getElementById('profileDropdown');
         const arrow = document.getElementById('profileArrow');
-        
         dropdown.classList.add('opacity-0', 'invisible', 'scale-95');
         dropdown.classList.remove('opacity-100', 'visible', 'scale-100');
         arrow.style.transform = 'rotate(0deg)';
       }
     }
+    document.addEventListener('DOMContentLoaded', () => {
+      new ProfileManager();
+      const username = localStorage.getItem("username");
+      const usernameField = document.getElementById('profileName');
+      if (usernameField) usernameField.innerHTML = username;
+    });
+  </script>
+  `;
 
-    document.addEventListener('DOMContentLoaded', async function() {
-        new ProfileManager();
-
-
-        let username = localStorage.getItem("username");
-        const usernameField = document.getElementById('profileName');
-        usernameField.innerHTML = username;
-    })
-</script>
+  return `
+    <header class="bg-white dark:bg-gray-800 shadow-md py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center">
+      <a href="/dashboard" class="text-lg sm:text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</a>
+      ${rightSideContent}
+    </header>
+    ${ (page !== 'timetable' && page !== 'homework') ? script : '' }
+  `;
+}
 `;
 
 const notificationContainer = `
@@ -1156,7 +1128,7 @@ const dashboard = (req, res) => {
         </head>
         <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
         
-        ${header}
+        ${createHeader('dashboard')}
 
         <!-- Main Content -->
         <main class="flex-1 p-4 sm:p-6">
@@ -1631,6 +1603,7 @@ const logout = (req, res) => {
             localStorage.removeItem("password");
             window.location.href = "/";
         </script>
+        </script>
     `);
 };
 
@@ -1654,12 +1627,13 @@ const settings = (req, res) => {
             darkMode: 'class'
         }
     </script>
+    </script>
 
     ${fastInit}
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
 
-${header}
+${createHeader('settings')}
 
     <!-- Main Content -->
     <main class="flex-1 p-6">
@@ -1978,6 +1952,7 @@ ${header}
             updateNotificationStatus('Disabled');
         }
     </script>
+    </script>
 </body>
 </html>
     `);
@@ -2003,6 +1978,7 @@ const learn = (req, res) => {
             darkMode: 'class'
             }
         </script>
+        </script>
 
         ${fastInit}
 
@@ -2011,7 +1987,7 @@ const learn = (req, res) => {
 
         <body class="bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 min-h-screen flex flex-col transition-colors duration-300">
 
-        ${header}
+        ${createHeader('learn')}
 
         <div id="folderModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
             <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg w-80 transition-colors duration-300">
@@ -2712,6 +2688,7 @@ const learn = (req, res) => {
         }
             
         </script>
+        </script>
         </body>
         </html>
     `);
@@ -2737,6 +2714,7 @@ const createlist = (req, res) => {
             darkMode: 'class'
             }
         </script>
+        </script>
 
         ${fastInit}
         </head>
@@ -2744,7 +2722,7 @@ const createlist = (req, res) => {
 
         ${notificationContainer}
 
-        ${header}
+        ${createHeader('createlist')}
 
         <!-- Main Content -->
         <main class="flex-1 p-4 sm:p-6">
@@ -2930,6 +2908,7 @@ const createlist = (req, res) => {
                 window.location.href = "/verify"
             }
             });
+        </script>
         </script>
         </body>
         </html>
@@ -3209,6 +3188,7 @@ const list = (req, res) => {
             }
             }
         </script>
+        </script>
         </body>
         </html>
     `);
@@ -3234,6 +3214,7 @@ const editlist = (req, res) => {
             darkMode: 'class'
             }
         </script>
+        </script>
 
         ${fastInit}
         </head>
@@ -3241,7 +3222,7 @@ const editlist = (req, res) => {
 
         ${notificationContainer}
 
-        ${header}
+        ${createHeader('editlist')}
 
         <!-- Main Content -->
         <main class="flex-1 p-4 sm:p-6">
@@ -3609,6 +3590,7 @@ const editlist = (req, res) => {
             }
             });
         </script>
+        </script>
         </body>
         </html>
     `);
@@ -3634,6 +3616,7 @@ const createTable = (req, res) => {
             darkMode: 'class'
             }
         </script>
+        </script>
 
         ${fastInit}
         </head>
@@ -3641,7 +3624,7 @@ const createTable = (req, res) => {
 
         ${notificationContainer}
 
-        ${header}
+        ${createHeader('createTable')}
 
         <!-- Main Content -->
         <main class="flex-1 p-4 sm:p-6">
@@ -4026,6 +4009,7 @@ const createTable = (req, res) => {
             }
             });
         </script>
+        </script>
         </body>
         </html>
     `);
@@ -4275,6 +4259,7 @@ const table = (req, res) => {
             }
             }
         </script>
+        </script>
         </body>
         </html>
     `);
@@ -4300,6 +4285,7 @@ const editTable = (req, res) => {
             darkMode: 'class'
             }
         </script>
+        </script>
 
         ${fastInit}
         </head>
@@ -4307,7 +4293,7 @@ const editTable = (req, res) => {
 
         ${notificationContainer}
 
-        ${header}
+        ${createHeader('editTable')}
 
         <!-- Main Content -->
         <main class="flex-1 p-4 sm:p-6">
@@ -4848,6 +4834,7 @@ const editTable = (req, res) => {
             }
             });
         </script>
+        </script>
         </body>
         </html>
     `);
@@ -4873,6 +4860,7 @@ const importlist = (req, res) => {
             darkMode: 'class'
             }
         </script>
+        </script>
 
         ${fastInit}
         </head>
@@ -4880,7 +4868,7 @@ const importlist = (req, res) => {
 
         ${notificationContainer}
 
-        ${header}
+        ${createHeader('importlist')}
 
         <!-- Main Content -->
         <main class="flex-1 p-4 sm:p-6">
@@ -5161,6 +5149,7 @@ const importlist = (req, res) => {
             window.location.href = \`/learn?route=\${encodeURIComponent(route)}\`;
             }
         </script>
+        </script>
         </body>
         </html>
     `);
@@ -5206,6 +5195,7 @@ const ad = (req, res) => {
             document.body.innerHTML = "<h1 style='text-align:center;margin-top:20%;font-family:sans-serif;'>No username found.</h1>";
             }
         </script>
+        </script>
         </body>
         </html>
     `);
@@ -5231,6 +5221,7 @@ const timetable = (req, res) => {
         darkMode: 'class'
         }
         </script>
+        </script>
         <script>
         (function() {
             const savedTheme = localStorage.getItem('theme') || 'system';
@@ -5243,6 +5234,7 @@ const timetable = (req, res) => {
                 html.classList.add('dark');
             }
         })();
+        </script>
         </script>
         <style>
         .dragging {
@@ -5263,14 +5255,7 @@ const timetable = (req, res) => {
 
         <div id="notificationContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"></div>
 
-        <!-- Header -->
-        <header class="bg-white dark:bg-gray-800 shadow-md py-3 px-4 sm:py-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <a href="/dashboard" class="text-lg sm:text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</a>
-            <div class="flex gap-2 sm:gap-4">
-                <a href="/homework" class="px-3 py-2 sm:px-4 text-xs sm:text-base bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white rounded-lg transition">📝 Homework</a>
-                <a href="/homework-view" class="px-3 py-2 sm:px-4 text-xs sm:text-base bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 text-white rounded-lg transition">📋 View Tasks</a>
-            </div>
-        </header>
+        ${createHeader('timetable')}
 
         <main class="flex-1 p-4 sm:p-6">
             <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">📅 School Timetable</h2>
@@ -5719,6 +5704,7 @@ const timetable = (req, res) => {
             await loadTimetable();
         });
         </script>
+        </script>
         </body>
         </html>
     `);
@@ -5744,6 +5730,7 @@ const homework = (req, res) => {
         darkMode: 'class'
         }
         </script>
+        </script>
         <script>
         (function() {
             const savedTheme = localStorage.getItem('theme') || 'system';
@@ -5757,19 +5744,13 @@ const homework = (req, res) => {
             }
         })();
         </script>
+        </script>
         </head>
         <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
 
         <div id="notificationContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"></div>
 
-        <header class="bg-white dark:bg-gray-800 shadow-md py-3 px-4 sm:py-4 sm:px-6">
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                <a href="/dashboard" class="text-xl font-bold text-blue-700 dark:text-blue-400">Blearn</a>
-                <div class="flex gap-2 sm:gap-4">
-                    <a href="/timetable" class="px-3 py-2 sm:px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-lg transition text-sm sm:text-base">📅 Timetable</a>
-                </div>
-            </div>
-        </header>
+        ${createHeader('homework')}
 
         <main class="flex-1 p-4 sm:p-6">
             <div class="max-w-4xl mx-auto">
@@ -5782,14 +5763,17 @@ const homework = (req, res) => {
                     <form id="homeworkForm" class="space-y-3 sm:space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                             <!-- Subject Selection -->
-                            <div>
-                                <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                                    Subject <span class="text-red-500">*</span>
-                                </label>
-                                <select id="subjectSelect" required
-                                        class="w-full border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base">
-                                    <option value="">Select subject...</option>
-                                </select>
+                            <div class="flex items-end gap-2">
+                                <div class="flex-grow">
+                                    <label class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                                        Subject <span class="text-red-500">*</span>
+                                    </label>
+                                    <select id="subjectSelect" required
+                                            class="w-full border dark:border-gray-600 p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm sm:text-base">
+                                        <option value="">Select subject...</option>
+                                    </select>
+                                </div>
+                                <a href="/timetable" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition text-sm sm:text-base">Add Subjects</a>
                             </div>
 
                             <!-- Due Date -->
@@ -6232,6 +6216,7 @@ const homework = (req, res) => {
             await loadHomework();
         });
         </script>
+        </script>
         </body>
         </html>
     `);
@@ -6252,10 +6237,12 @@ const privacy = (req, res) => {
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
       <title>Blearn - Privacy Policy</title>
       <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.tailwindcss.com"></script>
       <script>
         tailwind.config = {
           darkMode: 'class'
         }
+      </script>
       </script>
       ${fastInit}
     </head>
