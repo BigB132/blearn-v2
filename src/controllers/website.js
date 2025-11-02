@@ -295,6 +295,12 @@ const landing = async (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta name="google-site-verification" content="MOa_upgamZEsDEVLWmlDnDJybC7H1uEyHhDrgCECwWI" />
@@ -374,6 +380,12 @@ const register = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Blearn - Signup</title>
@@ -567,6 +579,12 @@ const verify = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+            <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+            <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+            <link rel="shortcut icon" href="/favicon.ico" />
+            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+            <meta name="apple-mobile-web-app-title" content="Blearn" />
+            <link rel="manifest" href="/site.webmanifest" />
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Blearn - Email Verification</title>
@@ -817,6 +835,12 @@ const login = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blearn - Login</title>
@@ -980,6 +1004,12 @@ const forgotpassword = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blearn - Reset Password</title>
@@ -1106,6 +1136,12 @@ const dashboard = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blearn - Dashboard</title>
@@ -1603,6 +1639,12 @@ const settings = (req, res) => {
         <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Blearn" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Blearn - Settings</title>
@@ -1946,6 +1988,12 @@ const learn = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blearn - Files</title>
@@ -2674,6 +2722,12 @@ const createlist = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blearn - Create Vocablist</title>
@@ -2887,6 +2941,12 @@ const list = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Blearn - List</title>
@@ -3159,6 +3219,12 @@ const editlist = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blearn - Edit Vocablist</title>
@@ -3553,6 +3619,12 @@ const createTable = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blearn - Create Table</title>
@@ -3964,6 +4036,12 @@ const table = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Blearn - Table</title>
@@ -4207,6 +4285,12 @@ const editTable = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blearn - Edit Table</title>
@@ -4774,6 +4858,12 @@ const importlist = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blearn - Import Vocablist</title>
@@ -5081,6 +5171,12 @@ const ad = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8">
         <title>Blearn - Ads</title>
         <style>
@@ -5120,6 +5216,12 @@ const timetable = (req, res) => {
       <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blearn - Timetable</title>
@@ -5627,6 +5729,12 @@ const homework = (req, res) => {
         <!DOCTYPE html>
         <html lang="en">
         <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Blearn - Homework</title>
@@ -6134,6 +6242,12 @@ const privacy = (req, res) => {
     <!DOCTYPE html>
     <html lang="en">
     <head>
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Blearn" />
+        <link rel="manifest" href="/site.webmanifest" />
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
       <title>Blearn - Privacy Policy</title>
