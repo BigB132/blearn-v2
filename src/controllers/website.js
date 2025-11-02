@@ -1850,9 +1850,12 @@ ${header}
                         applicationServerKey: urlBase64ToUint8Array(publicKey),
                     });
 
+                    const username = localStorage.getItem('username');
+                    const password = localStorage.getItem('password');
+
                     await fetch('/api/notifications/subscribe', {
                         method: 'POST',
-                        body: JSON.stringify({ subscription }),
+                        body: JSON.stringify({ subscription, username, password }),
                         headers: {
                             'Content-Type': 'application/json',
                         },
@@ -1878,9 +1881,12 @@ ${header}
                     if (subscription) {
                         await subscription.unsubscribe();
 
+                        const username = localStorage.getItem('username');
+                        const password = localStorage.getItem('password');
+
                         await fetch('/api/notifications/unsubscribe', {
                             method: 'DELETE',
-                            body: JSON.stringify({ endpoint: subscription.endpoint }),
+                            body: JSON.stringify({ endpoint: subscription.endpoint, username, password }),
                             headers: {
                                 'Content-Type': 'application/json',
                             },

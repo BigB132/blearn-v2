@@ -9,12 +9,14 @@ webpush.setVapidDetails(
 );
 
 exports.subscribe = async (req, res) => {
-    if (!req.session.user) {
+
+    const { username, password, subscription } = req.body;
+
+    const user = await User.findOne({userName: username, password });
+
+    if (!user) {
         return res.status(401).json({ message: 'User not authenticated' });
     }
-
-    const { subscription } = req.body;
-    const userId = req.session.user._id;
 
     try {
         const newSubscription = new Subscription({
@@ -23,7 +25,7 @@ exports.subscribe = async (req, res) => {
                 p256dh: subscription.keys.p256dh,
                 auth: subscription.keys.auth,
             },
-            user: userId,
+            user: username,
         });
 
         await newSubscription.save();
@@ -38,15 +40,17 @@ exports.subscribe = async (req, res) => {
 };
 
 exports.unsubscribe = async (req, res) => {
-    if (!req.session.user) {
+
+    const { username, password, endpoint } = req.body;
+
+    const user = await User.findOne({userName: username, password});
+
+    if (!user) {
         return res.status(401).json({ message: 'User not authenticated' });
     }
 
-    const { endpoint } = req.body;
-    const userId = req.session.user._id;
-
     try {
-        const result = await Subscription.findOneAndDelete({ endpoint: endpoint, user: userId });
+        const result = await Subscription.findOneAndDelete({ endpoint: endpoint, user: username });
         if (!result) {
             return res.status(404).json({ message: 'Subscription not found.' });
         }
