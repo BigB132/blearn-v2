@@ -32,11 +32,19 @@ async function checkHomework() {
                 if (!hw.completed && !hw.notified) {
                     const dueTime = new Date(hw.dueDate).getTime();
 
+                    let subjectName;
+
+                    user.subjects.forEach((item, index) => {
+                        if(item.id == hw.subjectId && !subjectName) {
+                            subjectName = item.name;
+                        }
+                    })
+
                     // Wenn dueDate in den nächsten 24 Stunden liegt
                     if (dueTime <= in24h && dueTime > now) {
                         const payload = {
-                            title: `Homework Reminder for ${hw.subjectId}`,
-                            body: hw.description,
+                            title: "Blearn",
+                            body: `Your ${subjectName} homework is due in 24 hours: ${hw.description}`,
                             url: '/homework'
                         };
 
