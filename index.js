@@ -13,6 +13,7 @@ const scheduleRoutes = require('./src/routes/schedule');
 const homeworkRoutes = require('./src/routes/homework');
 const adRoutes = require('./src/routes/ads');
 const notificationRoutes = require('./src/routes/notifications');
+const participationRoutes = require('./src/routes/participation');
 
 const app = express();
 
@@ -40,10 +41,12 @@ app.use('/api/data', dataRoutes);
 app.use('/api/timetable/subjects', subjectRoutes);
 app.use('/api/timetable/schedule', scheduleRoutes);
 app.use('/api/timetable/homework', homeworkRoutes);
+app.use('/api/participation', participationRoutes);
 app.use('/api/ads', adRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use(express.static('src/PublicFiles'));
 require('./src/cron/homeworkReminder');
+require('./src/cron/participationReminder');
 
 app.listen(process.env.port, () => {
   console.log(`Server is running on Port ${process.env.port}`);

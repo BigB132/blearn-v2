@@ -1169,30 +1169,41 @@ const dashboard = (req, res) => {
                     <p class="text-xs sm:text-sm opacity-90 mt-1">Add and track tasks</p>
                 </a>
 
-                <div class="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 p-5 sm:p-6 rounded-xl shadow transition-all duration-300 text-white">
+                <a href="/participation-stats" class="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 p-5 sm:p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 text-white group">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-2xl sm:text-3xl">⚡</span>
+                        <span class="text-2xl sm:text-3xl">🎯</span>
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
                     </div>
-                    <h3 class="text-base sm:text-lg font-semibold" id="urgentCount">0 Urgent</h3>
-                    <p class="text-xs sm:text-sm opacity-90 mt-1">Tasks due soon</p>
-                </div>
+                    <h3 class="text-base sm:text-lg font-semibold">Participation</h3>
+                    <p class="text-xs sm:text-sm opacity-90 mt-1">View your engagement</p>
+                </a>
             </div>
 
             <!-- Two Column Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Left Column: Urgent Homework (2/3 width) -->
+                <!-- Left Column: Class Participation (2/3 width) -->
                 <div class="lg:col-span-2">
-                    <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border dark:border-gray-700">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-                            <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">🔥 Urgent Homework</h3>
-                            <a href="/homework" class="text-sm text-blue-600 dark:text-blue-400 hover:underline mt-1 sm:mt-0">View All →</a>
-                        </div>
-                        <div id="urgentHomework" class="space-y-3">
-                            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-                                Loading homework...
+                    <a href="/participation" class="block">
+                        <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 p-4 sm:p-6 rounded-xl shadow hover:shadow-lg dark:shadow-gray-900/20 transition-all duration-300 border border-orange-200 dark:border-orange-800/30 hover:border-orange-300 dark:hover:border-orange-700/50">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                                <h3 class="text-lg sm:text-xl font-semibold text-orange-900 dark:text-orange-100">
+                                    <span class="inline-block mr-2">🎯</span>Log Your Participation
+                                </h3>
+                                <span class="text-sm text-orange-700 dark:text-orange-300 font-medium mt-1 sm:mt-0">Click to enter</span>
+                            </div>
+                            <p class="text-orange-800 dark:text-orange-200 text-sm sm:text-base mb-4">
+                                Track how many times you raised your hand and participated in class today.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <p class="text-xs sm:text-sm text-orange-700 dark:text-orange-300 font-medium">
+                                    📝 Enter your class participation
+                                </p>
+                                <span class="text-xl">→</span>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
                 <!-- Right Column: Today's Schedule (1/3 width) -->
@@ -1296,34 +1307,6 @@ const dashboard = (req, res) => {
                 }
             }
 
-            async function loadHomework() {
-                const userName = localStorage.getItem('username');
-                const password = localStorage.getItem('password');
-                
-                try {
-                    const res = await fetch('/api/timetable/homework/get', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username: userName, password })
-                    });
-                    const data = await res.json();
-                    if (data.state === 'success') {
-                        homework = data.homework || [];
-                        renderUrgentHomework();
-                    } else {
-                        throw new Error('Failed to load homework');
-                    }
-                } catch (err) {
-                    console.error('Error loading homework:', err);
-                    homework = [];
-                    document.getElementById('urgentHomework').innerHTML = \`
-                        <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
-                            No homework data available
-                        </div>
-                    \`;
-                }
-            }
-
             async function loadTimetable() {
                 const userName = localStorage.getItem('username');
                 const password = localStorage.getItem('password');
@@ -1345,79 +1328,6 @@ const dashboard = (req, res) => {
                 } catch (err) {
                     console.error('Error loading timetable:', err);
                 }
-            }
-
-            function renderUrgentHomework() {
-                const container = document.getElementById('urgentHomework');
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                
-                // Filter homework due in next 3 days and not completed
-                const urgent = homework.filter(hw => {
-                    if (hw.completed) return false;
-                    const dueDate = new Date(hw.dueDate);
-                    dueDate.setHours(0, 0, 0, 0);
-                    const daysUntil = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
-                    return daysUntil <= 3 && daysUntil >= -1; // Include overdue by 1 day
-                }).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-
-                // Update urgent count
-                document.getElementById('urgentCount').textContent = \`\${urgent.length} Urgent\`;
-
-                if (urgent.length === 0) {
-                    container.innerHTML = \`
-                        <div class="text-center py-8">
-                            <span class="text-4xl">✅</span>
-                            <p class="text-gray-500 dark:text-gray-400 mt-2">No urgent homework!</p>
-                        </div>
-                    \`;
-                    return;
-                }
-
-                container.innerHTML = '';
-                urgent.forEach(hw => {
-                    const subject = subjects.find(s => s.id === hw.subjectId);
-                    const dueDate = new Date(hw.dueDate);
-                    const daysUntil = Math.ceil((dueDate.setHours(0, 0, 0, 0) - today) / (1000 * 60 * 60 * 24));
-                    
-                    let urgencyClass = 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800';
-                    let urgencyText = \`\${daysUntil} day\${daysUntil !== 1 ? 's' : ''}\`;
-                    
-                    if (daysUntil < 0) {
-                        urgencyClass = 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800';
-                        urgencyText = 'Overdue!';
-                    } else if (daysUntil === 0) {
-                        urgencyClass = 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800';
-                        urgencyText = 'Today!';
-                    } else if (daysUntil === 1) {
-                        urgencyText = 'Tomorrow';
-                    }
-
-                    const card = document.createElement('div');
-                    card.className = \`p-4 rounded-lg border-l-4 \${urgencyClass}\`;
-                    card.style.borderLeftColor = subject ? subject.color : '#6b7280';
-                    card.innerHTML = \`
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="font-semibold text-gray-800 dark:text-white text-sm">
-                                        \${subject ? subject.name : 'Unknown'}
-                                    </span>
-                                    <span class="text-xs px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
-                                        \${urgencyText}
-                                    </span>
-                                </div>
-                                <p class="text-sm text-gray-700 dark:text-gray-300 truncate">
-                                    \${hw.description}
-                                </p>
-                            </div>
-                            <a href="/homework" class="text-blue-600 dark:text-blue-400 hover:underline text-sm whitespace-nowrap">
-                                View →
-                            </a>
-                        </div>
-                    \`;
-                    container.appendChild(card);
-                });
             }
 
             function renderTodaySchedule() {
@@ -1587,7 +1497,6 @@ const dashboard = (req, res) => {
 
                 // Load all dashboard data
                 await loadSubjects();
-                await loadHomework();
                 await loadTimetable();
             });
         </script>
@@ -6303,6 +6212,766 @@ const privacy = (req, res) => {
     `);
 };
 
+const participation = (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <link rel="shortcut icon" href="/favicon.ico" />
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+      <meta name="apple-mobile-web-app-title" content="Blearn" />
+      <link rel="manifest" href="/site.webmanifest" />
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Blearn - Log Participation</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script>
+        tailwind.config = {
+          darkMode: 'class'
+        }
+      </script>
+      ${fastInit}
+    </head>
+    <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+      
+      ${createHeader('participation')}
+
+      <main class="flex-1 p-4 sm:p-6">
+        <div class="max-w-2xl mx-auto">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">Log Your Participation</h2>
+          <p class="text-gray-600 dark:text-gray-400 mb-6">How much did you participate in class today? 🎯</p>
+
+          <div id="subjectsContainer" class="space-y-4">
+            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+              Loading your classes...
+            </div>
+          </div>
+
+          <div class="mt-8 flex gap-3">
+            <button id="submitBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300" style="display: none;">
+              Save Participation ✓
+            </button>
+            <a href="/participation-stats" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 text-center">
+              View Statistics 📊
+            </a>
+          </div>
+        </div>
+      </main>
+
+      ${footer}
+
+      <script>
+        let subjects = [];
+        const participationData = {};
+
+        async function loadSubjects() {
+          const userName = localStorage.getItem('username');
+          const password = localStorage.getItem('password');
+
+          try {
+            const res = await fetch('/api/participation/today-subjects', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username: userName, password })
+            });
+
+            const data = await res.json();
+
+            if (data.state === 'success') {
+              subjects = data.subjects || [];
+              
+              if (subjects.length === 0) {
+                document.getElementById('subjectsContainer').innerHTML = \`
+                  <div class="text-center py-8">
+                    <span class="text-4xl">🎉</span>
+                    <p class="text-gray-500 dark:text-gray-400 mt-2">No classes today!</p>
+                  </div>
+                \`;
+                return;
+              }
+
+              renderSubjects();
+              loadTodayParticipation();
+              document.getElementById('submitBtn').style.display = 'block';
+            }
+          } catch (err) {
+            console.error('Error loading subjects:', err);
+            document.getElementById('subjectsContainer').innerHTML = \`
+              <div class="text-center py-8 text-red-500">
+                Error loading classes
+              </div>
+            \`;
+          }
+        }
+
+        function renderSubjects() {
+          const container = document.getElementById('subjectsContainer');
+          container.innerHTML = '';
+
+          subjects.forEach(subject => {
+            participationData[subject.id] = { handsRaised: 0, timesSpoke: 0, skipped: false };
+
+            const card = document.createElement('div');
+            card.className = 'bg-white dark:bg-gray-800 p-5 sm:p-6 rounded-xl shadow dark:shadow-gray-900/20 border-l-4 transition-all duration-300';
+            card.style.borderLeftColor = subject.color;
+            card.innerHTML = \`
+              <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background-color: \${subject.color}"></span>
+                \${subject.name}
+              </h3>
+
+              <div class="space-y-4 subject-inputs" data-subject-id="\${subject.id}">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    🙋 How many times did you raise your hand?
+                  </label>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="decrement-hands px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg text-gray-800 dark:text-white font-bold transition-colors" data-subject-id="\${subject.id}">−</button>
+                    <input type="number" min="0" max="999" class="hands-input flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white text-center text-lg font-semibold focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="0" data-subject-id="\${subject.id}">
+                    <button type="button" class="increment-hands px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg text-gray-800 dark:text-white font-bold transition-colors" data-subject-id="\${subject.id}">+</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    💬 How many times did you say something?
+                  </label>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="decrement-spoke px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg text-gray-800 dark:text-white font-bold transition-colors" data-subject-id="\${subject.id}">−</button>
+                    <input type="number" min="0" max="999" class="spoke-input flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white text-center text-lg font-semibold focus:ring-2 focus:ring-blue-500 focus:border-transparent" value="0" data-subject-id="\${subject.id}">
+                    <button type="button" class="increment-spoke px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg text-gray-800 dark:text-white font-bold transition-colors" data-subject-id="\${subject.id}">+</button>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="skip-btn w-full mt-4 px-4 py-2 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-700 dark:text-red-400 rounded-lg font-medium transition-colors" data-subject-id="\${subject.id}">
+                ⊘ Skip - Wasn't in class
+              </button>
+            \`;
+
+            container.appendChild(card);
+          });
+
+          // Add event listeners
+          document.querySelectorAll('.hands-input').forEach(input => {
+            input.addEventListener('change', (e) => {
+              const subjectId = e.target.dataset.subjectId;
+              participationData[subjectId].handsRaised = parseInt(e.target.value) || 0;
+            });
+          });
+
+          document.querySelectorAll('.spoke-input').forEach(input => {
+            input.addEventListener('change', (e) => {
+              const subjectId = e.target.dataset.subjectId;
+              participationData[subjectId].timesSpoke = parseInt(e.target.value) || 0;
+            });
+          });
+
+          document.querySelectorAll('.increment-hands').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const subjectId = e.target.dataset.subjectId;
+              const input = document.querySelector(\`.hands-input[data-subject-id="\${subjectId}"]\`);
+              input.value = parseInt(input.value || 0) + 1;
+              participationData[subjectId].handsRaised = parseInt(input.value);
+            });
+          });
+
+          document.querySelectorAll('.decrement-hands').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const subjectId = e.target.dataset.subjectId;
+              const input = document.querySelector(\`.hands-input[data-subject-id="\${subjectId}"]\`);
+              input.value = Math.max(0, parseInt(input.value || 0) - 1);
+              participationData[subjectId].handsRaised = parseInt(input.value);
+            });
+          });
+
+          document.querySelectorAll('.increment-spoke').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const subjectId = e.target.dataset.subjectId;
+              const input = document.querySelector(\`.spoke-input[data-subject-id="\${subjectId}"]\`);
+              input.value = parseInt(input.value || 0) + 1;
+              participationData[subjectId].timesSpoke = parseInt(input.value);
+            });
+          });
+
+          document.querySelectorAll('.decrement-spoke').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const subjectId = e.target.dataset.subjectId;
+              const input = document.querySelector(\`.spoke-input[data-subject-id="\${subjectId}"]\`);
+              input.value = Math.max(0, parseInt(input.value || 0) - 1);
+              participationData[subjectId].timesSpoke = parseInt(input.value);
+            });
+          });
+
+          // Skip button listeners
+          document.querySelectorAll('.skip-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              const subjectId = e.target.dataset.subjectId;
+              const card = e.target.closest('div[class*="bg-white"]');
+              const inputs = card.querySelector('.subject-inputs');
+              
+              participationData[subjectId].skipped = !participationData[subjectId].skipped;
+              
+              if (participationData[subjectId].skipped) {
+                e.target.classList.remove('bg-red-100', 'dark:bg-red-900/30', 'hover:bg-red-200', 'dark:hover:bg-red-900/50', 'text-red-700', 'dark:text-red-400');
+                e.target.classList.add('bg-green-100', 'dark:bg-green-900/30', 'hover:bg-green-200', 'dark:hover:bg-green-900/50', 'text-green-700', 'dark:text-green-400');
+                e.target.textContent = '✓ Skipped';
+                inputs.style.opacity = '0.5';
+                inputs.style.pointerEvents = 'none';
+              } else {
+                e.target.classList.remove('bg-green-100', 'dark:bg-green-900/30', 'hover:bg-green-200', 'dark:hover:bg-green-900/50', 'text-green-700', 'dark:text-green-400');
+                e.target.classList.add('bg-red-100', 'dark:bg-red-900/30', 'hover:bg-red-200', 'dark:hover:bg-red-900/50', 'text-red-700', 'dark:text-red-400');
+                e.target.textContent = '⊘ Skip - Was not in class';
+                inputs.style.opacity = '1';
+                inputs.style.pointerEvents = 'auto';
+              }
+            });
+          });
+        }
+
+        async function loadTodayParticipation() {
+          const userName = localStorage.getItem('username');
+          const password = localStorage.getItem('password');
+
+          try {
+            const res = await fetch('/api/participation/today', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username: userName, password })
+            });
+
+            const data = await res.json();
+
+            if (data.state === 'success' && data.participation?.entries?.length > 0) {
+              data.participation.entries.forEach(entry => {
+                if (participationData[entry.subjectId]) {
+                  participationData[entry.subjectId] = {
+                    handsRaised: entry.handsRaised,
+                    timesSpoke: entry.timesSpoke
+                  };
+
+                  const handsInput = document.querySelector(\`.hands-input[data-subject-id="\${entry.subjectId}"]\`);
+                  const spokeInput = document.querySelector(\`.spoke-input[data-subject-id="\${entry.subjectId}"]\`);
+                  
+                  if (handsInput) handsInput.value = entry.handsRaised;
+                  if (spokeInput) spokeInput.value = entry.timesSpoke;
+                }
+              });
+            }
+          } catch (err) {
+            console.error("Error loading today's participation:", err);
+          }
+        }
+
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+          const userName = localStorage.getItem('username');
+          const password = localStorage.getItem('password');
+
+          const data = subjects
+            .filter(subject => !participationData[subject.id].skipped)
+            .map(subject => ({
+              subjectId: subject.id,
+              subjectName: subject.name,
+              handsRaised: participationData[subject.id].handsRaised,
+              timesSpoke: participationData[subject.id].timesSpoke
+            }));
+
+          try {
+            const res = await fetch('/api/participation/record', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                username: userName,
+                password,
+                participationData: data
+              })
+            });
+
+            const result = await res.json();
+
+            if (result.state === 'success') {
+              alert('✓ Participation logged successfully!');
+              window.location.href = '/participation-stats';
+            } else {
+              alert('Error: ' + result.message);
+            }
+          } catch (err) {
+            console.error('Error recording participation:' + err);
+            alert('Error saving participation');
+          }
+        });
+
+        class ThemeManager {
+          constructor() {
+            this.init();
+          }
+
+          init() {
+            const savedTheme = localStorage.getItem('theme') || 'system';
+            this.applyTheme(savedTheme);
+          }
+
+          applyTheme(theme) {
+            const html = document.documentElement;
+            
+            if (theme === 'system') {
+              const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+              html.classList.toggle('dark', systemDark);
+            } else if (theme === 'dark') {
+              html.classList.add('dark');
+            } else {
+              html.classList.remove('dark');
+            }
+            
+            localStorage.setItem('theme', theme);
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+          new ThemeManager();
+
+          const userName = localStorage.getItem('username');
+          const password = localStorage.getItem('password');
+
+          if (!userName || !password) {
+            window.location.href = '/login';
+            return;
+          }
+
+          try {
+            const res = await fetch('/api/auth/checkData', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userName, password })
+            });
+
+            const data = await res.json();
+
+            if (data.state === 'error') {
+              localStorage.removeItem('username');
+              localStorage.removeItem('password');
+              window.location.href = '/login';
+            } else if (data.verified === 'false') {
+              window.location.href = '/verify';
+            }
+          } catch (err) {
+            console.error('Error checking auth:' + err);
+            window.location.href = '/login';
+          }
+
+          await loadSubjects();
+        });
+      </script>
+    </body>
+    </html>
+  `);
+};
+
+const participationStats = (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <link rel="shortcut icon" href="/favicon.ico" />
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+      <meta name="apple-mobile-web-app-title" content="Blearn" />
+      <link rel="manifest" href="/site.webmanifest" />
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Blearn - Participation Statistics</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+        tailwind.config = {
+          darkMode: 'class'
+        }
+      </script>
+      ${fastInit}
+    </head>
+    <body class="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+      
+      ${createHeader('participation-stats')}
+
+      <main class="flex-1 p-4 sm:p-6">
+        <div class="max-w-6xl mx-auto">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+            <div>
+              <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">Your Participation Analytics</h2>
+              <p class="text-gray-600 dark:text-gray-400">Track your class engagement by subject 📊</p>
+            </div>
+            <a href="/participation" class="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 inline-block">
+              Log Today ✍️
+            </a>
+          </div>
+
+          <!-- Overall Stats -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white dark:bg-gray-800 p-5 sm:p-6 rounded-xl shadow dark:shadow-gray-900/20 border-t-4 border-blue-500">
+              <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Total Hands Raised</p>
+              <p class="text-3xl font-bold text-blue-600 dark:text-blue-400 mt-2" id="totalHands">0</p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-5 sm:p-6 rounded-xl shadow dark:shadow-gray-900/20 border-t-4 border-green-500">
+              <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Times Spoke</p>
+              <p class="text-3xl font-bold text-green-600 dark:text-green-400 mt-2" id="totalSpoke">0</p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-5 sm:p-6 rounded-xl shadow dark:shadow-gray-900/20 border-t-4 border-purple-500">
+              <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Total Participation</p>
+              <p class="text-3xl font-bold text-purple-600 dark:text-purple-400 mt-2" id="totalParticipation">0</p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-5 sm:p-6 rounded-xl shadow dark:shadow-gray-900/20 border-t-4 border-orange-500">
+              <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Classes Tracked</p>
+              <p class="text-3xl font-bold text-orange-600 dark:text-orange-400 mt-2" id="classesTracked">0</p>
+            </div>
+          </div>
+
+          <!-- Subject Selection and Chart -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <!-- Left: Subjects List -->
+            <div class="bg-white dark:bg-gray-800 p-5 sm:p-6 rounded-xl shadow dark:shadow-gray-900/20 border dark:border-gray-700">
+              <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Your Subjects</h3>
+              <div id="subjectsList" class="space-y-2 max-h-96 overflow-y-auto">
+                <div class="text-center py-6 text-gray-500 dark:text-gray-400 text-sm">
+                  Loading subjects...
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Chart (2 columns) -->
+            <div class="lg:col-span-2 bg-white dark:bg-gray-800 p-5 sm:p-6 rounded-xl shadow dark:shadow-gray-900/20 border dark:border-gray-700">
+              <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Participation Trend</h3>
+              <div id="chartContainer" style="height: 300px;">
+                <canvas id="participationChart"></canvas>
+              </div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-4" id="noDataMessage" style="display: none;">
+                No data available for this subject yet. Start logging your participation!
+              </p>
+            </div>
+          </div>
+
+          <!-- Subject Stats -->
+          <div class="bg-white dark:bg-gray-800 p-5 sm:p-6 rounded-xl shadow dark:shadow-gray-900/20 border dark:border-gray-700">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Subject Performance</h3>
+            <div id="statsTable" class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="bg-gray-100 dark:bg-gray-700">
+                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800 dark:text-white">Subject</th>
+                    <th class="px-4 py-2 text-center text-sm font-semibold text-gray-800 dark:text-white">Avg. Hands</th>
+                    <th class="px-4 py-2 text-center text-sm font-semibold text-gray-800 dark:text-white">Avg. Times Spoke</th>
+                    <th class="px-4 py-2 text-center text-sm font-semibold text-gray-800 dark:text-white">Avg. Total</th>
+                    <th class="px-4 py-2 text-center text-sm font-semibold text-gray-800 dark:text-white">Times Logged</th>
+                  </tr>
+                </thead>
+                <tbody id="statsBody">
+                  <tr>
+                    <td colspan="5" class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
+                      Loading statistics...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      ${footer}
+
+      <script>
+        let allStats = [];
+        let selectedSubjectId = null;
+        let chart = null;
+
+        async function loadAllStats() {
+          const userName = localStorage.getItem('username');
+          const password = localStorage.getItem('password');
+
+          try {
+            const res = await fetch('/api/participation/all-stats', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username: userName, password })
+            });
+
+            const data = await res.json();
+
+            if (data.state === 'success') {
+              allStats = data.stats || [];
+              renderAllStats();
+              renderSubjectsList();
+              
+              if (allStats.length > 0) {
+                selectSubject(allStats[0].subjectId);
+              }
+            }
+          } catch (err) {
+            console.error('Error loading all stats:', err);
+          }
+        }
+
+        function renderAllStats() {
+          const tbody = document.getElementById('statsBody');
+
+          if (allStats.length === 0) {
+            tbody.innerHTML = \`
+              <tr>
+                <td colspan="5" class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
+                  No participation data yet. Start logging! 🚀
+                </td>
+              </tr>
+            \`;
+            return;
+          }
+
+          // Calculate totals
+          let totalHands = 0, totalSpoke = 0;
+          allStats.forEach(s => {
+            totalHands += s.totalHandsRaised;
+            totalSpoke += s.totalTimesSpoke;
+          });
+
+          document.getElementById('totalHands').textContent = totalHands;
+          document.getElementById('totalSpoke').textContent = totalSpoke;
+          document.getElementById('totalParticipation').textContent = totalHands + totalSpoke;
+          document.getElementById('classesTracked').textContent = allStats.length;
+
+          tbody.innerHTML = '';
+          allStats.forEach(stat => {
+            const row = document.createElement('tr');
+            row.className = 'border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer';
+            row.onclick = () => selectSubject(stat.subjectId);
+            row.innerHTML = \`
+              <td class="px-4 py-3 text-sm font-medium text-gray-800 dark:text-white">\${stat.subjectName}</td>
+              <td class="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">\${stat.averageHandsRaised}</td>
+              <td class="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">\${stat.averageTimesSpoke}</td>
+              <td class="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300 font-semibold">\${stat.averageHandsRaised}</td>
+              <td class="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">\${stat.recordCount}</td>
+            \`;
+            tbody.appendChild(row);
+          });
+        }
+
+        function renderSubjectsList() {
+          const container = document.getElementById('subjectsList');
+
+          if (allStats.length === 0) {
+            container.innerHTML = \`
+              <div class="text-center py-6 text-gray-500 dark:text-gray-400 text-sm">
+                No subjects with participation data
+              </div>
+            \`;
+            return;
+          }
+
+          container.innerHTML = '';
+          allStats.forEach(stat => {
+            const btn = document.createElement('button');
+            btn.className = 'w-full text-left px-3 py-2 rounded-lg transition-all duration-300 subject-btn';
+            btn.dataset.subjectId = stat.subjectId;
+            btn.innerHTML = \`
+              <div class="flex items-center gap-3">
+                <div class="flex-1 min-w-0">
+                  <div class="font-medium text-gray-800 dark:text-white truncate">\${stat.subjectName}</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">Avg: \${stat.averageParticipation}</div>
+                </div>
+              </div>
+            \`;
+            btn.addEventListener('click', () => selectSubject(stat.subjectId));
+            container.appendChild(btn);
+          });
+        }
+
+        async function selectSubject(subjectId) {
+          selectedSubjectId = subjectId;
+
+          // Update button styles
+          document.querySelectorAll('.subject-btn').forEach(btn => {
+            btn.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'border-l-4', 'border-blue-500');
+            btn.classList.add('hover:bg-gray-100', 'dark:hover:bg-gray-700');
+          });
+
+          const selectedBtn = document.querySelector(\`[data-subject-id="\${subjectId}"]\`);
+          if (selectedBtn) {
+            selectedBtn.classList.remove('hover:bg-gray-100', 'dark:hover:bg-gray-700');
+            selectedBtn.classList.add('bg-blue-100', 'dark:bg-blue-900', 'border-l-4', 'border-blue-500');
+          }
+
+          await loadSubjectChart();
+        }
+
+        async function loadSubjectChart() {
+          const userName = localStorage.getItem('username');
+          const password = localStorage.getItem('password');
+
+          try {
+            const res = await fetch('/api/participation/subject-stats', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                username: userName,
+                password,
+                subjectId: selectedSubjectId
+              })
+            });
+
+            const data = await res.json();
+
+            if (data.state === 'success') {
+              renderChart(data.chartData, data.subjectName);
+            }
+          } catch (err) {
+            console.error('Error loading chart data:', err);
+          }
+        }
+
+        function renderChart(chartData, subjectName) {
+          const noDataMessage = document.getElementById('noDataMessage');
+
+          if (!chartData || chartData.length === 0) {
+            noDataMessage.style.display = 'block';
+            if (chart) chart.destroy();
+            return;
+          }
+
+          noDataMessage.style.display = 'none';
+
+          const ctx = document.getElementById('participationChart').getContext('2d');
+
+          if (chart) {
+            chart.destroy();
+          }
+
+          chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: chartData.map(d => d.date),
+              datasets: [
+                {
+                  label: 'Hands Raised',
+                  data: chartData.map(d => d.handsRaised),
+                  backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                  borderColor: 'rgba(59, 130, 246, 1)',
+                  borderWidth: 1,
+                  borderRadius: 5,
+                },
+                {
+                  label: 'Times Spoke',
+                  data: chartData.map(d => d.timesSpoke),
+                  backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                  borderColor: 'rgba(34, 197, 94, 1)',
+                  borderWidth: 1,
+                  borderRadius: 5,
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  labels: {
+                    color: document.documentElement.classList.contains('dark') ? '#e5e7eb' : '#374151',
+                    font: { size: 12 }
+                  }
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    color: document.documentElement.classList.contains('dark') ? '#9ca3af' : '#6b7280'
+                  },
+                  grid: {
+                    color: document.documentElement.classList.contains('dark') ? 'rgba(75, 85, 99, 0.2)' : 'rgba(0, 0, 0, 0.1)'
+                  }
+                },
+                x: {
+                  ticks: {
+                    color: document.documentElement.classList.contains('dark') ? '#9ca3af' : '#6b7280'
+                  },
+                  grid: {
+                    color: document.documentElement.classList.contains('dark') ? 'rgba(75, 85, 99, 0.2)' : 'rgba(0, 0, 0, 0.1)'
+                  }
+                }
+              }
+            }
+          });
+        }
+
+        class ThemeManager {
+          constructor() {
+            this.init();
+          }
+
+          init() {
+            const savedTheme = localStorage.getItem('theme') || 'system';
+            this.applyTheme(savedTheme);
+          }
+
+          applyTheme(theme) {
+            const html = document.documentElement;
+            
+            if (theme === 'system') {
+              const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+              html.classList.toggle('dark', systemDark);
+            } else if (theme === 'dark') {
+              html.classList.add('dark');
+            } else {
+              html.classList.remove('dark');
+            }
+            
+            localStorage.setItem('theme', theme);
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+          new ThemeManager();
+
+          const userName = localStorage.getItem('username');
+          const password = localStorage.getItem('password');
+
+          if (!userName || !password) {
+            window.location.href = '/login';
+            return;
+          }
+
+          try {
+            const res = await fetch('/api/auth/checkData', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userName, password })
+            });
+
+            const data = await res.json();
+
+            if (data.state === 'error') {
+              localStorage.removeItem('username');
+              localStorage.removeItem('password');
+              window.location.href = '/login';
+            } else if (data.verified === 'false') {
+              window.location.href = '/verify';
+            }
+          } catch (err) {
+            console.error('Error checking auth:', err);
+            window.location.href = '/login';
+          }
+
+          await loadAllStats();
+        });
+      </script>
+    </body>
+    </html>
+  `);
+};
+
 module.exports = {
   landing,
   register,
@@ -6324,4 +6993,6 @@ module.exports = {
   timetable,
   homework,
   privacy,
+  participation,
+  participationStats,
 };

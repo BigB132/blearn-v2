@@ -11,7 +11,24 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+  const data = event.notification;
+  
+  // Determine the URL to open based on notification type/data
+  let url = '/homework'; // Default fallback
+  
+  // Check if the notification has a custom URL
+  if (data.data && data.data.url) {
+    url = data.data.url;
+  }
+  
+  // For older notifications that might store URL differently
+  const notificationData = event.notification.data || {};
+  if (notificationData.url) {
+    url = notificationData.url;
+  }
+
   event.waitUntil(
-    clients.openWindow('/homework') // Or a more specific URL
+    clients.openWindow(url)
   );
 });
+

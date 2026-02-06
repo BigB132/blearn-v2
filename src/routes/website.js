@@ -1,5 +1,5 @@
 const express = require('express');
-const { dashboard, register, verify, login, landing, logout, settings, forgotpassword, learn, createlist, list, editlist, createTable, table, editTable, importlist, test, ad, timetable, homework, privacy } = require('../controllers/website');
+const { dashboard, register, verify, login, landing, logout, settings, forgotpassword, learn, createlist, list, editlist, createTable, table, editTable, importlist, test, ad, timetable, homework, privacy, participation, participationStats } = require('../controllers/website');
 
 const router = express.Router();
 
@@ -23,5 +23,7 @@ router.get('/ad', ad)
 router.get('/timetable', timetable)
 router.get('/homework', homework)
 router.get('/privacy', privacy)
+router.get('/participation', participation)
+router.get('/participation-stats', participationStats)
 
 module.exports = router;
